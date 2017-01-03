@@ -1,0 +1,3 @@
+--compilers ls:livescript
+--require test/spec-helper
+--colors
