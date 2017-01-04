@@ -28,7 +28,7 @@ class StoreTree extends StoreNode
       .then (data) ~>
         @$set-loading no
         unless data?.constructor is Object
-          return Promise.reject Error "$from-promise: called on a tree but promise resolved to a #{typeof! data}"
+          return Promise.reject Error "#{@$get-path-string!} $from-promise: called on a tree but promise resolved to a #{typeof! data}"
         @$set data
       .catch (err) ~>
         @$set-error err

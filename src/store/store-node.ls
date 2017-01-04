@@ -13,4 +13,8 @@ class StoreNode
       callback.apply {}, args
 
 
+  $get-path-string: ->
+    @_path.join '.'
+
+
 module.exports = StoreNode
