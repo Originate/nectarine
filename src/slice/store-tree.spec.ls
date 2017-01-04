@@ -1,7 +1,10 @@
 require! {
-  './': {create-store}
+  './': Slice
   './spec/test-cases'
 }
+
+
+create-store = (schema) -> new Slice {schema}, []
 
 
 describe 'StoreTree' ->
