@@ -32,8 +32,14 @@ class StoreLeaf extends StoreNode
     @_loading
 
 
-  $from-promise: ->
-    new Promise ->
+  $from-promise: (promise)->
+    @$set-loading!
+    promise
+      .then (data) ~>
+        @$set data
+      .catch (err) ~>
+        @$set-error err
+        Promise.reject err
 
 
   $set: (data) !->

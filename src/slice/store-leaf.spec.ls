@@ -150,6 +150,52 @@ describe 'StoreLeaf' ->
         expect(~> @name.$get!).to.throw 'Error getting `currentUser.name`. name: is loading'
 
 
+  describe '$from-promise' ->
+
+    test-cases 'from promise on leaves' [
+      -> @store = create-store (_) -> current-user: name: _
+      -> @store = create-store (_) -> current-user: name: _!
+    ] ->
+      before-each ->
+        @name = @store.current-user.name
+        @promise = @name.$from-promise new Promise (@resolve, @reject) ~>
+        null
+
+      specify 'initially sets loading' ->
+        expect(@name.$is-loading!).to.be.true
+
+      specify 'it returns a promise' ->
+        expect(@promise.then).to.be.a \function
+
+      context 'resolved' ->
+
+        before-each ->
+          set-timeout ~> @resolve 'Alice'
+          @promise
+
+        specify 'it removes loading' ->
+          expect(@name.$is-loading!).to.be.false
+
+        specify 'it sets data' ->
+          expect(@name.$get!).to.equal 'Alice'
+
+      context 'rejected' ->
+
+        before-each ->
+          set-timeout ~> @reject @err = Error 'Failed to get name'
+          @promise.catch(@catch-spy = sinon.spy!)
+
+        specify 'it passes the error' ->
+          expect(@catch-spy).to.have.been.called-once
+          expect(@catch-spy.first-call.args[0]).to.equal @err
+
+        specify 'it removes loading' ->
+          expect(@name.$is-loading!).to.be.false
+
+        specify 'it sets error' ->
+          expect(@name.$get-error!).to.equal @err
+
+
   describe '$on-update' ->
 
     test-cases [
