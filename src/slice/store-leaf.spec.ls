@@ -206,7 +206,7 @@ describe 'StoreLeaf' ->
       before-each ->
         @leaf = @store.path.to.leaf
         @leaf.$set 'foo'
-        @unregister = @leaf.$on-update @update-spy = sinon.spy!
+        @leaf.$on-update @update-spy = sinon.spy!
 
       specify 'does not call callbacks if nothing updates' ->
         expect(@update-spy).to.not.have.been.called
