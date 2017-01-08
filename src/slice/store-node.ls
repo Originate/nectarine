@@ -1,3 +1,8 @@
+require! {
+  'lodash.pull': pull
+}
+
+
 class StoreNode
 
   (@_schema, @_path) ->
@@ -6,6 +11,8 @@ class StoreNode
 
   $on-update: (callback) ->
     @_update-callbacks.push callback
+    ~>
+      pull @_update-callbacks, callback
 
 
   $emit-update: (...args) ~>

@@ -206,7 +206,7 @@ describe 'StoreLeaf' ->
       before-each ->
         @leaf = @store.path.to.leaf
         @leaf.$set 'foo'
-        @leaf.$on-update @update-spy = sinon.spy!
+        @unregister = @leaf.$on-update @update-spy = sinon.spy!
 
       specify 'does not call callbacks if nothing updates' ->
         expect(@update-spy).to.not.have.been.called
@@ -216,6 +216,11 @@ describe 'StoreLeaf' ->
         @leaf.$set 'bar'
         expect(@update-spy).to.have.been.called-once
         expect(update-spy2).to.have.been.called-once
+
+      specify 'supports removing callbacks' ->
+        @unregister!
+        @leaf.$set 'bar'
+        expect(@update-spy).to.not.have.been.called-once
 
       test-cases 'triggers when set* methods are called' {
         $set: ->
