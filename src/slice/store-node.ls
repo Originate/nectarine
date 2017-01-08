@@ -9,10 +9,12 @@ class StoreNode
     @_update-callbacks = []
 
 
+  $off-update: (callback) ->
+    pull @_update-callbacks, callback
+
+
   $on-update: (callback) ->
     @_update-callbacks.push callback
-    ~>
-      pull @_update-callbacks, callback
 
 
   $emit-update: (...args) ~>

@@ -20,7 +20,7 @@ describe 'connect' ->
   specify 'defines a component with a required context type for slice', ->
     expect(@connectedHoc.context-types.slice).to.exist
 
-  describe 'rendering a component', ->
+  describe 'rendering', ->
     before-each ->
       @slice = new Slice {schema}, []
       component = react.create-element @connectedHoc, {other: 'data'}

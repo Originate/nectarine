@@ -251,7 +251,7 @@ describe 'StoreTree' ->
           name: _ initial-value: 'Alice'
           email: _
 
-      @unregister = @store.$on-update @store-update-spy = sinon.spy!
+      @store.$on-update @store-update-spy = sinon.spy!
       @store.current-user.$on-update @current-user-update-spy = sinon.spy!
 
     specify 'does not call callbacks if nothing updates' ->
@@ -265,7 +265,7 @@ describe 'StoreTree' ->
       expect(store-update-spy2).to.have.been.called-once
 
     specify 'supports removing callbacks' ->
-      @unregister!
+      @store.$off-update @store-update-spy
       @store.logged-in.$set yes
       expect(@store-update-spy).to.not.have.been.called
 

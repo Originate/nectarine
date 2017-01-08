@@ -218,7 +218,7 @@ describe 'StoreLeaf' ->
         expect(update-spy2).to.have.been.called-once
 
       specify 'supports removing callbacks' ->
-        @unregister!
+        @leaf.$off-update @update-spy
         @leaf.$set 'bar'
         expect(@update-spy).to.not.have.been.called-once
 

@@ -15,12 +15,16 @@ module.exports = (component, map-props) ->
     (props, context) ->
       super props, context
       @state = map-props @context.slice
-      @unregister = @context.slice.$on-update ~> @setState map-props @context.slice
+      @context.slice.$on-update @update
 
 
     componentWillUnmount: ->
-      @unregister!
+      @context.slice.$off-update @update
 
 
     render: ->
       react.create-element(component, assign({}, @props, @state))
+
+
+    update: ~>
+      @setState map-props @context.slice

@@ -17,10 +17,12 @@ describe 'Provider' ->
   specify 'defines a child context type for slice', ->
     expect(@providerHoc.child-context-types.slice).to.exist
 
-  specify 'defines a child context with the slice', ->
-    wrapper = shallow react.create-element @providerHoc, {}
-    expect(wrapper.instance().get-child-context()).to.eql {@slice}
+  describe 'rendering', ->
+    beforeEach ->
+      @wrapper = shallow react.create-element @providerHoc, {}
 
-  specify 'renders the component', ->
-    wrapper = shallow react.create-element @providerHoc, {}
-    expect(wrapper.is('TestComponent')).to.be.true
+    specify 'defines a child context with the slice', ->
+      expect(@wrapper.instance().get-child-context()).to.eql {@slice}
+
+    specify 'renders the component', ->
+      expect(@wrapper.is('TestComponent')).to.be.true
