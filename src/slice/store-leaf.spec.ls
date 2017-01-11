@@ -217,6 +217,11 @@ describe 'StoreLeaf' ->
         expect(@update-spy).to.have.been.called-once
         expect(update-spy2).to.have.been.called-once
 
+      specify 'supports removing callbacks' ->
+        @leaf.$off-update @update-spy
+        @leaf.$set 'bar'
+        expect(@update-spy).to.not.have.been.called-once
+
       test-cases 'triggers when set* methods are called' {
         $set: ->
           @leaf.$set('bar')

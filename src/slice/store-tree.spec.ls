@@ -264,6 +264,11 @@ describe 'StoreTree' ->
       expect(@store-update-spy).to.have.been.called-once
       expect(store-update-spy2).to.have.been.called-once
 
+    specify 'supports removing callbacks' ->
+      @store.$off-update @store-update-spy
+      @store.logged-in.$set yes
+      expect(@store-update-spy).to.not.have.been.called
+
     test-cases 'triggers when set* methods are called' {
       $set: ->
         @store.current-user.name.$set('Bob')
