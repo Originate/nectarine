@@ -2,6 +2,7 @@
   "name": "nectarine",
   "version": "0.0.1",
   "scripts": {
+    "build": "webpack",
     "test": "mocha 'src/**/*.spec.ls'"
   },
   "license": "MIT",
@@ -9,10 +10,13 @@
     "chai": "^3.5.0",
     "enzyme": "^2.7.0",
     "livescript": "^1.5.0",
+    "livescript-loader": "^0.1.6",
     "mocha": "^3.2.0",
     "react-addons-test-utils": "^15.4.2",
     "sinon": "^1.17.6",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "webpack": "^2.2.0-rc.4",
+    "webpack-node-externals": "^1.5.4"
   },
   "peerDependencies": {
     "react": "15.4.2"
