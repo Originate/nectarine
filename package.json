@@ -2,7 +2,7 @@
   "name": "nectarine",
   "version": "0.0.1",
   "scripts": {
-    "test": "mocha src/**/*"
+    "test": "mocha 'src/**/*.spec.ls'"
   },
   "license": "MIT",
   "devDependencies": {

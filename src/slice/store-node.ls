@@ -23,7 +23,7 @@ class StoreNode
 
 
   $get-path-string: ->
-    @_path.join '.'
+    @_path.join('.') or '[root]'
 
 
 module.exports = StoreNode
