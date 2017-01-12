@@ -15,7 +15,9 @@ schema = (_) -> name: _
 describe 'connect' ->
 
   beforeEach ->
-    @connectedHoc = connect(TestComponent, (slice) -> {name: slice.name.$get!})
+    @connectedHoc = connect do
+      component: TestComponent
+      map-props: (slice) -> {name: slice.name.$get!}
 
   specify 'defines a component with a required context type for slice', ->
     expect(@connectedHoc.context-types.slice).to.exist
