@@ -4,7 +4,7 @@ require! {
 }
 
 
-module.exports = (component, map-props) ->
+module.exports = ({component, map-props}) ->
 
   class Connector extends react.Component
 

@@ -12,7 +12,7 @@ describe 'Provider' ->
 
   beforeEach ->
     @slice = mock: 'slice data'
-    @providerHoc = Provider(TestComponent, @slice)
+    @providerHoc = Provider {component: TestComponent, @slice}
 
   specify 'defines a child context type for slice', ->
     expect(@providerHoc.child-context-types.slice).to.exist

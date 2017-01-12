@@ -3,7 +3,7 @@ require! {
 }
 
 
-module.exports = (component, slice) ->
+module.exports = ({component, slice}) ->
 
   class Provider extends react.Component
 
