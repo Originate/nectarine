@@ -18,7 +18,7 @@ class Slice extends StoreTree
 
   _bind-action: (action-name, action-fn) ->
     if @[actionName]
-      throw new Error "Failed to create slice #{@$get-path-string!}: Action #{actionName} would override schema"
+      throw new Error "Failed to create slice \"#{@$get-path-string!}\": Action \"#{actionName}\" would override schema"
 
     @[actionName] = (...args) ~>
       action-fn.apply {slice: this}, args
