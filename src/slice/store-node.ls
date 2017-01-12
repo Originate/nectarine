@@ -26,5 +26,4 @@ class StoreNode
     @_path.join('.') or '[root]'
 
 
-
 module.exports = StoreNode
