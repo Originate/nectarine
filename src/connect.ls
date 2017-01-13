@@ -9,17 +9,17 @@ module.exports = ({component, map-props}) ->
   class Connector extends react.Component
 
     @context-types =
-      slice: react.PropTypes.any
+      store: react.PropTypes.any
 
 
     (props, context) ->
       super props, context
-      @state = map-props @context.slice
-      @context.slice.$on-update @update
+      @state = map-props @context.store
+      @context.store.$on-update @update
 
 
     componentWillUnmount: ->
-      @context.slice.$off-update @update
+      @context.store.$off-update @update
 
 
     render: ->
@@ -27,4 +27,4 @@ module.exports = ({component, map-props}) ->
 
 
     update: ~>
-      @setState map-props @context.slice
+      @setState map-props @context.store

@@ -3,16 +3,16 @@ require! {
 }
 
 
-module.exports = ({component, slice}) ->
+module.exports = ({component, store}) ->
 
   class Provider extends react.Component
 
     @child-context-types =
-      slice: react.PropTypes.any
+      store: react.PropTypes.any
 
 
     get-child-context: ->
-      {slice}
+      {store}
 
 
     render: ->
