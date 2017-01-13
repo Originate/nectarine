@@ -10,7 +10,7 @@ A way to manage state in JavaScript applications.
 
 #### Define a slice (a portion of state)
 ```livescript
-# store/session.ls
+# slice/session.ls
 require! {
   'nectarine': {create-slice}
 }
@@ -28,7 +28,7 @@ module.exports = create-slice do
 
 #### Combine slices
 ```livescript
-# store/index.ls
+# slice/index.ls
 require! {
   'nectarine': {combine-slices}
 }
@@ -42,11 +42,11 @@ module.exports = combine-slices do
 # index.coffee
 require! {
   './components/app': App
-  './store': Store
+  './slice'
   'nectarine': {Provider}
 }
 
-AppProvider = Provider component: App, slice: store
+AppProvider = Provider {component: App, slice}
 component = React.createElement AppProvider, {}
 
 ReactDOM.render component, document.getElementById('app')
@@ -66,6 +66,6 @@ class Navigation extends React.Component
 
 module.exports = connect do
   component: Navigation
-  map-props: (store) ->
+  map-props: (root-slice) ->
     # ...
 ```
