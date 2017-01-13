@@ -46,7 +46,7 @@ require! {
   'nectarine': {Provider}
 }
 
-AppProvider = Provider(App, store)
+AppProvider = Provider component: App, slice: store
 component = React.createElement AppProvider, {}
 
 ReactDOM.render component, document.getElementById('app')
