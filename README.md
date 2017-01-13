@@ -9,7 +9,7 @@ A way to manage state in JavaScript applications.
 ## Usage
 
 #### Define a slice (a portion of state)
-```
+```livescript
 # store/session.ls
 require! {
   'nectarine': {create-slice}
@@ -24,7 +24,7 @@ module.exports = create-slice do
 ```
 
 #### Combine slices
-```
+```livescript
 # store/index.ls
 require! {
   'nectarine': {combine-slices}
@@ -35,7 +35,7 @@ module.exports = combine-slices do
 ```
 
 #### Inject the slice into your react application
-```
+```livescript
 # index.coffee
 require! {
   './components/app': App
@@ -51,7 +51,7 @@ ReactDOM.render component, document.getElementById('app')
 
 
 #### Connect components
-```
+```livescript
 # components/navigation.ls
 require! {
   'nectarine': {connect}
