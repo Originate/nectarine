@@ -8,7 +8,7 @@ A way to manage state in JavaScript applications.
 
 ## Usage
 
-#### Define a slice (a portion of state)
+#### Define a slice
 ```livescript
 # slice/session.ls
 require! {
