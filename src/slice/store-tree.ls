@@ -10,7 +10,7 @@ class StoreTree extends StoreNode
   ->
     super ...
     for own key, value of @_schema
-      @[key] = @_buildStoreNode value, key
+      @[key] = @_buildChildNode value, key
         ..$on-update @$emit-update
 
 
@@ -65,7 +65,7 @@ class StoreTree extends StoreNode
     @_for-each-subnode (subnode) -> subnode.$prepend-to-path key
 
 
-  _buildStoreNode: (value, key) ->
+  _buildChildNode: (value, key) ->
     if value instanceof StoreNode
       value.$prepend-to-path key
       value
