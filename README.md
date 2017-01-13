@@ -21,6 +21,9 @@ module.exports = create-slice do
       name: _
       email: _
 
+  actions:
+    initialize: ->
+      # ...
 ```
 
 #### Combine slices
