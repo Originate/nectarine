@@ -10,9 +10,12 @@ class StoreTree extends StoreNode
   ->
     super ...
     for own key, value of @_schema
-      StoreNode = if SchemaPlaceholder.is-placeholder value then StoreLeaf else StoreTree
-      @[key] = new StoreNode value, [...@_path, key]
-        ..$on-update @$emit-update
+      if value instanceof StoreTree
+        @[key] = value
+      else
+        StoreNode = if SchemaPlaceholder.is-placeholder value then StoreLeaf else StoreTree
+        @[key] = new StoreNode value, [...@_path, key]
+      @[key].$on-update @$emit-update
 
 
   $get-error: ->
@@ -59,6 +62,11 @@ class StoreTree extends StoreNode
     obj = {}
     @_for-each-subnode (subnode, key) -> obj[key] = subnode.$get!
     obj
+
+
+  $prepend-to-path: (key) ->
+    super key
+    @_for-each-subnode (subnode) -> subnode.$prepend-to-path key
 
 
   _for-each-subnode: (fn) !->
