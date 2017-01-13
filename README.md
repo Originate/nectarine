@@ -3,7 +3,7 @@
 A way to manage state in JavaScript applications.
 
 * Define a schema to document and enforce the structure of your state
-* Built in support for asynchronous loading of data via promises
+* Built in support for asynchronous loading of data with promises
 * Define actions on slices of your state to group updates
 
 ## Usage
