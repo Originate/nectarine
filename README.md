@@ -37,7 +37,7 @@ module.exports = combine-slices do
   session: require('./session')
 ```
 
-#### Inject the slice into your react application
+#### Inject a slice into your react application
 ```livescript
 # index.coffee
 require! {
