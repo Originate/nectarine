@@ -67,6 +67,7 @@ class StoreTree extends StoreNode
 
   _buildStoreNode: (value, key) ->
     if value instanceof StoreNode
+      value.$prepend-to-path key
       value
     else
       Node = if SchemaPlaceholder.is-placeholder value then StoreLeaf else StoreTree

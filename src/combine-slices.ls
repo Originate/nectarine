@@ -4,8 +4,6 @@ require! {
 
 
 combine-slices = (slices) ->
-  for key, value of slices
-    value.$prepend-to-path key
   new StoreTree slices, []
 
 
