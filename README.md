@@ -9,63 +9,66 @@ A way to manage state in JavaScript applications.
 ## Usage
 
 #### Define a slice
-```livescript
-# slice/session.ls
-require! {
-  'nectarine': {create-slice}
-}
+```javascript
+// slice/session.ls
+import {createSlice} from 'nectarine'
 
-module.exports = create-slice do
-  schema: (_) ->
-    current-user:
-      name: _
-      email: _
+module.exports = createSlice({
+  schema: _ => (
+    {
+      currentUser: {
+        name: _,
+        email: _
+      }
+    }
+  ),
 
-  actions:
-    initialize: ->
-      # ...
+  actions: {
+    initialize: () => {
+      // ...
+    }
+  }
+})
 ```
 
 #### Combine slices
-```livescript
-# slice/index.ls
-require! {
-  'nectarine': {combine-slices}
-}
+```javascript
+// slice/index.ls
+import {combineSlices} from 'nectarine'
+import sessionSlice from './session'
 
-module.exports = combine-slices do
-  session: require('./session')
+module.exports = combineSlices({
+  session: sessionSlice
+})
 ```
 
 #### Inject a slice into your react application
-```livescript
-# index.coffee
-require! {
-  './components/app': App
-  './slice'
-  'nectarine': {Provider}
-}
+```javascript
+// index.coffee
+import App from './components/app'
+import rootSlice from './slice'
+import {Provider} from 'nectarine'
 
-AppProvider = Provider {component: App, slice}
-component = React.createElement AppProvider, {}
+AppProvider = Provider({component: App, slice: rootSlice})
 
-ReactDOM.render component, document.getElementById('app')
+ReactDOM.render(<AppProvider/>, document.getElementById('app'))
 ```
 
 
 #### Connect components
-```livescript
-# components/navigation.ls
-require! {
-  'nectarine': {connect}
-  'react': React
+```javascript
+// components/navigation.ls
+import {connect} from 'nectarine'
+import React from 'react'
+
+class Navigation extends React.Component {
+  // ...
 }
 
-class Navigation extends React.Component
-  # ...
-
-module.exports = connect do
-  component: Navigation
-  map-props: (root-slice) ->
-    # ...
+module.exports = connect({
+  component: Navigation,
+  mapProps: (rootSlice) => {
+    //...
+  }
+})
 ```
