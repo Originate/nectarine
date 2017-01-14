@@ -30,4 +30,7 @@ class StoreNode
     @_path.unshift key
 
 
+  $set-root-slice: (@_root-slice) ->
+
+
 module.exports = StoreNode
