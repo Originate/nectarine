@@ -8,7 +8,7 @@ A way to manage state in JavaScript applications.
 
 ## Usage
 
-#### Define a slice
+#### Create a slice
 ```javascript
 // slices/session.js
 import {createSlice} from 'nectarine'
