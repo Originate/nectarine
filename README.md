@@ -10,7 +10,7 @@ A way to manage state in JavaScript applications.
 
 #### Define a slice
 ```javascript
-// slice/session.ls
+// slice/session.js
 import {createSlice} from 'nectarine'
 
 module.exports = createSlice({
@@ -33,7 +33,7 @@ module.exports = createSlice({
 
 #### Combine slices
 ```javascript
-// slice/index.ls
+// slice/index.js
 import {combineSlices} from 'nectarine'
 import sessionSlice from './session'
 
@@ -44,7 +44,7 @@ module.exports = combineSlices({
 
 #### Inject a slice into your react application
 ```javascript
-// index.coffee
+// index.js
 import App from './components/app'
 import rootSlice from './slice'
 import {Provider} from 'nectarine'
@@ -57,7 +57,7 @@ ReactDOM.render(<AppProvider/>, document.getElementById('app'))
 
 #### Connect components
 ```javascript
-// components/navigation.ls
+// components/navigation.js
 import {connect} from 'nectarine'
 import React from 'react'
 
