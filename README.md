@@ -42,7 +42,7 @@ module.exports = combineSlices({
 })
 ```
 
-#### Inject a slice into your react application
+#### Inject the root slice into your react application
 ```javascript
 // index.js
 import App from './components/app'
