@@ -26,4 +26,8 @@ class StoreNode
     @_path.join('.') or '[root]'
 
 
+  $prepend-to-path: (key) ->
+    @_path.unshift key
+
+
 module.exports = StoreNode
