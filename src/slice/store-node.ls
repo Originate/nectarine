@@ -30,4 +30,7 @@ class StoreNode
     @_path.unshift key
 
 
+  $inject: (@_dependencies) ->
+
+
 module.exports = StoreNode
