@@ -31,3 +31,14 @@ describe 'Slice' ->
     initializeFn = @result.initialize
     initializeFn()
     expect(@result.name.$get()).to.eql 'Alice'
+
+  specify 'allows dependency injection for actions', ->
+    userService = get: sinon.stub().withArgs(1).returns('Alice')
+    schema = (_) -> name: _
+    actions = initialize: -> @slice.name.$set @userService.get(1)
+    @result = new Slice {schema, actions}, []
+    @result.$inject {userService}
+    expect(@result.name.$get()).to.eql null
+    initializeFn = @result.initialize
+    initializeFn()
+    expect(@result.name.$get()).to.eql 'Alice'

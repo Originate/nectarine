@@ -70,6 +70,11 @@ class StoreTree extends StoreNode
     @_for-each-subnode (subnode) -> subnode.$set-root-slice root-slice
 
 
+  $inject: (dependencies) ->
+    super dependencies
+    @_for-each-subnode (subnode) -> subnode.$inject dependencies
+
+
   _buildChildNode: (value, key) ->
     if value instanceof StoreNode
       value.$prepend-to-path key

@@ -33,4 +33,7 @@ class StoreNode
   $set-root-slice: (@_root-slice) ->
 
 
+  $inject: (@_dependencies) ->
+
+
 module.exports = StoreNode
