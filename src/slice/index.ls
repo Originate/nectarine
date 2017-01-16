@@ -21,7 +21,8 @@ class Slice extends StoreTree
       throw new Error "Failed to create slice \"#{@$get-path-string!}\": Action \"#{actionName}\" would override schema"
 
     @[actionName] = (...args) ~>
-      action-fn.apply {slice: this}, args
+      context = {slice: this, ...@_dependencies}
+      action-fn.apply context, args
 
 
 module.exports = Slice
