@@ -288,8 +288,8 @@ describe 'StoreTree' ->
         expect(@current-user-update-spy).to.have.been.called-with do
           * @new-values
           * data: 'Alice', loading: no, error: null
-          * <[currentUser name]>
+          * 'currentUser.name'
         expect(@store-update-spy).to.have.been.called-with do
           * @new-values
           * data: 'Alice', loading: no, error: null
-          * <[currentUser name]>
+          * 'currentUser.name'

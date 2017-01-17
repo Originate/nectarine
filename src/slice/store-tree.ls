@@ -60,29 +60,13 @@ class StoreTree extends StoreNode
     obj
 
 
-  $prepend-to-path: (key) ->
-    super key
-    @_for-each-subnode (subnode) -> subnode.$prepend-to-path key
-
-
-  $set-root-slice: (root-slice) ->
-    super root-slice
-    @_for-each-subnode (subnode) -> subnode.$set-root-slice root-slice
-
-
-  $inject: (dependencies) ->
-    super dependencies
-    @_for-each-subnode (subnode) -> subnode.$inject dependencies
-
-
   _buildChildNode: (value, key) ->
     if value instanceof StoreNode
-      value.$prepend-to-path key
-      value.$set-root-slice this
+      value.$set-path this, key
       value
     else
       Node = if SchemaPlaceholder.is-placeholder value then StoreLeaf else StoreTree
-      new Node value, [...@_path, key]
+      new Node value, this, key
 
 
   _for-each-subnode: (fn) !->

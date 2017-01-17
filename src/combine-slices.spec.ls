@@ -32,7 +32,7 @@ describe 'combineSlices' ->
       expect(@combinedSlice.todos.list.$get()).to.eql ['Say hi to Alice']
 
     specify 'the slices have their paths updated', ->
-      expect(@combinedSlice.$get-path-string()).to.eql '[root]'
+      expect(@combinedSlice.$get-path-string()).to.eql ''
       expect(@combinedSlice.user.$get-path-string()).to.eql 'user'
       expect(@combinedSlice.user.name.$get-path-string()).to.eql 'user.name'
 

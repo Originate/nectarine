@@ -4,7 +4,7 @@ require! {
 
 
 combine-slices = (slices) ->
-  new StoreTree slices, []
+  new StoreTree slices
 
 
 module.exports = combine-slices
