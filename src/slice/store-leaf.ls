@@ -8,9 +8,7 @@ class StoreLeaf extends StoreNode
 
   ->
     super ...
-    @_loading = no
-    @_data = @_schema.initial-value ? null
-    @_error = null
+    @$reset!
 
 
   $get: ->
@@ -40,6 +38,10 @@ class StoreLeaf extends StoreNode
       .catch (err) ~>
         @$set-error err
         Promise.reject err
+
+
+  $reset: ->
+    @$set @_schema.initial-value ? null
 
 
   $set: (data) !->

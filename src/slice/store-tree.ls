@@ -39,6 +39,10 @@ class StoreTree extends StoreNode
     no
 
 
+  $reset: ->
+    @_for-each-subnode (subnode) -> subnode.$reset!
+
+
   $set: (data) !->
     switch typeof! data
     | \Object   => @_for-each-subnode (subnode, key) -> subnode.$set data[key] if data[key] isnt undefined
