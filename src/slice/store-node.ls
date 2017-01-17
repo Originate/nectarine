@@ -5,7 +5,7 @@ require! {
 
 class StoreNode
 
-  (@_schema, @_parent, @_key) ->
+  (@_schema) ->
     @_update-callbacks = []
 
 
