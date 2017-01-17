@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "scripts": {
     "build": "webpack",
-    "prepblish": "npm run build",
+    "prepublish": "npm run build",
     "test": "mocha 'src/**/*.spec.ls'"
   },
   "license": "MIT",
