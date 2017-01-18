@@ -173,3 +173,58 @@ describe 'schema-place-holder' ->
 
       specify 'throws an error if initial-value fails to validate' ->
         expect(~> __ validate: @is-color, initial-value: 'not-color').to.throw /initialValue: "not-color" does not validate function isColor/
+
+
+  describe 'array element types', ->
+    describe 'simple type', ->
+      before-each ->
+        @placeholder = __({type: Array, elementType: __(type: 'string')})
+
+      specify 'does not throw if each element adheres to the element type' ->
+        validate @placeholder, ['a']
+
+      specify 'throws an error if a child object has the wrong type' ->
+        expect(~> validate @placeholder, [1]).to.throw '[0]: 1 (type Number) does not match required type String'
+
+    describe 'nested object: shape', ->
+      before-each ->
+        todoType =
+          completed: __(type: 'boolean')
+          text: __(type: 'string')
+
+        @placeholder = __({type: Array, elementType: __(type: 'object', shape: todoType)})
+
+      specify 'does not throw if each element adheres to the element type' ->
+        validate @placeholder, [{completed: true, text: 'write code'}]
+
+      specify 'throws an error if a child object has the wrong type' ->
+        expect(~>
+          validate @placeholder, [{completed: 'Yes', text: 'write code'}]
+        ).to.throw '[0]: [completed]: "Yes" (type String) does not match required type Boolean'
+
+  describe 'object value type', ->
+    describe 'simple type', ->
+      before-each ->
+        @placeholder = __({type: Object, valueType: __(type: 'number')})
+
+      specify 'does not throw if each element adheres to the element type' ->
+        validate @placeholder, {a: 1}
+
+      specify 'throws an error if a child object has the wrong type' ->
+        expect(~> validate @placeholder, {a: 'b'}).to.throw '[a]: "b" (type String) does not match required type Number'
+
+    describe 'nested object: shape', ->
+      before-each ->
+        todoType =
+          completed: __(type: 'boolean')
+          text: __(type: 'string')
+
+        @placeholder = __({type: Object, valueType: __(type: 'object', shape: todoType)})
+
+      specify 'does not throw if each element adheres to the value type' ->
+        validate @placeholder, {'id1': {completed: true, text: 'write code'}}
+
+      specify 'throws an error if a child object has the wrong type' ->
+        expect(~>
+          validate @placeholder, {'id1': {completed: 'Yes', text: 'write code'}}
+        ).to.throw '[id1]: [completed]: "Yes" (type String) does not match required type Boolean'
