@@ -27,6 +27,40 @@ describe 'StoreTree' ->
         expect(~> @store.current-user.$get!).to.throw 'Error getting `currentUser.email`. email: is loading'
 
 
+  describe '$get-or-else' ->
+    test-cases '' [
+      -> @store = create-store (_) -> current-user: name: _, email: _
+      -> @store = create-store (_) -> current-user: name: _!, email: _!
+    ] ->
+      describe 'without default' ->
+        specify 'returns the data if present' ->
+          @store.current-user.name.$set 'Alice'
+          expect(@store.current-user.$get-or-else!).to.eql name: 'Alice', email: null
+
+        specify 'returns null if is loading' ->
+          @store.current-user.name.$set-loading!
+          expect(@store.current-user.$get-or-else!).to.be.null
+
+        specify 'returns null if has error', ->
+          @store.current-user.name.$set-error Error 'Failed to get name'
+          expect(@store.current-user.$get-or-else!).to.be.null
+
+      describe 'with default' ->
+        before-each ->
+          @defaultValue = name: 'Bob', email: 'bob@example.com'
+
+        specify 'returns the data if present' ->
+          @store.current-user.name.$set 'Alice'
+          expect(@store.current-user.$get-or-else @defaultValue).to.eql name: 'Alice', email: null
+
+        specify 'returns the default if is loading' ->
+          @store.current-user.name.$set-loading!
+          expect(@store.current-user.$get-or-else @defaultValue).to.eql name: 'Bob', email: 'bob@example.com'
+
+        specify 'returns the default if has error', ->
+          @store.current-user.name.$set-error Error 'Failed to get name'
+          expect(@store.current-user.$get-or-else @defaultValue).to.eql name: 'Bob', email: 'bob@example.com'
+
   describe '$set' ->
 
     test-cases 'setting values' [
