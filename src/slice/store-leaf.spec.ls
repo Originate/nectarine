@@ -240,4 +240,4 @@ describe 'StoreLeaf' ->
           expect(@update-spy).to.have.been.called-with do
             * @new-values
             * data: 'foo', loading: no, error: null
-            * 'path.to.leaf'
+            * <[path to leaf]>

@@ -66,7 +66,7 @@ class StoreTree extends StoreNode
     | otherwise                               => new StoreTree value
 
     node
-      ..$set-path this, key
+      ..$set-parent this, key
       ..$on-update @$emit-update
 
 

@@ -22,18 +22,20 @@ class StoreNode
       callback.apply {}, args
 
 
+  $get-path: ->
+    | @_parent? => @_parent.$get-path!.concat @_key
+    | otherwise => []
+
+
   $get-path-string: ->
-    path = [@_key]
-    parent-path = @_parent?.$get-path-string?!
-    path.unshift parent-path if parent-path
-    path.join '.'
+    @$get-path!.join '.'
 
 
   $get-root: ->
     @_parent?.$get-root! or this
 
 
-  $set-path: (@_parent, @_key) ->
+  $set-parent: (@_parent, @_key) ->
 
 
   $inject: (@_dependencies) ->
