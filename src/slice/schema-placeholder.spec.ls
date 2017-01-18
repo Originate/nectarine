@@ -176,6 +176,7 @@ describe 'schema-place-holder' ->
 
 
   describe 'array element types', ->
+
     describe 'simple type', ->
       before-each ->
         @placeholder = __({type: Array, elementType: __(type: 'string')})
@@ -202,7 +203,9 @@ describe 'schema-place-holder' ->
           validate @placeholder, [{completed: 'Yes', text: 'write code'}]
         ).to.throw '[0]: [completed]: "Yes" (type String) does not match required type Boolean'
 
+
   describe 'object value type', ->
+
     describe 'simple type', ->
       before-each ->
         @placeholder = __({type: Object, valueType: __(type: 'number')})
