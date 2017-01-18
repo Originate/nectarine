@@ -175,7 +175,7 @@ describe 'schema-place-holder' ->
         expect(~> __ validate: @is-color, initial-value: 'not-color').to.throw /initialValue: "not-color" does not validate function isColor/
 
 
-  describe 'array element types', ->
+  describe 'array element type validation', ->
 
     describe 'simple type', ->
       before-each ->
@@ -204,7 +204,7 @@ describe 'schema-place-holder' ->
         ).to.throw '[0]: [completed]: "Yes" (type String) does not match required type Boolean'
 
 
-  describe 'object value type', ->
+  describe 'object value type validation', ->
 
     describe 'simple type', ->
       before-each ->
