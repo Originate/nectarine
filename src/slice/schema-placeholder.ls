@@ -26,13 +26,6 @@ create-placeholder = (options = {}) ->
   | options.initial-value? => SchemaType.from-instance options.initial-value
   | otherwise              => SchemaType.ANY
 
-  for key in ['elementType'] when options[key]
-    options[key] = new SchemaPlaceholder options[key]
-
-  if options.shape
-    for key, value of options.shape
-      options.shape[key] = new SchemaPlaceholder value
-
   new SchemaPlaceholder options
 
 
