@@ -150,6 +150,41 @@ describe 'StoreLeaf' ->
         expect(~> @name.$get!).to.throw 'Error getting `currentUser.name`. name: is loading'
 
 
+  describe '$reset' ->
+
+    test-cases 'without initial-value' [
+      -> @store = create-store (_) -> current-user: name: _
+      -> @store = create-store (_) -> current-user: name: _!
+    ] ->
+      before-each ->
+        @name = @store.current-user.name
+
+      specify 'sets the data to null' ->
+        @name.$set 'Alice'
+        @name.$reset!
+        expect(@name.$get!).to.be.null
+
+      specify 'sets loading to false' ->
+        @name.$set-error Error 'Some error'
+        @name.$reset!
+        expect(@name.$is-loading!).to.be.false
+
+      specify 'sets error to null' ->
+        @name.$set-error Error 'Some error'
+        @name.$reset!
+        expect(@name.$get-error!).to.be.null
+
+    describe 'with initial-value' ->
+      before-each ->
+        @store = create-store (_) -> current-user: name: _ initial-value: 'Alice'
+        @name = @store.current-user.name
+
+      specify 'sets the data to null' ->
+        @name.$set 'Bob'
+        @name.$reset!
+        expect(@name.$get!).to.eql 'Alice'
+
+
   describe '$from-promise' ->
 
     test-cases 'from promise on leaves' [
