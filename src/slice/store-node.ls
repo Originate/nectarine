@@ -1,5 +1,4 @@
 require! {
-  './schema-placeholder': SchemaPlaceholder
   'lodash.pull': pull
 }
 
