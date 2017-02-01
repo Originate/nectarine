@@ -9,12 +9,11 @@ create-store = (schema) -> new Slice {schema}
 
 describe 'StoreMap' ->
 
-  describe '$get-error' ->
+  before-each ->
+    @store = create-store (_) -> current-user: friendsById: _.map(name: _)
 
-    test-cases '' [
-      -> @store = create-store (_) -> current-user: friendsById: _.map(name: _)
-      -> @store = create-store (_) -> current-user: friendsById: _.map(name: _!)
-    ] ->
+
+    describe '$get-error' ->
 
       specify 'returns null by default', ->
         expect(@store.current-user.friendsById.$get-error!).to.be.null
@@ -25,12 +24,7 @@ describe 'StoreMap' ->
         expect(@store.current-user.friendsById.$get-error!).to.eql error
 
 
-  describe '$get' ->
-
-    test-cases '' [
-      -> @store = create-store (_) -> current-user: friendsById: _.map(name: _)
-      -> @store = create-store (_) -> current-user: friendsById: _.map(name: _!)
-    ] ->
+    describe '$get' ->
 
       specify 'returns an empty object by default' ->
         expect(@store.current-user.friendsById.$get!).to.eql {}
@@ -40,12 +34,7 @@ describe 'StoreMap' ->
         expect(@store.current-user.friendsById.$get!).to.eql 1: {name: 'Alice'}
 
 
-  describe '$is-loading' ->
-
-    test-cases '' [
-      -> @store = create-store (_) -> current-user: friendsById: _.map(name: _)
-      -> @store = create-store (_) -> current-user: friendsById: _.map(name: _!)
-    ] ->
+    describe '$is-loading' ->
 
       specify 'returns false by default', ->
         expect(@store.current-user.friendsById.$is-loading!).to.be.false
@@ -55,11 +44,7 @@ describe 'StoreMap' ->
         expect(@store.current-user.friendsById.$is-loading!).to.be.true
 
 
-  describe '$key', ->
-    test-cases '' [
-      -> @store = create-store (_) -> current-user: friendsById: _.map(name: _)
-      -> @store = create-store (_) -> current-user: friendsById: _.map(name: _!)
-    ] ->
+    describe '$key', ->
 
       specify 'creates non existing children false', ->
         expect(@store.current-user.friendsById.$key('1')).to.exist
