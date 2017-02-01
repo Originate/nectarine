@@ -34,8 +34,8 @@ create-placeholder = (options = {}) ->
   new SchemaPlaceholder options
 
 
-create-placeholder.map = (@child-map) ->
-  new NestedSchemaPlaceholder @child-map
+create-placeholder.map = (child-map) ->
+  new NestedSchemaPlaceholder child-map
 
 
 is-leaf-placeholder = ->
