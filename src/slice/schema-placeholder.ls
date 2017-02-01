@@ -4,7 +4,8 @@ require! {
 
 
 class SchemaPlaceholder
-  ({@type, @initial-value, @validate, @allow-null} = {}) ->
+  (options = {}) ->
+    {@type, @initial-value, @validate, @allow-null, @element-type, @shape, @value-type} = options
     if @validate?
       unless @validate.constructor in [Function, RegExp]
         throw new Error "validate must be a function or regular expression (got #{typeof! @validate})"
@@ -54,6 +55,18 @@ validate = (placeholder, value, get-error-string = -> it) ->
     | \RegExp   => String(placeholder.validate)
     | \Function => "function #{placeholder.validate.name}"
     throw new Error get-error-string "#{JSON.stringify value} does not validate #{validate-fn-to-string}"
+
+  if get-type(placeholder) is SchemaType.ARRAY and placeholder.element-type
+    for element, index in value
+      validate placeholder.element-type, element, (err) -> get-error-string "[#{index}]: #{err}"
+
+  if get-type(placeholder) is SchemaType.OBJECT and placeholder.shape
+    for key, valueType of placeholder.shape
+      validate valueType, value[key], (err) -> get-error-string "[#{key}]: #{err}"
+
+  if get-type(placeholder) is SchemaType.OBJECT and placeholder.value-type
+    for key, nestedValue of value
+      validate placeholder.value-type, nestedValue, (err) -> get-error-string "[#{key}]: #{err}"
 
 
 module.exports = {create-placeholder, is-placeholder, get-type, validate}
