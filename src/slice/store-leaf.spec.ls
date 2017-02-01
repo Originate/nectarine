@@ -4,7 +4,7 @@ require! {
 }
 
 
-create-store = (schema) -> new Slice {schema}, []
+create-store = (schema) -> new Slice {schema}
 
 
 describe 'StoreLeaf' ->
