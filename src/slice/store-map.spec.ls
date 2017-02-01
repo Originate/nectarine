@@ -14,6 +14,7 @@ describe 'StoreMap' ->
     -> @store = create-store (_) -> current-user: friendsById: _.map(name: _!)
   ] ->
 
+
     describe '$get-error' ->
 
       specify 'returns null by default', ->
