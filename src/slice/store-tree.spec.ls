@@ -61,6 +61,7 @@ describe 'StoreTree' ->
           @store.current-user.name.$set-error Error 'Failed to get name'
           expect(@store.current-user.$get-or-else @defaultValue).to.eql name: 'Bob', email: 'bob@example.com'
 
+
   describe '$set' ->
 
     test-cases 'setting values' [
