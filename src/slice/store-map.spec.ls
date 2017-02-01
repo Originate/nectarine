@@ -61,7 +61,7 @@ describe 'StoreMap' ->
       -> @store = create-store (_) -> current-user: friendsById: _.map(name: _!)
     ] ->
 
-      specify 'create non existing children false', ->
+      specify 'creates non existing children false', ->
         expect(@store.current-user.friendsById.$key('1')).to.exist
 
       specify 'does not overwrite existing children', ->
