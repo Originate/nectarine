@@ -172,6 +172,7 @@ describe 'StoreTree' ->
         @store.path.$set-loading!
         expect(@store.path.to.leaf.$get-error!).to.be.null
 
+
   describe '$reset' ->
 
     test-cases 'resetting leaves' [
