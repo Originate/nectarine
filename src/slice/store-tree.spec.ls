@@ -208,6 +208,29 @@ describe 'StoreTree' ->
         expect(@store.path.to.leaf.$get-error!).to.be.null
 
 
+  describe '$reset' ->
+
+    test-cases 'resetting leaves' [
+      -> @store = create-store (_) -> path: to: leaf: _
+      -> @store = create-store (_) -> path: to: leaf: _!
+    ] ->
+
+      specify 'resets data to the initial value' ->
+        @store.path.to.leaf.$set 'Alice'
+        @store.path.$reset()
+        expect(@store.path.to.leaf.$get!).to.be.null
+
+      specify 'sets loading to false on each leaf' ->
+        @store.path.to.leaf.$set-loading yes
+        @store.path.$reset()
+        expect(@store.path.to.leaf.$is-loading!).to.be.false
+
+      specify 'called with false sets loading to false on all leaves' ->
+        @store.path.to.leaf.$set-error Error 'Some error'
+        @store.path.$reset()
+        expect(@store.path.to.leaf.$get-error!).to.be.null
+
+
   describe '$from-promise' ->
 
     before-each ->
