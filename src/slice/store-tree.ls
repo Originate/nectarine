@@ -1,6 +1,5 @@
 require! {
-  './schema-placeholder': SchemaPlaceholder
-  './store-leaf': StoreLeaf
+  './helpers': {build-child-node}
   './store-node': StoreNode
 }
 
@@ -10,7 +9,7 @@ class StoreTree extends StoreNode
   ->
     super ...
     for own key, value of @_schema
-      @[key] = @_buildChildNode value, key
+      @[key] = build-child-node this, value, key
 
 
   $get-error: ->
@@ -61,17 +60,6 @@ class StoreTree extends StoreNode
     obj = {}
     @_for-each-subnode (subnode, key) -> obj[key] = subnode.$get!
     obj
-
-
-  _buildChildNode: (value, key) ->
-    node = switch
-    | value instanceof StoreNode              => value
-    | SchemaPlaceholder.is-placeholder(value) => new StoreLeaf value
-    | otherwise                               => new StoreTree value
-
-    node
-      ..$set-parent this, key
-      ..$on-update @$emit-update
 
 
   _for-each-subnode: (fn) !->
