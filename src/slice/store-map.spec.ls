@@ -9,9 +9,10 @@ create-store = (schema) -> new Slice {schema}
 
 describe 'StoreMap' ->
 
-  before-each ->
-    @store = create-store (_) -> current-user: friendsById: _.map(name: _)
-
+  test-cases '' [
+    -> @store = create-store (_) -> current-user: friendsById: _.map(name: _)
+    -> @store = create-store (_) -> current-user: friendsById: _.map(name: _!)
+  ] ->
 
     describe '$get-error' ->
 
