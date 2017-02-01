@@ -3,6 +3,7 @@ require! {
 }
 
 
+# just in time requires to avoid circular requires
 build-child-node = (parent, value, key) ->
   node = switch
   | value instanceof require('./store-node')     => value
