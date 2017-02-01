@@ -19,6 +19,10 @@ class SchemaPlaceholder
         "Failed to set initialValue: #{err}"
 
 
+class NestedSchemaPlaceholder
+  (@child-schema) ->
+
+
 create-placeholder = (options = {}) ->
   options.type = switch
   | options.type?          => SchemaType.normalize-type options.type
@@ -28,14 +32,22 @@ create-placeholder = (options = {}) ->
   new SchemaPlaceholder options
 
 
-is-placeholder = ->
+create-placeholder.map = (@child-map) ->
+  new NestedSchemaPlaceholder @child-map
+
+
+is-leaf-placeholder = ->
   it is create-placeholder or it instanceof SchemaPlaceholder
 
 
+is-map-placeholder = ->
+  it instanceof NestedSchemaPlaceholder
+
+
 get-type = ->
-  | not is-placeholder it    => throw new Error "#{it} is not a placeholder"
-  | it is create-placeholder => SchemaType.ANY
-  | otherwise                => it.type
+  | not is-leaf-placeholder it => throw new Error "#{it} is not a placeholder"
+  | it is create-placeholder   => SchemaType.ANY
+  | otherwise                  => it.type
 
 
 validate = (placeholder, value, get-error-string = -> it) ->
@@ -56,4 +68,4 @@ validate = (placeholder, value, get-error-string = -> it) ->
     throw new Error get-error-string "#{JSON.stringify value} does not validate #{validate-fn-to-string}"
 
 
-module.exports = {create-placeholder, is-placeholder, get-type, validate}
+module.exports = {create-placeholder, is-leaf-placeholder, is-map-placeholder, get-type, validate}
