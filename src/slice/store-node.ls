@@ -30,4 +30,11 @@ class StoreNode
     @_path.unshift key
 
 
+  $get-or-else: (defaultValue = null) ->
+    try
+      @$get!
+    catch
+      defaultValue
+
+
 module.exports = StoreNode

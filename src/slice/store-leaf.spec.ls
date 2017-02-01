@@ -9,6 +9,40 @@ create-store = (schema) -> new Slice {schema}, []
 
 describe 'StoreLeaf' ->
 
+  describe '$get-or-else' ->
+    test-cases 'setting errors on leaves' [
+      -> @store = create-store (_) -> current-user: name: _
+      -> @store = create-store (_) -> current-user: name: _!
+    ] ->
+      before-each -> @name = @store.current-user.name
+
+      describe 'without default' ->
+        specify 'returns the data if present' ->
+          @name.$set 'Alice'
+          expect(@name.$get-or-else!).to.equal 'Alice'
+
+        specify 'returns null if is loading' ->
+          @name.$set-loading!
+          expect(@name.$get-or-else!).to.be.null
+
+        specify 'returns null if has error', ->
+          @name.$set-error Error 'Failed to get name'
+          expect(@name.$get-or-else!).to.be.null
+
+      describe 'with default' ->
+        specify 'returns the data if present' ->
+          @name.$set 'Alice'
+          expect(@name.$get-or-else 'Bob').to.equal 'Alice'
+
+        specify 'returns the default if is loading' ->
+          @name.$set-loading!
+          expect(@name.$get-or-else 'Bob').to.eql 'Bob'
+
+        specify 'returns the default if has error', ->
+          @name.$set-error Error 'Failed to get name'
+          expect(@name.$get-or-else 'Bob').to.eql 'Bob'
+
+
   describe '$set' ->
 
     test-cases 'setting values' [
