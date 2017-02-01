@@ -6,13 +6,17 @@ require! {
 
 class Slice extends StoreTree
 
-  ({schema: get-schema, actions}, path) ->
-    schema = get-schema SchemaPlaceholder.create-placeholder
-    super schema, path
+  ({schema, actions, dependencies}) ->
+    if typeof schema is 'function'
+      schema = schema SchemaPlaceholder.create-placeholder
+    super schema
 
     if actions?
       for own actionName, action-fn of actions
         @_bind-action action-name, action-fn
+
+    if dependencies?
+      @$inject dependencies
 
 
   _bind-action: (action-name, action-fn) ->

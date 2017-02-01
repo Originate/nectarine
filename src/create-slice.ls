@@ -3,8 +3,8 @@ require! {
 }
 
 
-create-slice = ({schema, actions}) ->
-  new Slice {schema, actions}
+create-slice = (opts) ->
+  new Slice opts
 
 
 module.exports = create-slice
