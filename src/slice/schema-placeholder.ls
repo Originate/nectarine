@@ -21,6 +21,8 @@ class SchemaPlaceholder
 
 class NestedSchemaPlaceholder
   (@child-schema) ->
+    unless @child-schema
+      throw new Error 'child schema not provided to map'
 
 
 create-placeholder = (options = {}) ->

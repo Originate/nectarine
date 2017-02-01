@@ -25,8 +25,16 @@ describe 'schema-place-holder' ->
     specify 'returns false if it is a non-default placeholder' ->
       expect(is-map-placeholder __(type: 'string')).to.be.false
 
-    specify 'returns true if it is a map placeholders' ->
+    specify 'returns true if it is a map placeholder' ->
       expect(is-map-placeholder __.map({})).to.be.true
+
+
+  describe 'map' ->
+
+    specify 'it throws an error if not passed a child schema' ->
+      expect ->
+        __.map!
+      .to.throw /child schema not provided to map/
 
 
   describe 'get-type' ->
