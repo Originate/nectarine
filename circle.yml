@@ -1,11 +1,21 @@
 machine:
+  environment:
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   node:
-    version: 7.2.1
+    version: 7.5.0
+
+
+dependencies:
+  override:
+    - yarn
+  cache_directories:
+    - ~/.cache/yarn
 
 
 test:
-  post:
-    - npm run build
+  override:
+    - yarn test
+    - yarn build
 
 
 deployment:
