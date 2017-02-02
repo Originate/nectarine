@@ -7,13 +7,19 @@ require! {
 
 describe 'createSlice' ->
 
-  beforeEach ->
-    @result = createSlice do
-      schema: (_) -> name: _
-      actions: initialize: -> @slice.name.$set('Alice')
+  describe 'single level', ->
 
-  specify 'returns a slice', ->
-    expect(@result).to.be.instanceOf Slice
+    specify 'throws if schema is not an object or function a slice', ->
+      expect ->
+        @result = createSlice {}
+      .to.throw '"schema" must be a function or object'
+
+    specify 'returns a slice', ->
+      @result = createSlice do
+        schema: (_) -> name: _
+        actions: initialize: -> @slice.name.$set('Alice')
+      expect(@result).to.be.instanceOf Slice
+
 
   describe 'nested slices', ->
 
@@ -21,7 +27,7 @@ describe 'createSlice' ->
       beforeEach ->
         todosSlice = createSlice do
           schema: (_) -> list: _ initialValue: []
-          actions: create: -> @slice.list.$get().push("Say hi to #{@root-slice.user.name.$get()}")
+          actions: create: -> @slice.list.$set @slice.list.$get().concat("Say hi to #{@root-slice.user.name.$get()}")
         userSlice = createSlice do
           schema: (_) -> name: _
           actions: initialize: -> @slice.name.$set('Alice')

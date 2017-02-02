@@ -7,9 +7,12 @@ require! {
 class Slice extends StoreTree
 
   ({schema, actions, dependencies}) ->
-    if typeof schema is 'function'
-      schema = schema SchemaPlaceholder.create-placeholder
-    super schema
+    switch typeof! schema
+    | \Function => schema SchemaPlaceholder.create-placeholder
+    | \Object   => schema
+    | otherwise => throw new Error '"schema" must be a function or object'
+
+    |> super
 
     if actions?
       for own actionName, action-fn of actions
