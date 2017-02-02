@@ -1,10 +1,10 @@
 require! {
   './schema-placeholder': {
-    is-leaf-placeholder
-    is-map-placeholder
     create-leaf-placeholder: __
     create-map-placeholder: map
     get-type
+    is-leaf-placeholder
+    is-map-placeholder
     validate
   }
   './schema-type': SchemaType
