@@ -1,5 +1,12 @@
 require! {
-  './schema-placeholder': {is-leaf-placeholder, is-map-placeholder, create-placeholder: __, get-type, validate}
+  './schema-placeholder': {
+    is-leaf-placeholder
+    is-map-placeholder
+    create-leaf-placeholder: __
+    create-map-placeholder: map
+    get-type
+    validate
+  }
   './schema-type': SchemaType
 }
 
@@ -26,14 +33,14 @@ describe 'schema-place-holder' ->
       expect(is-map-placeholder __(type: 'string')).to.be.false
 
     specify 'returns true if it is a map placeholder' ->
-      expect(is-map-placeholder __.map({})).to.be.true
+      expect(is-map-placeholder map({})).to.be.true
 
 
   describe 'map' ->
 
     specify 'it throws an error if not passed a child schema' ->
       expect ->
-        __.map!
+        map!
       .to.throw /child schema not provided to map/
 
 

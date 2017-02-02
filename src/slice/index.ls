@@ -1,5 +1,5 @@
 require! {
-  './schema-placeholder': SchemaPlaceholder
+  './schema-placeholder': {create-leaf-placeholder, create-map-placeholder}
   './store-tree': StoreTree
 }
 
@@ -8,7 +8,7 @@ class Slice extends StoreTree
 
   ({schema, actions, dependencies}) ->
     switch typeof! schema
-    | \Function => schema SchemaPlaceholder.create-placeholder
+    | \Function => schema create-leaf-placeholder, create-map-placeholder
     | \Object   => schema
     | otherwise => throw new Error '"schema" must be a function or object'
 

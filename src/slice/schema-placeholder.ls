@@ -25,7 +25,7 @@ class NestedSchemaPlaceholder
       throw new Error 'child schema not provided to map'
 
 
-create-placeholder = (options = {}) ->
+create-leaf-placeholder = (options = {}) ->
   options.type = switch
   | options.type?          => SchemaType.normalize-type options.type
   | options.initial-value? => SchemaType.from-instance options.initial-value
@@ -34,12 +34,12 @@ create-placeholder = (options = {}) ->
   new SchemaPlaceholder options
 
 
-create-placeholder.map = (child-map) ->
+create-map-placeholder = (child-map) ->
   new NestedSchemaPlaceholder child-map
 
 
 is-leaf-placeholder = ->
-  it is create-placeholder or it instanceof SchemaPlaceholder
+  it is create-leaf-placeholder or it instanceof SchemaPlaceholder
 
 
 is-map-placeholder = ->
@@ -47,9 +47,9 @@ is-map-placeholder = ->
 
 
 get-type = ->
-  | not is-leaf-placeholder it => throw new Error "#{it} is not a placeholder"
-  | it is create-placeholder   => SchemaType.ANY
-  | otherwise                  => it.type
+  | not is-leaf-placeholder it    => throw new Error "#{it} is not a placeholder"
+  | it is create-leaf-placeholder => SchemaType.ANY
+  | otherwise                     => it.type
 
 
 validate = (placeholder, value, get-error-string = -> it) ->
@@ -70,4 +70,11 @@ validate = (placeholder, value, get-error-string = -> it) ->
     throw new Error get-error-string "#{JSON.stringify value} does not validate #{validate-fn-to-string}"
 
 
-module.exports = {create-placeholder, is-leaf-placeholder, is-map-placeholder, get-type, validate}
+module.exports = {
+  create-leaf-placeholder
+  create-map-placeholder
+  get-type
+  is-leaf-placeholder
+  is-map-placeholder
+  validate
+}
