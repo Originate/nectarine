@@ -19,13 +19,13 @@ class SchemaPlaceholder
         "Failed to set initialValue: #{err}"
 
 
-class NestedSchemaPlaceholder
+class SchemaMap
   (@child-schema) ->
     unless @child-schema
       throw new Error 'child schema not provided to map'
 
 
-create-leaf-placeholder = (options = {}) ->
+create-placeholder = (options = {}) ->
   options.type = switch
   | options.type?          => SchemaType.normalize-type options.type
   | options.initial-value? => SchemaType.from-instance options.initial-value
@@ -34,22 +34,22 @@ create-leaf-placeholder = (options = {}) ->
   new SchemaPlaceholder options
 
 
-create-map-placeholder = (child-map) ->
-  new NestedSchemaPlaceholder child-map
+create-map = (child-schema) ->
+  new SchemaMap child-schema
 
 
-is-leaf-placeholder = ->
-  it is create-leaf-placeholder or it instanceof SchemaPlaceholder
+is-placeholder = ->
+  it is create-placeholder or it instanceof SchemaPlaceholder
 
 
-is-map-placeholder = ->
-  it instanceof NestedSchemaPlaceholder
+is-map = ->
+  it instanceof SchemaMap
 
 
 get-type = ->
-  | not is-leaf-placeholder it    => throw new Error "#{it} is not a placeholder"
-  | it is create-leaf-placeholder => SchemaType.ANY
-  | otherwise                     => it.type
+  | not is-placeholder it    => throw new Error "#{it} is not a placeholder"
+  | it is create-placeholder => SchemaType.ANY
+  | otherwise                => it.type
 
 
 validate = (placeholder, value, get-error-string = -> it) ->
@@ -71,10 +71,10 @@ validate = (placeholder, value, get-error-string = -> it) ->
 
 
 module.exports = {
-  create-leaf-placeholder
-  create-map-placeholder
+  create-map
+  create-placeholder
   get-type
-  is-leaf-placeholder
-  is-map-placeholder
+  is-map
+  is-placeholder
   validate
 }

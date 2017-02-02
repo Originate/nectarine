@@ -1,10 +1,10 @@
 require! {
   './schema-placeholder': {
-    create-leaf-placeholder: __
-    create-map-placeholder: map
+    create-map: map
+    create-placeholder: __
     get-type
-    is-leaf-placeholder
-    is-map-placeholder
+    is-map
+    is-placeholder
     validate
   }
   './schema-type': SchemaType
@@ -12,28 +12,28 @@ require! {
 
 describe 'schema-place-holder' ->
 
-  describe 'is-leaf-placeholder' ->
+  describe 'is-placeholder' ->
 
     specify 'returns true if it is a default placeholder' ->
-      expect(is-leaf-placeholder __).to.be.true
+      expect(is-placeholder __).to.be.true
 
     specify 'returns true if it is a non-default placeholder' ->
-      expect(is-leaf-placeholder __(type: 'string')).to.be.true
+      expect(is-placeholder __(type: 'string')).to.be.true
 
     specify 'returns false for non-placeholders' ->
-      expect(is-leaf-placeholder {}).to.be.false
+      expect(is-placeholder {}).to.be.false
 
 
-  describe 'is-map-placeholder' ->
+  describe 'is-map' ->
 
     specify 'returns false if it is a default placeholder' ->
-      expect(is-map-placeholder __).to.be.false
+      expect(is-map __).to.be.false
 
     specify 'returns false if it is a non-default placeholder' ->
-      expect(is-map-placeholder __(type: 'string')).to.be.false
+      expect(is-map __(type: 'string')).to.be.false
 
     specify 'returns true if it is a map placeholder' ->
-      expect(is-map-placeholder map({})).to.be.true
+      expect(is-map map({})).to.be.true
 
 
   describe 'map' ->
