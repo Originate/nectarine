@@ -6,17 +6,11 @@ machine:
 
 
 dependencies:
-  override:
-    - yarn
   cache_directories:
     - ~/.cache/yarn
-
-
-test:
   override:
-    - yarn check
-    - yarn test
-    - yarn build
+    - yarn
+
 
 
 deployment:
@@ -25,3 +19,10 @@ deployment:
     commands:
       - npm set //registry.npmjs.org/:_authToken $AUTH_TOKEN
       - npm publish
+
+
+test:
+  override:
+    - yarn check
+    - yarn test
+    - yarn build
