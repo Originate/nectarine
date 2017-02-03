@@ -6,11 +6,11 @@ require! {
 }
 
 
-create-tree = (child-schemas) ->
+create-tree = (child-mapping) ->
   tree-path = <[path to tree]>
   children = {}
-  for own key, value of child-schemas
-    children[key] = new StoreLeaf {path: tree-path.concat(key), schema: value}
+  for own key, schema of child-mapping
+    children[key] = new StoreLeaf {path: tree-path.concat(key), schema}
   new StoreTree {children, path: tree-path}
 
 

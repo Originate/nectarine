@@ -5,7 +5,7 @@ require! {
 }
 
 
-describe 'createStore' ->
+describe 'create-store' ->
 
   describe 'base', ->
     beforeEach ->

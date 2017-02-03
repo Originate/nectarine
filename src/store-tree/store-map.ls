@@ -8,7 +8,7 @@ require! {
 
 class StoreMap extends StoreNode
 
-  ({@child-schema}) ->
+  ({child-schema: @_child-schema}) ->
     super ...
     @_mapping = {}
 
@@ -37,7 +37,7 @@ class StoreMap extends StoreNode
     unless @_mapping[key]
       @_mapping[key] = build-store-node do
         path: @$get-path!.concat(key)
-        schema: @child-schema
+        schema: @_child-schema
       @_mapping[key].$on-update @$emit-update
     @_mapping[key]
 

@@ -10,7 +10,7 @@ module.exports = ({component, map-props}) ->
   class Connector extends react.Component
 
     @context-types =
-      store: react.PropTypes.instanceOf(StoreTree)
+      store: react.PropTypes.instance-of(StoreTree)
 
 
     (props, context) ->
