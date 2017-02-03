@@ -2,11 +2,11 @@ require! {
   './schema-placeholder': {create-placeholder: __}
   './spec/test-cases'
   './store-leaf': StoreLeaf
-  './store-tree': StoreTree
+  './': StoreTree
 }
 
 
-build-tree = (child-schemas) ->
+create-tree = (child-schemas) ->
   tree-path = <[path to tree]>
   children = {}
   for own key, value of child-schemas
@@ -19,8 +19,8 @@ describe 'StoreTree' ->
   describe '$get' ->
 
     test-cases '' [
-      -> @tree = build-tree name: __, email: __
-      -> @tree = build-tree name: __!, email: __!
+      -> @tree = create-tree name: __, email: __
+      -> @tree = create-tree name: __!, email: __!
     ] ->
 
       specify 'throws an error when attempting to access data with error' ->
@@ -36,8 +36,8 @@ describe 'StoreTree' ->
 
   describe '$get-or-else' ->
     test-cases '' [
-      -> @tree = build-tree name: __, email: __
-      -> @tree = build-tree name: __!, email: __!
+      -> @tree = create-tree name: __, email: __
+      -> @tree = create-tree name: __!, email: __!
     ] ->
       describe 'without default' ->
         specify 'returns the data if present' ->
@@ -72,8 +72,8 @@ describe 'StoreTree' ->
   describe '$set' ->
 
     test-cases 'setting values' [
-      -> @tree = build-tree name: __, email: __
-      -> @tree = build-tree name: __!, email: __!
+      -> @tree = create-tree name: __, email: __
+      -> @tree = create-tree name: __!, email: __!
     ] ->
 
       specify 'sets the values on the tree' ->
@@ -105,9 +105,9 @@ describe 'StoreTree' ->
 
 
     test-cases 'setting values on parents of leaves with specified type' [
-      -> @tree = build-tree name: __ initial-value: 123
-      -> @tree = build-tree name: __ type: Number
-      -> @tree = build-tree name: __ type: \number
+      -> @tree = create-tree name: __ initial-value: 123
+      -> @tree = create-tree name: __ type: Number
+      -> @tree = create-tree name: __ type: \number
     ] ->
 
       specify 'successfuly sets value if type matches' ->
@@ -121,9 +121,9 @@ describe 'StoreTree' ->
 
 
     test-cases 'allow-null isnt false' [
-      -> @tree = build-tree name: __
-      -> @tree = build-tree name: __!
-      -> @tree = build-tree name: __ allow-null: yes
+      -> @tree = create-tree name: __
+      -> @tree = create-tree name: __!
+      -> @tree = create-tree name: __ allow-null: yes
     ] ->
       before-each -> @tree.$set name: 'fizz'
 
@@ -139,7 +139,7 @@ describe 'StoreTree' ->
     describe 'allow-null is false' ->
 
       before-each ->
-        @tree = build-tree name: __ allow-null: no, initial-value: 'fizz'
+        @tree = create-tree name: __ allow-null: no, initial-value: 'fizz'
 
       specify 'throws an error with a deeply nested object to the leaf' ->
         @tree.$set name: 'buzz'
@@ -155,8 +155,8 @@ describe 'StoreTree' ->
   describe '$set-error' ->
 
     test-cases 'setting errors on trees' [
-      -> @tree = build-tree name: __, email: __
-      -> @tree = build-tree name: __!, email: __!
+      -> @tree = create-tree name: __, email: __
+      -> @tree = create-tree name: __!, email: __!
     ] ->
 
       specify 'trees initially do not have an error' ->
@@ -180,8 +180,8 @@ describe 'StoreTree' ->
   describe '$set-loading' ->
 
     test-cases 'setting loading on leaves' [
-      -> @tree = build-tree name: __
-      -> @tree = build-tree name: __!
+      -> @tree = create-tree name: __
+      -> @tree = create-tree name: __!
     ] ->
 
       specify 'trees are initially not loading' ->
@@ -213,8 +213,8 @@ describe 'StoreTree' ->
   describe '$reset' ->
 
     test-cases 'resetting leaves' [
-      -> @tree = build-tree name: __
-      -> @tree = build-tree name: __!
+      -> @tree = create-tree name: __
+      -> @tree = create-tree name: __!
     ] ->
 
       specify 'resets data to the initial value' ->
@@ -236,7 +236,7 @@ describe 'StoreTree' ->
   describe '$from-promise' ->
 
     before-each ->
-      @tree = build-tree name: __, email: __
+      @tree = create-tree name: __, email: __
       @promise = @tree.$from-promise new Promise (@resolve, @reject) ~>
       null
 
@@ -301,7 +301,7 @@ describe 'StoreTree' ->
   describe '$on-update' ->
 
     before-each ->
-      @tree = build-tree do
+      @tree = create-tree do
         name: __ initial-value: 'Alice'
         email: __
       @tree.$on-update @tree-update-spy = sinon.spy!

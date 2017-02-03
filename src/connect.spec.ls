@@ -2,7 +2,8 @@ require! {
   'react'
   'enzyme': {shallow}
   './connect': connect
-  './slice': Slice
+  './create-slice'
+  './create-store'
 }
 
 
@@ -17,24 +18,25 @@ describe 'connect' ->
   beforeEach ->
     @connectedHoc = connect do
       component: TestComponent
-      map-props: (slice) -> {name: slice.name.$get!}
+      map-props: (store) -> {name: store.user.name.$get!}
 
-  specify 'defines a component with a required context type for slice', ->
-    expect(@connectedHoc.context-types.slice).to.exist
+  specify 'defines a component with a required context type for store', ->
+    expect(@connectedHoc.context-types.store).to.exist
 
   describe 'rendering', ->
     before-each ->
-      @slice = new Slice {schema}, []
+      user-slice = create-slice schema: (_) -> name: _
+      @store = create-store user: user-slice
       component = react.create-element @connectedHoc, {other: 'data'}
-      @wrapper = shallow component, context: {@slice}
+      @wrapper = shallow component, context: {@store}
 
     specify 'renders the component with the passed in props and the result of map-props', ->
       expect(@wrapper.is('TestComponent')).to.be.true
       expect(@wrapper.props()).to.eql {name: null, other: 'data'}
 
-    describe 'when the slice update', ->
+    describe 'when the store update', ->
       before-each ->
-        @slice.name.$set 'Alice'
+        @store.user.name.$set 'Alice'
 
       specify 're-renders the component with the new result of map-props', ->
         expect(@wrapper.props()).to.eql {name: 'Alice', other: 'data'}

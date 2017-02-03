@@ -1,10 +1,15 @@
+require! {
+  './store-tree/schema-placeholder': SchemaPlaceholder
+}
+
 class SliceData
 
-  ({@actions, schema}) ->
-    @schema = switch typeof! schema
-    | \Function => schema SchemaPlaceholder.create-placeholder, SchemaPlaceholder.create-map
-    | \Object   => schema
-    | otherwise => throw new Error '"schema" must be a function or object'
+  ({@actions, @schema}) ->
+    if typeof! @schema is \Function
+      @schema = @schema SchemaPlaceholder.create-placeholder, SchemaPlaceholder.create-map
+
+    if typeof! @schema is not \Object
+      throw new Error '"schema" must be an object or a function that returns an object'
 
 
 module.exports = SliceData

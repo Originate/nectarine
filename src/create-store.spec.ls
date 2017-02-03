@@ -11,7 +11,7 @@ describe 'createStore' ->
     beforeEach ->
       todos-slice = create-slice do
         schema: (_) -> list: _ initial-value: []
-        actions: create: -> @slice.list.$set @slice.list.$get().concat("Say hi to #{@root-slice.user.name.$get()}")
+        actions: create: -> @slice.list.$set @slice.list.$get().concat("Say hi to #{@store.user.name.$get()}")
       user-slice = create-slice do
         schema: (_) -> name: _
         actions: initialize: -> @slice.name.$set('Alice')
@@ -27,7 +27,7 @@ describe 'createStore' ->
     specify 'the slices can access each other in actions with store', ->
       @store.user.initialize()
       @store.todos.create()
-      expect(@root-slice.todos.list.$get()).to.eql ['Say hi to Alice']
+      expect(@store.todos.list.$get()).to.eql ['Say hi to Alice']
 
     specify 'the slices have the proper paths', ->
       expect(@store.$get-path-string()).to.eql ''
@@ -35,7 +35,7 @@ describe 'createStore' ->
       expect(@store.user.name.$get-path-string()).to.eql 'user.name'
 
     specify 'the slice listens for changes on its children', ->
-      @store.$on-update @rstore-update-spy = sinon.spy!
+      @store.$on-update @store-update-spy = sinon.spy!
       @store.user.initialize()
       expect(@store-update-spy).to.have.been.called
 

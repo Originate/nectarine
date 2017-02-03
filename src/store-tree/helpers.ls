@@ -1,19 +1,20 @@
 require! {
   './schema-placeholder': SchemaPlaceholder
+  '../slice-data': SliceData
 }
 
 
 build-store-tree = ({actions, schema, path}) ->
   children = {}
   for own key, childSchema of schema
-    childOptions = {path: path.concat(key), store}
+    childOptions = {path: path.concat(key)}
     if childSchema instanceof SliceData
       childOptions.actions = childSchema.actions
       childOptions.schema = childSchema.schema
     else
       childOptions.schema = childSchema
     children[key] = build-store-node childOptions
-  new (require './store-node') {actions, children, path}
+  new (require './') {actions, children, path}
 
 
 build-store-node = ({actions, schema, path}) ->

@@ -5,15 +5,15 @@ require! {
 }
 
 
-build-leaf = (schema) -> new StoreLeaf {path: <[path to leaf]>, schema}
+create-leaf = (schema) -> new StoreLeaf {path: <[path to leaf]>, schema}
 
 
 describe 'StoreLeaf' ->
 
   describe '$get-or-else' ->
     test-cases 'setting errors on leaves' [
-      -> @name = build-leaf __
-      -> @name = build-leaf __!
+      -> @name = create-leaf __
+      -> @name = create-leaf __!
     ] ->
 
       describe 'without default' ->
@@ -46,10 +46,10 @@ describe 'StoreLeaf' ->
   describe '$set' ->
 
     test-cases 'setting values' [
-      -> @name = build-leaf __
-      -> @name = build-leaf __!
-      -> @name = build-leaf __ type: \any
-      -> @name = build-leaf __ allow-null: no, type: \any, initial-value: 'fizz'
+      -> @name = create-leaf __
+      -> @name = create-leaf __!
+      -> @name = create-leaf __ type: \any
+      -> @name = create-leaf __ allow-null: no, type: \any, initial-value: 'fizz'
     ] ->
 
       specify 'sets the value of the leaf' ->
@@ -70,9 +70,9 @@ describe 'StoreLeaf' ->
 
 
     test-cases 'setting values on leaves with specified type' [
-      -> @leaf = build-leaf __ initial-value: 123
-      -> @leaf = build-leaf __ type: Number
-      -> @leaf = build-leaf __ type: \number
+      -> @leaf = create-leaf __ initial-value: 123
+      -> @leaf = create-leaf __ type: Number
+      -> @leaf = create-leaf __ type: \number
     ] ->
 
       specify 'successfuly sets value if type matches' ->
@@ -86,9 +86,9 @@ describe 'StoreLeaf' ->
 
 
     test-cases 'allow-null isnt false' [
-      -> @leaf = build-leaf __
-      -> @leaf = build-leaf __!
-      -> @leaf = build-leaf __ allow-null: yes
+      -> @leaf = create-leaf __
+      -> @leaf = create-leaf __!
+      -> @leaf = create-leaf __ allow-null: yes
     ] ->
 
       specify 'allows setting null' ->
@@ -100,7 +100,7 @@ describe 'StoreLeaf' ->
     describe 'allow-null is false' ->
 
       before-each ->
-        @leaf = build-leaf __ allow-null: no, initial-value: 'fizz'
+        @leaf = create-leaf __ allow-null: no, initial-value: 'fizz'
 
       specify 'throws an error' ->
         @leaf.$set 'buzz'
@@ -109,8 +109,8 @@ describe 'StoreLeaf' ->
 
 
     test-cases 'leaves with initial value' [
-      -> @color = build-leaf __ initial-value: 'red'
-      -> @color = build-leaf __ allow-null: no, initial-value: 'red'
+      -> @color = create-leaf __ initial-value: 'red'
+      -> @color = create-leaf __ allow-null: no, initial-value: 'red'
     ] ->
 
       specify 'leaves are initially set to initial-value' ->
@@ -120,8 +120,8 @@ describe 'StoreLeaf' ->
   describe '$set-error' ->
 
     test-cases 'setting errors on leaves' [
-      -> @name = build-leaf __
-      -> @name = build-leaf __!
+      -> @name = create-leaf __
+      -> @name = create-leaf __!
     ] ->
 
       specify 'leaves initially do not have an error' ->
@@ -146,8 +146,8 @@ describe 'StoreLeaf' ->
   describe '$set-loading' ->
 
     test-cases 'setting loading on leaves' [
-      -> @name = build-leaf __
-      -> @name = build-leaf __!
+      -> @name = create-leaf __
+      -> @name = create-leaf __!
     ] ->
 
       specify 'leaves are initially not loading' ->
@@ -180,8 +180,8 @@ describe 'StoreLeaf' ->
   describe '$reset' ->
 
     test-cases 'without initial-value' [
-      -> @name = build-leaf __
-      -> @name = build-leaf __!
+      -> @name = create-leaf __
+      -> @name = create-leaf __!
     ] ->
 
       specify 'sets the data to null' ->
@@ -201,7 +201,7 @@ describe 'StoreLeaf' ->
 
     describe 'with initial-value' ->
       before-each ->
-        @name = build-leaf __ initial-value: 'Alice'
+        @name = create-leaf __ initial-value: 'Alice'
 
       specify 'sets the data to null' ->
         @name.$set 'Bob'
@@ -212,8 +212,8 @@ describe 'StoreLeaf' ->
   describe '$from-promise' ->
 
     test-cases 'from promise on leaves' [
-      -> @name = build-leaf __
-      -> @name = build-leaf __!
+      -> @name = create-leaf __
+      -> @name = create-leaf __!
     ] ->
       before-each ->
         @promise = @name.$from-promise new Promise (@resolve, @reject) ~>
@@ -257,8 +257,8 @@ describe 'StoreLeaf' ->
   describe '$on-update' ->
 
     test-cases [
-      -> @leaf = build-leaf __
-      -> @leaf = build-leaf __!
+      -> @leaf = create-leaf __
+      -> @leaf = create-leaf __!
     ] ->
 
       before-each ->

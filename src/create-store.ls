@@ -1,5 +1,6 @@
 require! {
-  './slice/helpers': {build-store-node}
+  './store-tree/helpers': {build-store-node}
+  './store-tree': StoreTree
 }
 
 
