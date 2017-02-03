@@ -20,7 +20,7 @@ build-store-tree = (options) ->
 build-store-node = (options) ->
   {path, schema} = options
   switch
-  | SchemaPlaceholder.is-placeholder(schema) => new (require './store-leaf') {schema, path}
+  | SchemaPlaceholder.is-placeholder(schema) => new (require './store-leaf') {path, schema}
   | SchemaPlaceholder.is-map(schema)         => new (require './store-map') {child-schema: schema.child-schema, path}
   | otherwise                                => build-store-tree options
 
