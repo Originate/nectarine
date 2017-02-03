@@ -6,7 +6,7 @@ require! {
 
 class StoreLeaf extends StoreNode
 
-  ->
+  ({schema: @_schema})->
     super ...
     @$reset!
 

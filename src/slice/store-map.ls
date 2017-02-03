@@ -2,13 +2,13 @@ require! {
   './schema-placeholder': SchemaPlaceholder
   './store-leaf': StoreLeaf
   './store-node': StoreNode
-  './helpers': {build-child-node}
+  './helpers': {build-store-node}
 }
 
 
 class StoreMap extends StoreNode
 
-  ->
+  ({child-schema: @_child-schema}) ->
     super ...
     @_mapping = {}
 
@@ -34,7 +34,12 @@ class StoreMap extends StoreNode
 
 
   $key: (key) ->
-    @_mapping[key] or= build-child-node this, @_schema.child-schema, key
+    @_mapping[key] or= build-store-node this, @_child-schema, key
+
+
+  $set-store: (@_store) ->
+    for own key, value of @_mapping
+      value.$set-store @_store
 
 
 module.exports = StoreMap

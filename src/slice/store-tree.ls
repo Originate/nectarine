@@ -6,10 +6,16 @@ require! {
 
 class StoreTree extends StoreNode
 
-  ->
+  ({actions, children, isRoot, path}) ->
     super ...
-    for own key, value of @_schema
-      @[key] = build-child-node this, value, key
+    for own key, value of children
+      @[key] = value
+
+    if actions?
+      for own actionName, action-fn of actions
+        @_bind-action action-name, action-fn
+
+    if isRoot
 
 
   $get-error: ->
@@ -60,6 +66,19 @@ class StoreTree extends StoreNode
     obj = {}
     @_for-each-subnode (subnode, key) -> obj[key] = subnode.$get!
     obj
+
+
+  $set-store: (@_store) ->
+    @_for-each-subnode (subnode, key) -> subnode.$$set-store @_store
+
+
+  _bind-action: (action-name, action-fn) ->
+    if @[action-name]
+      throw new Error "Failed to create slice: Action \"#{action-name}\" would override schema"
+
+    @[action-name] = (...args) ~>
+      context = {@store, slice: this, ...@store.dependencies}
+      action-fn.apply context, args
 
 
   _for-each-subnode: (fn) !->
