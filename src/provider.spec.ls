@@ -1,7 +1,8 @@
 require! {
-  'react'
+  'react': {create-element: e}: react
   'enzyme': {shallow}
   './provider': Provider
+  './slice': Slice
 }
 
 
@@ -11,15 +12,19 @@ class TestComponent extends react.Component
 describe 'Provider' ->
 
   beforeEach ->
-    @slice = mock: 'slice data'
-    @providerHoc = Provider {component: TestComponent, @slice}
+    @slice = new Slice {schema: {}}
 
   specify 'defines a child context type for slice', ->
-    expect(@providerHoc.child-context-types.slice).to.exist
+    expect(Provider.child-context-types.slice).to.exist
+
+  specify 'defines a prop type for slice / children', ->
+    expect(Provider.prop-types.slice).to.exist
+    expect(Provider.prop-types.children).to.exist
 
   describe 'rendering', ->
     beforeEach ->
-      @wrapper = shallow react.create-element @providerHoc, {}
+      component = e Provider, {@slice}, e(TestComponent)
+      @wrapper = shallow component
 
     specify 'defines a child context with the slice', ->
       expect(@wrapper.instance().get-child-context()).to.eql {@slice}

@@ -1,19 +1,26 @@
 require! {
   'react'
+  './slice': Slice
 }
 
 
-module.exports = ({component, slice}) ->
+class Provider extends react.Component
 
-  class Provider extends react.Component
-
-    @child-context-types =
-      slice: react.PropTypes.any
+  @child-context-types =
+    slice: react.PropTypes.instance-of(Slice)
 
 
-    get-child-context: ->
-      {slice}
+  @prop-types =
+    slice: react.PropTypes.instance-of(Slice)
+    children: react.PropTypes.element.isRequired
 
 
-    render: ->
-      react.create-element component
+  get-child-context: ->
+    {slice: @props.slice}
+
+
+  render: ->
+    @props.children
+
+
+module.exports = Provider
