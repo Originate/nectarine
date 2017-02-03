@@ -8,7 +8,7 @@ class Slice extends StoreTree
 
   ({schema, actions, dependencies}) ->
     switch typeof! schema
-    | \Function => schema SchemaPlaceholder.create-placeholder
+    | \Function => schema SchemaPlaceholder.create-placeholder, SchemaPlaceholder.create-map
     | \Object   => schema
     | otherwise => throw new Error '"schema" must be a function or object'
 

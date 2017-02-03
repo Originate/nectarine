@@ -10,8 +10,8 @@ create-store = (schema) -> new Slice {schema}
 describe 'StoreMap' ->
 
   test-cases '' [
-    -> @store = create-store (_) -> current-user: friendsById: _.map(name: _)
-    -> @store = create-store (_) -> current-user: friendsById: _.map(name: _!)
+    -> @store = create-store (_, map) -> current-user: friendsById: map(name: _)
+    -> @store = create-store (_, map) -> current-user: friendsById: map(name: _!)
   ] ->
 
 
