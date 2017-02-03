@@ -4,9 +4,9 @@ require! {
 }
 
 
-build-store-tree = ({actions, dependencies, isRoot, schema, path}) ->
+build-store-tree = (options) ->
   children = {}
-  for own key, childSchema of schema
+  for own key, childSchema of options.schema
     childOptions = {path: path.concat(key)}
     if childSchema instanceof SliceData
       childOptions.actions = childSchema.actions
@@ -14,14 +14,15 @@ build-store-tree = ({actions, dependencies, isRoot, schema, path}) ->
     else
       childOptions.schema = childSchema
     children[key] = build-store-node childOptions
-  new (require './') {actions, children, dependencies, isRoot, path}
+  new (require './') {children, ...options}
 
 
-build-store-node = ({actions, dependencies, isRoot, schema, path}) ->
+build-store-node = (options) ->
+  {path, schema} = options
   switch
   | SchemaPlaceholder.is-placeholder(schema) => new (require './store-leaf') {schema, path}
   | SchemaPlaceholder.is-map(schema)         => new (require './store-map') {child-schema: schema.child-schema, path}
-  | otherwise                                => build-store-tree {actions, dependencies, isRoot, schema, path}
+  | otherwise                                => build-store-tree options
 
 
 module.exports = {build-store-node}
