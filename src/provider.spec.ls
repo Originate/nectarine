@@ -12,7 +12,7 @@ class TestComponent extends react.Component
 describe 'Provider' ->
 
   beforeEach ->
-    @slice = new Slice {}
+    @slice = new Slice {schema: {}}
 
   specify 'defines a child context type for slice', ->
     expect(Provider.child-context-types.slice).to.exist
