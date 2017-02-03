@@ -1,10 +1,21 @@
 require! {
-  './': Slice
+  './schema-placeholder': {create-placeholder: __}
   './spec/test-cases'
+  './store-leaf': StoreLeaf
+  './store-tree': StoreTree
 }
 
 
-create-store = (schema) -> new Slice {schema}, []
+build-tree = (child-schemas, path = []) ->
+  children = {}
+  for own key, value of child-schemas
+    child-path = path.concat key
+    children[key] = if typeof value is 'object'
+      build-tree value, child-path
+    else
+      new StoreLeaf {path: child-path, schema: value}
+
+  new StoreTree {children, path: tree-path}
 
 
 describe 'StoreTree' ->
@@ -12,25 +23,25 @@ describe 'StoreTree' ->
   describe '$get' ->
 
     test-cases '' [
-      -> @store = create-store (_) -> current-user: name: _, email: _
-      -> @store = create-store (_) -> current-user: name: _!, email: _!
+      -> @tree = build-tree name: __, email: __
+      -> @tree = build-tree name: __!, email: __!
     ] ->
 
       specify 'throws an error when attempting to access data with error' ->
-        @store.current-user.name.$set 'Alice'
-        @store.current-user.email.$set-error Error 'Failed to get email'
-        expect(~> @store.current-user.$get!).to.throw 'Error getting `currentUser.email`. email: has error "Failed to get email"'
+        @tree.name.$set 'Alice'
+        @tree.email.$set-error Error 'Failed to get email'
+        expect(~> @tree.$get!).to.throw 'Error getting `path.to.tree.email`: has error "Failed to get email"'
 
       specify 'throws an error when attempting to access loading data' ->
-        @store.current-user.name.$set 'Alice'
-        @store.current-user.email.$set-loading!
-        expect(~> @store.current-user.$get!).to.throw 'Error getting `currentUser.email`. email: is loading'
+        @tree.name.$set 'Alice'
+        @tree.email.$set-loading!
+        expect(~> @tree.$get!).to.throw 'Error getting `path.to.tree.email`: is loading'
 
 
   describe '$get-or-else' ->
     test-cases '' [
-      -> @store = create-store (_) -> current-user: name: _, email: _
-      -> @store = create-store (_) -> current-user: name: _!, email: _!
+      -> @tree = build-tree name: __, email: __
+      -> @tree = build-tree name: __, email: __
     ] ->
       describe 'without default' ->
         specify 'returns the data if present' ->
@@ -62,44 +73,43 @@ describe 'StoreTree' ->
           expect(@store.current-user.$get-or-else @defaultValue).to.eql name: 'Bob', email: 'bob@example.com'
 
 
-  describe '$set' ->
+  describe.only '$set' ->
 
     test-cases 'setting values' [
-      -> @store = create-store (_) -> current-user: name: _, email: _
-      -> @store = create-store (_) -> current-user: name: _!, email: _!
+      -> @tree = build-tree name: __, email: __
+      -> @tree = build-tree name: __!, email: __!
     ] ->
-      before-each -> @current-user = @store.current-user
 
       specify 'sets the values on the tree' ->
-        @current-user.$set name: 'Alice', email: 'alice@example.com'
-        expect(@current-user.$get!).to.eql name: 'Alice', email: 'alice@example.com'
+        @tree.$set name: 'Alice', email: 'alice@example.com'
+        expect(@tree.$get!).to.eql name: 'Alice', email: 'alice@example.com'
 
       specify 'sets loading to false for all leaves' ->
-        @current-user.name.$set-loading!
-        @current-user.email.$set-loading!
-        @current-user.$set name: 'Alice', email: 'alice@example.com'
-        expect(@current-user.$is-loading!).to.be.false
-        expect(@current-user.name.$is-loading!).to.be.false
-        expect(@current-user.email.$is-loading!).to.be.false
+        @tree.name.$set-loading!
+        @tree.email.$set-loading!
+        @tree.$set name: 'Alice', email: 'alice@example.com'
+        expect(@tree.$is-loading!).to.be.false
+        expect(@tree.name.$is-loading!).to.be.false
+        expect(@tree.email.$is-loading!).to.be.false
 
       specify 'sets error to null' ->
-        @current-user.name.$set-error Error 'Failed to get name'
-        @current-user.email.$set-error Error 'Failed to get email'
-        @current-user.$set name: 'Alice', email: 'alice@example.com'
-        expect(@current-user.$get-error!).to.be.null
-        expect(@current-user.name.$get-error!).to.be.null
-        expect(@current-user.email.$get-error!).to.be.null
+        @tree.name.$set-error Error 'Failed to get name'
+        @tree.email.$set-error Error 'Failed to get email'
+        @tree.$set name: 'Alice', email: 'alice@example.com'
+        expect(@tree.$get-error!).to.be.null
+        expect(@tree.name.$get-error!).to.be.null
+        expect(@tree.email.$get-error!).to.be.null
 
       specify 'ignores extra keys' ->
-        @current-user.$set name: 'Alice', foo: 'bar'
-        expect(@current-user.$get!).to.eql name: 'Alice', email: null
+        @tree.$set name: 'Alice', foo: 'bar'
+        expect(@tree.$get!).to.eql name: 'Alice', email: null
 
       specify 'setting a non-object on a parent throws an error' ->
-        expect(~> @current-user.$set 'Alice').to.throw 'calling $set on a tree must be called with an object'
+        expect(~> @tree.$set 'Alice').to.throw 'calling $set on a tree must be called with an object'
 
 
     test-cases 'setting values on parents of leaves with specified type' [
-      -> @store = create-store (_) -> path: to: leaf: _ initial-value: 123
+      -> @tree = build-tree name: __ path: to: leaf: _ initial-value: 123
       -> @store = create-store (_) -> path: to: leaf: _ type: Number
       -> @store = create-store (_) -> path: to: leaf: _ type: \number
     ] ->
@@ -149,8 +159,8 @@ describe 'StoreTree' ->
   describe '$set-error' ->
 
     test-cases 'setting errors on trees' [
-      -> @store = create-store (_) -> current-user: name: _, email: _
-      -> @store = create-store (_) -> current-user: name: _!, email: _!
+      -> @tree = build-tree name: __, email: __
+      -> @tree = build-tree name: __!, email: __!
     ] ->
 
       specify 'trees initially do not have an error' ->
@@ -237,7 +247,7 @@ describe 'StoreTree' ->
       @store = create-store (_) ->
         auth:
           logged-in: _ initial-value: no
-          current-user: name: _, email: _
+          current-user: name: __, email: __
       @promise = @store.auth.current-user.$from-promise new Promise (@resolve, @reject) ~>
       @auth = @store.auth
 
@@ -310,11 +320,11 @@ describe 'StoreTree' ->
           email: _
 
       @store.$on-update @store-update-spy = sinon.spy!
-      @store.current-user.$on-update @current-user-update-spy = sinon.spy!
+      @store.current-user.$on-update @tree-update-spy = sinon.spy!
 
     specify 'does not call callbacks if nothing updates' ->
       expect(@store-update-spy).to.not.have.been.called
-      expect(@current-user-update-spy).to.not.have.been.called
+      expect(@tree-update-spy).to.not.have.been.called
 
     specify 'supports multiple callbacks' ->
       @store.$on-update store-update-spy2 = sinon.spy!
@@ -339,11 +349,11 @@ describe 'StoreTree' ->
         @new-values = data: null, loading: no, error: err
     } ->
       specify 'calls callbacks' ->
-        expect(@current-user-update-spy).to.have.been.called-once
+        expect(@tree-update-spy).to.have.been.called-once
         expect(@store-update-spy).to.have.been.called-once
 
       specify 'calls with new-values, old-values, path' ->
-        expect(@current-user-update-spy).to.have.been.called-with do
+        expect(@tree-update-spy).to.have.been.called-with do
           * @new-values
           * data: 'Alice', loading: no, error: null
           * <[currentUser name]>

@@ -1,20 +1,20 @@
 require! {
-  './': Slice
+  './schema-placeholder': {create-placeholder: __}
   './spec/test-cases'
+  './store-leaf': StoreLeaf
 }
 
 
-create-store = (schema) -> new Slice {schema}
+build-leaf = (schema) -> new StoreLeaf {path: <[path to leaf]>, schema}
 
 
 describe 'StoreLeaf' ->
 
   describe '$get-or-else' ->
     test-cases 'setting errors on leaves' [
-      -> @store = create-store (_) -> current-user: name: _
-      -> @store = create-store (_) -> current-user: name: _!
+      -> @name = build-leaf __
+      -> @name = build-leaf __!
     ] ->
-      before-each -> @name = @store.current-user.name
 
       describe 'without default' ->
         specify 'returns the data if present' ->
@@ -46,12 +46,11 @@ describe 'StoreLeaf' ->
   describe '$set' ->
 
     test-cases 'setting values' [
-      -> @store = create-store (_) -> name: _, email: _
-      -> @store = create-store (_) -> name: _!, email: _!
-      -> @store = create-store (_) -> name: _(type: \any), email: _(type: \any)
-      -> @store = create-store (_) -> name: _ allow-null: no, type: \any, initial-value: 'fizz'
+      -> @name = build-leaf __
+      -> @name = build-leaf __!
+      -> @name = build-leaf __ type: \any
+      -> @name = build-leaf __ allow-null: no, type: \any, initial-value: 'fizz'
     ] ->
-      before-each -> @name = @store.name
 
       specify 'sets the value of the leaf' ->
         @name.$set 'Alice'
@@ -71,11 +70,10 @@ describe 'StoreLeaf' ->
 
 
     test-cases 'setting values on leaves with specified type' [
-      -> @store = create-store (_) -> path: to: leaf: _ initial-value: 123
-      -> @store = create-store (_) -> path: to: leaf: _ type: Number
-      -> @store = create-store (_) -> path: to: leaf: _ type: \number
+      -> @leaf = build-leaf __ initial-value: 123
+      -> @leaf = build-leaf __ type: Number
+      -> @leaf = build-leaf __ type: \number
     ] ->
-      before-each -> @leaf = @store.path.to.leaf
 
       specify 'successfuly sets value if type matches' ->
         @leaf.$set 456
@@ -84,15 +82,14 @@ describe 'StoreLeaf' ->
       specify 'throws an error if a value is the wrong type' ->
         expect(~>
           @leaf.$set 'Not a number'
-        ).to.throw 'Error setting `path.to.leaf`. leaf: "Not a number" (type String) does not match required type Number'
+        ).to.throw 'Error setting `path.to.leaf`: "Not a number" (type String) does not match required type Number'
 
 
     test-cases 'allow-null isnt false' [
-      -> @store = create-store (_) -> path: to: leaf: _
-      -> @store = create-store (_) -> path: to: leaf: _!
-      -> @store = create-store (_) -> path: to: leaf: _ allow-null: yes
+      -> @leaf = build-leaf __
+      -> @leaf = build-leaf __!
+      -> @leaf = build-leaf __ allow-null: yes
     ] ->
-      before-each -> @leaf = @store.path.to.leaf
 
       specify 'allows setting null' ->
         @leaf.$set 'fizz'
@@ -103,20 +100,18 @@ describe 'StoreLeaf' ->
     describe 'allow-null is false' ->
 
       before-each ->
-        @store = create-store (_) -> path: to: leaf: _ allow-null: no, initial-value: 'fizz'
-        @leaf = @store.path.to.leaf
+        @leaf = build-leaf __ allow-null: no, initial-value: 'fizz'
 
       specify 'throws an error' ->
         @leaf.$set 'buzz'
-        expect(~> @leaf.$set null).to.throw 'Error setting `path.to.leaf`. leaf: null fails non-null constraint'
+        expect(~> @leaf.$set null).to.throw 'Error setting `path.to.leaf`: null fails non-null constraint'
         expect(@leaf.$get!).to.equal 'buzz'
 
 
     test-cases 'leaves with initial value' [
-      -> @store = create-store (_) -> color: _ initial-value: 'red'
-      -> @store = create-store (_) -> color: _ allow-null: no, initial-value: 'red'
+      -> @color = build-leaf __ initial-value: 'red'
+      -> @color = build-leaf __ allow-null: no, initial-value: 'red'
     ] ->
-      before-each -> @color = @store.color
 
       specify 'leaves are initially set to initial-value' ->
         expect(@color.$get!).to.equal 'red'
@@ -125,10 +120,9 @@ describe 'StoreLeaf' ->
   describe '$set-error' ->
 
     test-cases 'setting errors on leaves' [
-      -> @store = create-store (_) -> current-user: name: _
-      -> @store = create-store (_) -> current-user: name: _!
+      -> @name = build-leaf __
+      -> @name = build-leaf __!
     ] ->
-      before-each -> @name = @store.current-user.name
 
       specify 'leaves initially do not have an error' ->
         expect(@name.$get-error!).to.be.null
@@ -146,16 +140,15 @@ describe 'StoreLeaf' ->
       specify 'throws an error when attempting to access data' ->
         @name.$set 'Alice'
         @name.$set-error Error 'Some error'
-        expect(~> @name.$get!).to.throw 'Error getting `currentUser.name`. name: has error "Some error"'
+        expect(~> @name.$get!).to.throw 'Error getting `path.to.leaf`: has error "Some error"'
 
 
   describe '$set-loading' ->
 
     test-cases 'setting loading on leaves' [
-      -> @store = create-store (_) -> current-user: name: _
-      -> @store = create-store (_) -> current-user: name: _!
+      -> @name = build-leaf __
+      -> @name = build-leaf __!
     ] ->
-      before-each -> @name = @store.current-user.name
 
       specify 'leaves are initially not loading' ->
         expect(@name.$is-loading!).to.be.false
@@ -181,17 +174,15 @@ describe 'StoreLeaf' ->
       specify 'throws an error when attempting to access data' ->
         @name.$set 'Alice'
         @name.$set-loading!
-        expect(~> @name.$get!).to.throw 'Error getting `currentUser.name`. name: is loading'
+        expect(~> @name.$get!).to.throw 'Error getting `path.to.leaf`: is loading'
 
 
   describe '$reset' ->
 
     test-cases 'without initial-value' [
-      -> @store = create-store (_) -> current-user: name: _
-      -> @store = create-store (_) -> current-user: name: _!
+      -> @name = build-leaf __
+      -> @name = build-leaf __!
     ] ->
-      before-each ->
-        @name = @store.current-user.name
 
       specify 'sets the data to null' ->
         @name.$set 'Alice'
@@ -210,8 +201,7 @@ describe 'StoreLeaf' ->
 
     describe 'with initial-value' ->
       before-each ->
-        @store = create-store (_) -> current-user: name: _ initial-value: 'Alice'
-        @name = @store.current-user.name
+        @name = build-leaf __ initial-value: 'Alice'
 
       specify 'sets the data to null' ->
         @name.$set 'Bob'
@@ -222,11 +212,10 @@ describe 'StoreLeaf' ->
   describe '$from-promise' ->
 
     test-cases 'from promise on leaves' [
-      -> @store = create-store (_) -> current-user: name: _
-      -> @store = create-store (_) -> current-user: name: _!
+      -> @name = build-leaf __
+      -> @name = build-leaf __!
     ] ->
       before-each ->
-        @name = @store.current-user.name
         @promise = @name.$from-promise new Promise (@resolve, @reject) ~>
         null
 
@@ -268,12 +257,11 @@ describe 'StoreLeaf' ->
   describe '$on-update' ->
 
     test-cases [
-      -> @store = create-store (_) -> path: to: leaf: _
-      -> @store = create-store (_) -> path: to: leaf: _!
+      -> @leaf = build-leaf __
+      -> @leaf = build-leaf __!
     ] ->
 
       before-each ->
-        @leaf = @store.path.to.leaf
         @leaf.$set 'foo'
         @leaf.$on-update @update-spy = sinon.spy!
 

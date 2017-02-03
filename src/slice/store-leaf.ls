@@ -14,10 +14,10 @@ class StoreLeaf extends StoreNode
   $get: ->
     if @_error?
       error-string = if @_error instanceof Error then @_error.message else @_error
-      throw Error "Error getting `#{@$get-path-string!}`. #{@_key}: has error #{JSON.stringify error-string}"
+      throw Error "Error getting `#{@$get-path-string!}`: has error #{JSON.stringify error-string}"
 
     if @_loading
-      throw Error "Error getting `#{@$get-path-string!}`. #{@_key}: is loading"
+      throw Error "Error getting `#{@$get-path-string!}`: is loading"
 
     @_data
 
@@ -46,7 +46,7 @@ class StoreLeaf extends StoreNode
 
   $set: (data) !->
     schema-placeholder.validate @_schema, data, (err) ~>
-      "Error setting `#{@$get-path-string!}`. #{@_key}: #{err}"
+      "Error setting `#{@$get-path-string!}`: #{err}"
 
     @_update {data, loading: no, error: null}
 

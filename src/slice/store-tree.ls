@@ -6,20 +6,19 @@ require! {
 
 class StoreTree extends StoreNode
 
-  ({actions, children, isRoot, path}) ->
+  ({actions, children: @_children, isRoot, path}) ->
     super ...
-    for own key, value of children
+    for own key, value of @_children
       @[key] = value
+      value.$on-update @$emit-update
 
     if actions?
       for own actionName, action-fn of actions
         @_bind-action action-name, action-fn
 
-    if isRoot
-
 
   $get-error: ->
-    for own key of @_schema
+    for own key of @_children
       err = @[key].$get-error!
       return err if err?
     null
@@ -38,7 +37,7 @@ class StoreTree extends StoreNode
 
 
   $is-loading: ->
-    for own key of @_schema when @[key].$is-loading!
+    for own key of @_children when @[key].$is-loading!
       return yes
     no
 
@@ -82,7 +81,7 @@ class StoreTree extends StoreNode
 
 
   _for-each-subnode: (fn) !->
-    for own key of @_schema
+    for own key of @_children
       fn @[key], key
 
 

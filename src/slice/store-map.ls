@@ -34,7 +34,12 @@ class StoreMap extends StoreNode
 
 
   $key: (key) ->
-    @_mapping[key] or= build-store-node this, @_child-schema, key
+    unless @_mapping[key]
+      @_mapping[key] = build-store-node do
+        path: @$get-path.concat(key)
+        schema: @_child-schema
+      @_mapping[key].$on-update @$emit-update
+    @_mapping[key]
 
 
   $set-store: (@_store) ->

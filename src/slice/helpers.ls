@@ -23,4 +23,4 @@ build-store-node = ({actions, schema, path}) ->
   | otherwise                                => build-store-tree {actions, schema, path}
 
 
-module.exports = {build-child-node}
+module.exports = {build-store-node}
