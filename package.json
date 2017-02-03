@@ -4,7 +4,7 @@
   "scripts": {
     "build": "webpack",
     "prepublish": "yarn run build",
-    "test": "mocha 'src/**/*.spec.ls'"
+    "test": "mocha --reporter dot 'src/**/*.spec.ls'"
   },
   "license": "MIT",
   "devDependencies": {
