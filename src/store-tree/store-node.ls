@@ -37,7 +37,4 @@ class StoreNode
       defaultValue
 
 
-  $set-store: (@_store) ->
-
-
 module.exports = StoreNode
