@@ -1,11 +1,15 @@
 machine:
+  environment:
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   node:
-    version: 7.2.1
+    version: 7.5.0
 
 
-test:
-  post:
-    - npm run build
+dependencies:
+  cache_directories:
+    - ~/.cache/yarn
+  override:
+    - yarn
 
 
 deployment:
@@ -14,3 +18,10 @@ deployment:
     commands:
       - npm set //registry.npmjs.org/:_authToken $AUTH_TOKEN
       - npm publish
+
+
+test:
+  override:
+    - yarn check
+    - yarn test
+    - yarn build
