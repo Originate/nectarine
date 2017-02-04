@@ -61,8 +61,9 @@ class StoreNode
     @_should-queue-updates = yes
     fn()
     @_should-queue-updates = no
-    while args = @_queued-updates.shift()
+    for args in @_queued-updates
       @$emit-update ...args, {batchId, batchPath: @$get-path!}
+    @_queued-updates = []
 
 
 module.exports = StoreNode
