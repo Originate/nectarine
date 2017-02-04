@@ -97,6 +97,15 @@ describe 'StoreTree' ->
       specify 'setting a non-object on a parent throws an error' ->
         expect(~> @current-user.$set 'Alice').to.throw 'calling $set on a tree must be called with an object'
 
+      specify 'batches updates until all have been performed', ->
+        currentUserValues = []
+        @current-user.$on-update ~> currentUserValues.push @current-user.$get()
+        @current-user.$set name: 'Alice', email: 'alice@example.com'
+        expect(currentUserValues).to.eql [
+          {name: 'Alice', email: 'alice@example.com'},
+          {name: 'Alice', email: 'alice@example.com'}
+        ]
+
 
     test-cases 'setting values on parents of leaves with specified type' [
       -> @store = create-store (_) -> path: to: leaf: _ initial-value: 123
@@ -170,12 +179,19 @@ describe 'StoreTree' ->
         expect(@store.current-user.name.$is-loading!).to.be.false
         expect(@store.current-user.email.$is-loading!).to.be.false
 
+      specify 'batches updates until all have been performed', ->
+        err = new Error 'Some error'
+        emailErrors = []
+        @store.current-user.$on-update ~> emailErrors.push @store.current-user.email.$get-error()
+        @store.current-user.$set-error err
+        expect(emailErrors).to.eql [err, err]
+
 
   describe '$set-loading' ->
 
     test-cases 'setting loading on leaves' [
-      -> @store = create-store (_) -> path: to: leaf: _
-      -> @store = create-store (_) -> path: to: leaf: _!
+      -> @store = create-store (_) -> path: to: leaf: _, leaf2: _
+      -> @store = create-store (_) -> path: to: leaf: _!, leaf2: _!
     ] ->
 
       specify 'trees are initially not loading' ->
@@ -207,12 +223,18 @@ describe 'StoreTree' ->
         @store.path.$set-loading!
         expect(@store.path.to.leaf.$get-error!).to.be.null
 
+      specify 'batches updates until all have been performed', ->
+        leafLoadings = []
+        @store.path.$on-update ~> leafLoadings.push @store.path.to.leaf2.$is-loading!
+        @store.path.$set-loading!
+        expect(leafLoadings).to.eql [true, true]
+
 
   describe '$reset' ->
 
     test-cases 'resetting leaves' [
-      -> @store = create-store (_) -> path: to: leaf: _
-      -> @store = create-store (_) -> path: to: leaf: _!
+      -> @store = create-store (_) -> path: to: leaf: _, leaf2: _
+      -> @store = create-store (_) -> path: to: leaf: _!, leaf2: _!
     ] ->
 
       specify 'resets data to the initial value' ->
@@ -229,6 +251,13 @@ describe 'StoreTree' ->
         @store.path.to.leaf.$set-error Error 'Some error'
         @store.path.$reset()
         expect(@store.path.to.leaf.$get-error!).to.be.null
+
+      specify 'batches updates until all have been performed', ->
+        leafValues = []
+        @store.path.to.leaf2.$set 'Bob'
+        @store.path.$on-update ~> leafValues.push @store.path.to.leaf2.$get!
+        @store.path.$reset()
+        expect(leafValues).to.eql [null, null]
 
 
   describe '$from-promise' ->

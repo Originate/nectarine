@@ -63,8 +63,9 @@ class StoreTree extends StoreNode
 
 
   _for-each-subnode: (fn) !->
-    for own key of @_schema
-      fn @[key], key
+    @$batch-emit-updates ~>
+      for own key of @_schema
+        fn @[key], key
 
 
 module.exports = StoreTree

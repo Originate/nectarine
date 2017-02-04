@@ -7,6 +7,7 @@ class StoreNode
 
   (@_schema) ->
     @_update-callbacks = []
+    @_queued-updates = []
 
 
   $off-update: (callback) ->
@@ -18,8 +19,11 @@ class StoreNode
 
 
   $emit-update: (...args) ~>
-    for callback in @_update-callbacks
-      callback.apply {}, args
+    if @_should-queue-updates
+      @_queued-updates.push args
+    else
+      for callback in @_update-callbacks
+        callback.apply {}, args
 
 
   $get-path: ->
@@ -46,6 +50,14 @@ class StoreNode
       @$get!
     catch
       defaultValue
+
+
+  $batch-emit-updates: (fn) ->
+    @_should-queue-updates = yes
+    fn()
+    @_should-queue-updates = no
+    while args = @_queued-updates.pop()
+      @$emit-update ...args
 
 
 module.exports = StoreNode
