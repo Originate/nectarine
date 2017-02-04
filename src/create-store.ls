@@ -4,7 +4,9 @@ require! {
 
 
 create-store = (slice-mapping, {dependencies} = {}) ->
-  build-store-node {dependencies, isRoot: true, path: [], schema: slice-mapping}
+  get-action-context = -> {store, ...dependencies}
+  store = build-store-node {get-action-context, path: [], schema: slice-mapping}
+  store
 
 
 module.exports = create-store

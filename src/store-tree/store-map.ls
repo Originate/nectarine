@@ -42,9 +42,4 @@ class StoreMap extends StoreNode
     @_mapping[key]
 
 
-  $set-store: (@_store) ->
-    for own key, value of @_mapping
-      value.$set-store @_store
-
-
 module.exports = StoreMap

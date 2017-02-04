@@ -59,9 +59,6 @@ class StoreLeaf extends StoreNode
     @_update {data: null, loading, error: null}
 
 
-  $set-store: (@_store) ->
-
-
   _update: (new-values) ->
     old-values = data: @_data, loading: @_loading, error: @_error
     @_data = new-values.data

@@ -7,7 +7,9 @@ require! {
 build-store-tree = (options) ->
   children = {}
   for own key, childSchema of options.schema
-    childOptions = {path: options.path.concat(key)}
+    childOptions =
+      get-action-context: options.get-action-context
+      path: options.path.concat(key)
     if childSchema instanceof SliceData
       childOptions.actions = childSchema.actions
       childOptions.schema = childSchema.schema
