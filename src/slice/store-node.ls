@@ -3,6 +3,9 @@ require! {
 }
 
 
+batchId = 0
+
+
 class StoreNode
 
   (@_schema) ->
@@ -53,11 +56,12 @@ class StoreNode
 
 
   $batch-emit-updates: (fn) ->
+    currentBatchId = (batchId += 1)
     @_should-queue-updates = yes
     fn()
     @_should-queue-updates = no
     while args = @_queued-updates.pop()
-      @$emit-update ...args
+      @$emit-update ...args, currentBatchId
 
 
 module.exports = StoreNode
