@@ -3,7 +3,7 @@ require! {
 }
 
 
-batchId = 0
+globalBatchId = 0
 
 
 class StoreNode
@@ -21,12 +21,12 @@ class StoreNode
     @_update-callbacks.push callback
 
 
-  $emit-update: (...args) ~>
+  $emit-update: (newValue, oldValue, pathArray) ~>
     if @_should-queue-updates
-      @_queued-updates.push args
+      @_queued-updates.push [newValue, oldValue, pathArray]
     else
       for callback in @_update-callbacks
-        callback.apply {}, args
+        callback ...
 
 
   $get-path: ->
@@ -56,12 +56,13 @@ class StoreNode
 
 
   $batch-emit-updates: (fn) ->
-    currentBatchId = (batchId += 1)
+    globalBatchId += 1
+    batchId = globalBatchId
     @_should-queue-updates = yes
     fn()
     @_should-queue-updates = no
-    while args = @_queued-updates.pop()
-      @$emit-update ...args, currentBatchId
+    while args = @_queued-updates.shift()
+      @$emit-update ...args, {batchId, batchPath: @$get-path!}
 
 
 module.exports = StoreNode

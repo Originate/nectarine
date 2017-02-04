@@ -98,13 +98,17 @@ describe 'StoreTree' ->
         expect(~> @current-user.$set 'Alice').to.throw 'calling $set on a tree must be called with an object'
 
       specify 'batches updates until all have been performed', ->
-        currentUserValues = []
-        @current-user.$on-update ~> currentUserValues.push @current-user.$get()
+        values = []
+        update-spy = sinon.spy ~> values.push @current-user.$get()
+        @current-user.$on-update update-spy
         @current-user.$set name: 'Alice', email: 'alice@example.com'
-        expect(currentUserValues).to.eql [
+        expect(values).to.eql [
           {name: 'Alice', email: 'alice@example.com'},
           {name: 'Alice', email: 'alice@example.com'}
         ]
+        expect(update-spy.args[0][3].batch-id).to.eql update-spy.args[1][3].batch-id
+        expect(update-spy.args[0][3].batch-path).to.eql <[currentUser]>
+        expect(update-spy.args[1][3].batch-path).to.eql <[currentUser]>
 
 
     test-cases 'setting values on parents of leaves with specified type' [
@@ -181,10 +185,14 @@ describe 'StoreTree' ->
 
       specify 'batches updates until all have been performed', ->
         err = new Error 'Some error'
-        emailErrors = []
-        @store.current-user.$on-update ~> emailErrors.push @store.current-user.email.$get-error()
+        values = []
+        update-spy = sinon.spy ~> values.push @store.current-user.email.$get-error()
+        @store.current-user.$on-update update-spy
         @store.current-user.$set-error err
-        expect(emailErrors).to.eql [err, err]
+        expect(values).to.eql [err, err]
+        expect(update-spy.args[0][3].batch-id).to.eql update-spy.args[1][3].batch-id
+        expect(update-spy.args[0][3].batch-path).to.eql <[currentUser]>
+        expect(update-spy.args[1][3].batch-path).to.eql <[currentUser]>
 
 
   describe '$set-loading' ->
@@ -224,10 +232,14 @@ describe 'StoreTree' ->
         expect(@store.path.to.leaf.$get-error!).to.be.null
 
       specify 'batches updates until all have been performed', ->
-        leafLoadings = []
-        @store.path.$on-update ~> leafLoadings.push @store.path.to.leaf2.$is-loading!
+        values = []
+        update-spy = sinon.spy ~> values.push @store.path.to.leaf2.$is-loading!
+        @store.path.$on-update update-spy
         @store.path.$set-loading!
-        expect(leafLoadings).to.eql [true, true]
+        expect(values).to.eql [true, true]
+        expect(update-spy.args[0][3].batch-id).to.eql update-spy.args[1][3].batch-id
+        expect(update-spy.args[0][3].batch-path).to.eql <[path]>
+        expect(update-spy.args[1][3].batch-path).to.eql <[path]>
 
 
   describe '$reset' ->
@@ -253,11 +265,15 @@ describe 'StoreTree' ->
         expect(@store.path.to.leaf.$get-error!).to.be.null
 
       specify 'batches updates until all have been performed', ->
-        leafValues = []
+        values = []
+        update-spy = sinon.spy ~> values.push @store.path.to.leaf2.$get!
         @store.path.to.leaf2.$set 'Bob'
-        @store.path.$on-update ~> leafValues.push @store.path.to.leaf2.$get!
+        @store.path.$on-update update-spy
         @store.path.$reset()
-        expect(leafValues).to.eql [null, null]
+        expect(values).to.eql [null, null]
+        expect(update-spy.args[0][3].batch-id).to.eql update-spy.args[1][3].batch-id
+        expect(update-spy.args[0][3].batch-path).to.eql <[path]>
+        expect(update-spy.args[1][3].batch-path).to.eql <[path]>
 
 
   describe '$from-promise' ->

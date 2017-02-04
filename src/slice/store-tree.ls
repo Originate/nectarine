@@ -37,22 +37,22 @@ class StoreTree extends StoreNode
     no
 
 
-  $reset: ->
+  $reset: -> @$batch-emit-updates ~>
     @_for-each-subnode (subnode) -> subnode.$reset!
 
 
-  $set: (data) !->
+  $set: (data) !-> @$batch-emit-updates ~>
     switch typeof! data
     | \Object   => @_for-each-subnode (subnode, key) -> subnode.$set data[key] if data[key] isnt undefined
     | \Null     => @_for-each-subnode (subnode) -> subnode.$set null
     | otherwise => throw Error 'calling $set on a tree must be called with an object or null'
 
 
-  $set-loading: (loading = yes) !->
+  $set-loading: (loading = yes) !-> @$batch-emit-updates ~>
     @_for-each-subnode (subnode) -> subnode.$set-loading loading
 
 
-  $set-error: (err) !~>
+  $set-error: (err) !~> @$batch-emit-updates ~>
     @_for-each-subnode (subnode) -> subnode.$set-error err
 
 
@@ -63,9 +63,8 @@ class StoreTree extends StoreNode
 
 
   _for-each-subnode: (fn) !->
-    @$batch-emit-updates ~>
-      for own key of @_schema
-        fn @[key], key
+    for own key of @_schema
+      fn @[key], key
 
 
 module.exports = StoreTree

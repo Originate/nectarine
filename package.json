@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "lodash.assign": "^4.2.0",
-    "lodash.pull": "^4.1.0"
+    "lodash.pull": "^4.1.0",
+    "lodash.set": "^4.3.2"
   },
   "files": [
     "index.js"
