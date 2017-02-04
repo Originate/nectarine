@@ -14,7 +14,7 @@ describe 'Provider' ->
   beforeEach ->
     @store = new StoreTree {}
 
-  specify 'defines a child context type for slice', ->
+  specify 'defines a child context type for store', ->
     expect(Provider.child-context-types.store).to.exist
 
   specify 'defines a prop type for slice / children', ->
@@ -26,7 +26,7 @@ describe 'Provider' ->
       component = e Provider, {@store}, e(TestComponent)
       @wrapper = shallow component
 
-    specify 'defines a child context with the slice', ->
+    specify 'defines a child context with the store', ->
       expect(@wrapper.instance().get-child-context()).to.eql {@store}
 
     specify 'renders the component', ->
