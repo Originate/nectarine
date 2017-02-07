@@ -6,14 +6,19 @@ require! {
 
 class StoreTree extends StoreNode
 
-  ->
+  ({actions, children: @_children, get-action-context: @_get-action-context, path}) ->
     super ...
-    for own key, value of @_schema
-      @[key] = build-child-node this, value, key
+    for own key, value of @_children
+      @[key] = value
+      value.$on-update @$emit-update
+
+    if actions?
+      for own actionName, action-fn of actions
+        @_bind-action action-name, action-fn
 
 
   $get-error: ->
-    for own key of @_schema
+    for own key of @_children
       err = @[key].$get-error!
       return err if err?
     null
@@ -32,7 +37,7 @@ class StoreTree extends StoreNode
 
 
   $is-loading: ->
-    for own key of @_schema when @[key].$is-loading!
+    for own key of @_children when @[key].$is-loading!
       return yes
     no
 
@@ -62,8 +67,17 @@ class StoreTree extends StoreNode
     obj
 
 
+  _bind-action: (action-name, action-fn) ->
+    if @[action-name]
+      throw new Error "Failed to create slice: Action \"#{action-name}\" would override schema"
+
+    @[action-name] = (...args) ~>
+      context = {slice: this, ...@_get-action-context!}
+      action-fn.apply context, args
+
+
   _for-each-subnode: (fn) !->
-    for own key of @_schema
+    for own key of @_children
       fn @[key], key
 
 

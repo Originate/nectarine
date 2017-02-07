@@ -1,10 +1,10 @@
 require! {
-  './slice': Slice
+  './slice-data': SliceData
 }
 
 
 create-slice = (opts) ->
-  new Slice opts
+  new SliceData opts
 
 
 module.exports = create-slice
