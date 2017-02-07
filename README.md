@@ -1,4 +1,4 @@
-# Nectarine
+# Nectarine [![CircleCI](https://circleci.com/gh/Originate/nectarine/tree/master.svg?style=svg)](https://circleci.com/gh/Originate/nectarine/tree/master)
 
 A way to manage state in JavaScript applications.
 
