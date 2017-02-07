@@ -1,22 +1,22 @@
 require! {
   'react'
-  './slice': Slice
+  './store-tree': StoreTree
 }
 
 
 class Provider extends react.Component
 
   @child-context-types =
-    slice: react.PropTypes.instance-of(Slice)
+    store: react.PropTypes.instance-of(StoreTree)
 
 
   @prop-types =
-    slice: react.PropTypes.instance-of(Slice)
+    store: react.PropTypes.instance-of(StoreTree)
     children: react.PropTypes.element.isRequired
 
 
   get-child-context: ->
-    {slice: @props.slice}
+    {store: @props.store}
 
 
   render: ->
