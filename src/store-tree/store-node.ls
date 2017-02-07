@@ -5,7 +5,7 @@ require! {
 
 class StoreNode
 
-  (@_schema) ->
+  ({path: @_path}) ->
     @_update-callbacks = []
 
 
@@ -23,22 +23,11 @@ class StoreNode
 
 
   $get-path: ->
-    | @_parent? => @_parent.$get-path!.concat @_key
-    | otherwise => []
+    @_path
 
 
   $get-path-string: ->
     @$get-path!.join '.'
-
-
-  $get-root: ->
-    @_parent?.$get-root! or this
-
-
-  $set-parent: (@_parent, @_key) ->
-
-
-  $inject: (@_dependencies) ->
 
 
   $get-or-else: (defaultValue = null) ->
