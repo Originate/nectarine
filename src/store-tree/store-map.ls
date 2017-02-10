@@ -25,15 +25,10 @@ class StoreMap extends StoreNode
     throw Error @_buildErrorMessage '$get()', '$getAll()'
 
 
-  $get-all: (type = 'data') ->
+  $get-all: ->
     obj = {}
     for own key of @_mapping
-      if @_mapping[key].$is-loading!
-        if type is 'loading' then obj[key] = true
-      else if error = @_mapping[key].$get-error!
-        if type is 'error' then obj[key] = error
-      else
-        if type is 'data' then obj[key] = @_mapping[key].$get!
+      try obj[key] = @_mapping[key].$get!
     obj
 
 
@@ -48,6 +43,9 @@ class StoreMap extends StoreNode
         schema: @_child-schema
       @_mapping[key].$on-update @$emit-update
     @_mapping[key]
+
+
+  $keys: -> Object.keys @_mapping
 
 
   $set: ->

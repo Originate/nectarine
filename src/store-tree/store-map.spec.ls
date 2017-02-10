@@ -43,26 +43,10 @@ describe 'StoreMap' ->
         @map.$key('5').$set-error new Error 'error2'
         @map.$key('6').$set-loading!
 
-      describe 'with data' ->
-
-        specify 'returns a mapping of all the keys with data' ->
-          expect(@map.$get-all!).to.eql do
-            1: {name: 'Alice'}
-            4: {name: 'Bob'}
-
-      describe 'with errors' ->
-
-        specify 'returns a mapping of all the keys with errors' ->
-          expect(@map.$get-all('error')).to.eql do
-            2: new Error 'error1'
-            5: new Error 'error2'
-
-      describe 'are loading' ->
-
-        specify 'returns an array of all the keys that are loading' ->
-          expect(@map.$get-all('loading')).to.eql do
-            3: true
-            6: true
+      specify 'returns a mapping of all the keys with data' ->
+        expect(@map.$get-all!).to.eql do
+          1: {name: 'Alice'}
+          4: {name: 'Bob'}
 
 
     describe '$get-error' ->
@@ -89,6 +73,18 @@ describe 'StoreMap' ->
       specify 'does not overwrite existing children', ->
         @map.$key('1').name.$set('Alice')
         expect(@map.$key('1').name.$get()).to.eql 'Alice'
+
+
+    describe '$keys' ->
+
+      specify 'returns an empty array by default' ->
+        expect(@map.$keys!).to.eql []
+
+      specify 'returns the keys of the initialized objects' ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$key('2').$set-error new Error 'error1'
+        @map.$key('3').$set-loading!
+        expect(@map.$keys!).to.eql ['1', '2', '3']
 
 
     describe '$set' ->
