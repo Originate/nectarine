@@ -8,9 +8,6 @@ Here is how nectarine would implement the
 * Actions are plain functions and can be used for encapsulation or to group getters or setters
 * `mapStateToProps` and `mapDispatchToProps` are combined into a single `mapProps`
 
-The following is the source code that would replace the entry point, action creators, reducers, and container components.
-The presentational components would be the same.
-
 # Entry Point
 
 ```js
