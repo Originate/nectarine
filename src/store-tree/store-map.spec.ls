@@ -16,35 +16,67 @@ describe 'StoreMap' ->
   ] ->
 
 
-    describe '$get-error' ->
+    describe '$from-promise' ->
 
-      specify 'returns null by default', ->
-        expect(@map.$get-error!).to.be.null
-
-      specify 'returns the error of any child if present', ->
-        error = new Error('fail')
-        @map.$key('1').$set-error error
-        expect(@map.$get-error!).to.eql error
+      specify 'throws an error' ->
+        expect(~>
+          promise = new Promise (resolve) -> resolve name: 'Alice'
+          @map.$from-promise(promise)
+        ).to.throw "Error at `path.to.map`: $fromPromise() can not be used on a map. Use $key(k).$fromPromise(v)"
 
 
     describe '$get' ->
 
-      specify 'returns an empty object by default' ->
-        expect(@map.$get!).to.eql {}
+      specify 'throws an error' ->
+        expect(~>
+          @map.$get!
+        ).to.throw 'Error at `path.to.map`: $get() can not be used on a map. Use $getAll()'
 
-      specify 'returns the children if set', ->
-        @map.$key('1').name.$set('Alice')
-        expect(@map.$get!).to.eql 1: {name: 'Alice'}
+
+    describe '$get-all' ->
+
+      before-each ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$key('2').$set-error new Error 'error1'
+        @map.$key('3').$set-loading!
+        @map.$key('4').$set name: 'Bob'
+        @map.$key('5').$set-error new Error 'error2'
+        @map.$key('6').$set-loading!
+
+      describe 'with data' ->
+
+        specify 'returns a mapping of all the keys with data' ->
+          expect(@map.$get-all!).to.eql do
+            1: {name: 'Alice'}
+            4: {name: 'Bob'}
+
+      describe 'with errors' ->
+
+        specify 'returns a mapping of all the keys with errors' ->
+          expect(@map.$get-all('error')).to.eql do
+            2: new Error 'error1'
+            5: new Error 'error2'
+
+      describe 'are loading' ->
+
+        specify 'returns an array of all the keys that are loading' ->
+          expect(@map.$get-all('loading')).to.eql ['3', '6']
+
+
+    describe '$get-error' ->
+
+      specify 'throws an error' ->
+        expect(~>
+          @map.$get-error!
+        ).to.throw "Error at `path.to.map`: $getError() can not be used on a map. Use $getAll('error')"
 
 
     describe '$is-loading' ->
 
-      specify 'returns false by default', ->
-        expect(@map.$is-loading!).to.be.false
-
-      specify 'returns true if a child is loading', ->
-        @map.$key('1').$set-loading!
-        expect(@map.$is-loading!).to.be.true
+      specify 'throws an error' ->
+        expect(~>
+          @map.$is-loading!
+        ).to.throw "Error at `path.to.map`: $isLoading() can not be used on a map. Use $getAll('loading')"
 
 
     describe '$key', ->
@@ -55,3 +87,27 @@ describe 'StoreMap' ->
       specify 'does not overwrite existing children', ->
         @map.$key('1').name.$set('Alice')
         expect(@map.$key('1').name.$get()).to.eql 'Alice'
+
+
+    describe '$set' ->
+
+      specify 'throws an error' ->
+        expect(~>
+          @map.$set(1: {name: 'Alice'})
+        ).to.throw "Error at `path.to.map`: $set() can not be used on a map. Use $key(k).$set(v)"
+
+
+    describe '$set-error' ->
+
+      specify 'throws an error' ->
+        expect(~>
+          @map.$set-error(new Error('my error'))
+        ).to.throw "Error at `path.to.map`: $setError() can not be used on a map. Use $key(k).$setError(e)"
+
+
+    describe '$set-loading' ->
+
+      specify 'throws an error' ->
+        expect(~>
+          @map.$set-loading!
+        ).to.throw "Error at `path.to.map`: $setLoading() can not be used on a map. Use $key(k).$setLoading()"
