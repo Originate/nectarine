@@ -60,7 +60,9 @@ describe 'StoreMap' ->
       describe 'are loading' ->
 
         specify 'returns an array of all the keys that are loading' ->
-          expect(@map.$get-all('loading')).to.eql ['3', '6']
+          expect(@map.$get-all('loading')).to.eql do
+            3: true
+            6: true
 
 
     describe '$get-error' ->

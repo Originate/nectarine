@@ -34,10 +34,7 @@ class StoreMap extends StoreNode
         if type is 'error' then obj[key] = error
       else
         if type is 'data' then obj[key] = @_mapping[key].$get!
-    if type is 'loading'
-      Object.keys(obj)
-    else
-      obj
+    obj
 
 
   $is-loading: ->
