@@ -40,8 +40,8 @@ const todosSlice = createSlice({
   schema: (_, map) => {
     map({
       completed: _({initialValue: false})
-      id: _({type: 'number', allowNull: false})
-      text: _({type: 'string', allowNull: false})
+      id: _({type: 'number', require: true})
+      text: _({type: 'string', require: true})
     })
   },
   actions: {
