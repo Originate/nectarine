@@ -49,7 +49,7 @@ describe 'StoreLeaf' ->
       -> @name = create-leaf __
       -> @name = create-leaf __!
       -> @name = create-leaf __ type: \any
-      -> @name = create-leaf __ require: yes, type: \any, initial-value: 'fizz'
+      -> @name = create-leaf __ required: yes, type: \any, initial-value: 'fizz'
     ] ->
 
       specify 'sets the value of the leaf' ->
@@ -85,10 +85,10 @@ describe 'StoreLeaf' ->
         ).to.throw 'Error setting `path.to.leaf`: "Not a number" (type String) does not match required type Number'
 
 
-    test-cases 'require isnt true' [
+    test-cases 'required isnt true' [
       -> @leaf = create-leaf __
       -> @leaf = create-leaf __!
-      -> @leaf = create-leaf __ require: no
+      -> @leaf = create-leaf __ required: no
     ] ->
 
       specify 'allows setting null' ->
@@ -97,10 +97,10 @@ describe 'StoreLeaf' ->
         expect(@leaf.$get!).to.be.null
 
 
-    describe 'require is true' ->
+    describe 'required is true' ->
 
       before-each ->
-        @leaf = create-leaf __ require: yes, initial-value: 'fizz'
+        @leaf = create-leaf __ required: yes, initial-value: 'fizz'
 
       specify 'throws an error' ->
         @leaf.$set 'buzz'
@@ -110,7 +110,7 @@ describe 'StoreLeaf' ->
 
     test-cases 'leaves with initial value' [
       -> @color = create-leaf __ initial-value: 'red'
-      -> @color = create-leaf __ require: yes, initial-value: 'red'
+      -> @color = create-leaf __ required: yes, initial-value: 'red'
     ] ->
 
       specify 'leaves are initially set to initial-value' ->

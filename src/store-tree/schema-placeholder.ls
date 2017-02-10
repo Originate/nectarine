@@ -4,15 +4,15 @@ require! {
 
 
 class SchemaPlaceholder
-  ({@type, @initial-value, @validate, @require} = {}) ->
+  ({@type, @initial-value, @validate, @required} = {}) ->
     if @validate?
       unless @validate.constructor in [Function, RegExp]
         throw new Error "validate must be a function or regular expression (got #{typeof! @validate})"
       if @validate instanceof RegExp and @type isnt SchemaType.STRING
         throw new Error 'validate must be a function if type isnt string'
 
-    if @require is true and not @initial-value?
-      throw new Error 'initialValue is required when setting require to true'
+    if @required is true and not @initial-value?
+      throw new Error 'initialValue is required when setting required to true'
 
     if @initial-value?
       validate this, @initial-value, (err) ->
