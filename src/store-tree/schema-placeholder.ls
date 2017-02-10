@@ -4,15 +4,15 @@ require! {
 
 
 class SchemaPlaceholder
-  ({@type, @initial-value, @validate, @allow-null} = {}) ->
+  ({@type, @initial-value, @validate, @required} = {}) ->
     if @validate?
       unless @validate.constructor in [Function, RegExp]
         throw new Error "validate must be a function or regular expression (got #{typeof! @validate})"
       if @validate instanceof RegExp and @type isnt SchemaType.STRING
         throw new Error 'validate must be a function if type isnt string'
 
-    if @allow-null is false and not @initial-value?
-      throw new Error 'initialValue is required when setting allowNull to false'
+    if @required is true and not @initial-value?
+      throw new Error 'initialValue is required when setting required to true'
 
     if @initial-value?
       validate this, @initial-value, (err) ->
@@ -54,7 +54,7 @@ get-type = ->
 
 validate = (placeholder, value, get-error-string = -> it) ->
   unless value?
-    return unless placeholder.allow-null is false
+    return unless placeholder.required is true
     throw new Error get-error-string "#{String value} fails non-null constraint"
 
   get-type(placeholder).validate value, get-error-string

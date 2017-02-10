@@ -5,8 +5,12 @@ require! {
 
 class StoreNode
 
-  ({path: @_path}) ->
+  ({actions, get-action-context: @_get-action-context, path: @_path}) ->
     @_update-callbacks = []
+
+    if actions?
+      for own actionName, action-fn of actions
+        @_bind-action action-name, action-fn
 
 
   $off-update: (callback) ->
@@ -35,6 +39,12 @@ class StoreNode
       @$get!
     catch
       defaultValue
+
+
+  _bind-action: (action-name, action-fn) ->
+    @[action-name] = (...args) ~>
+      context = {slice: this, ...@_get-action-context!}
+      action-fn.apply context, args
 
 
 module.exports = StoreNode
