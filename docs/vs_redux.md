@@ -1,13 +1,15 @@
 Here is how nectarine would implement the
-[redux](http://redux.js.org/docs/basics/ExampleTodoList.html) todo list example.
-The following is the source code that would replace the entry point, action creators, reducers, and container components.
+[redux todo list example](http://redux.js.org/docs/basics/ExampleTodoList.html).
 
-# Highlight of differences
+# Highlights
 
 * The store exposes reducers at a high level with `$set` and its related methods
 * Each `$set` call can be thought of as a `dispatch` as it triggers updates
 * Actions are plain functions and can be used for encapsulation or to group getters or setters
 * `mapStateToProps` and `mapDispatchToProps` are combined into a single `mapProps`
+
+The following is the source code that would replace the entry point, action creators, reducers, and container components.
+The presentational components would be the same.
 
 # Entry Point
 
@@ -145,6 +147,7 @@ export default FilterLink
 # Other Components
 
 ```js
+// containers/AddTodo.js
 import React from 'react'
 import {connect} from 'nectarine'
 
