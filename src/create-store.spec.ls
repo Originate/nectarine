@@ -78,6 +78,6 @@ describe 'create-store' ->
       expect(~>
         create-store {user: userSlice}
       ).to.throw '''
-        `user`: schema and action keys clash. The following keys would be ambiguous, please ensure each set is unique
+        `user`: schema and action keys clash. The following keys would be ambiguous. Update them to be unique
           name
         '''

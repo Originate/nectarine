@@ -16,7 +16,7 @@ class StoreTree extends StoreNode
     clashes = intersection Object.keys(@_children), Object.keys(actions or {})
     if clashes.length > 0
       throw new Error """
-        `#{@$get-path-string!}`: schema and action keys clash. The following keys would be ambiguous, please ensure each set is unique
+        `#{@$get-path-string!}`: schema and action keys clash. The following keys would be ambiguous. Update them to be unique
           #{clashes.join('\n  ')}
         """
 
