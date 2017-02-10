@@ -11,6 +11,7 @@ Here is how nectarine would implement the
 # Entry Point
 
 ```js
+// index.js
 import React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'nectarine'
