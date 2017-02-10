@@ -38,7 +38,7 @@ let nextTodoId = 0
 
 const todosSlice = createSlice({
   schema: (_, map) => {
-    list: map({
+    map({
       completed: _({initialValue: false})
       id: _({type: 'number', allowNull: false})
       text: _({type: 'string', allowNull: false})
@@ -47,10 +47,10 @@ const todosSlice = createSlice({
   actions: {
     add: (text) => {
       let id = nextTodoId++
-      this.slice.list.$key(id).$set({id, text})
+      this.slice.$key(id).$set({id, text})
     },
     toggle: (id) => {
-      let todo = this.slice.list.$key(id)
+      let todo = this.slice.$key(id)
       todo.completed.$set(not todo.completed)
     }
   }
@@ -60,27 +60,27 @@ export default todosSlice
 ```
 
 ```js
-// store/user_interface_slice.js
+// store/visibility_filter_slice.js
 import {createSlice} from 'nectarine'
 
-const userInterfaceSlice = createSlice({
-  schema: (_, map) => {
-    visibilityFilter: _({initialValue: 'SHOW_ALL'})
+const visibilityFilterSlice = createSlice({
+  schema: (_) => {
+    _({initialValue: 'SHOW_ALL'})
   }
 })
 
-export default userInterfaceSlice
+export default visibilityFilterSlice
 ```
 
 ```js
 // store/index.js
 import {createStore} from 'nectarine'
 import todos from './todos_slice'
-import userInterface from './user_interface_slice'
+import visibilityFilterSlice from './visibility_filter_slice'
 
 const store = createStore({
   todos,
-  userInterface
+  visibilityFilterSlice
 })
 
 export default store
@@ -105,10 +105,8 @@ const getVisibleTodos = (todos, filter) => {
 }
 
 const mapProps = (store) => {
-  const filter = store.userInterface.visibilityFilter.$get()
-  const todos = store.todos.list.$getAll()
   return {
-    todos: getVisibleTodos(todos, filter),
+    todos: getVisibleTodos(store.todos.$getAll(), store.visibilityFilter.$get()),
     onTodoClick: (id) => store.todos.toggle(id)
   }
 }
@@ -127,10 +125,9 @@ import {connect} from 'nectarine'
 import Link from '../components/Link'
 
 const mapProps = (store, ownProps) => {
-  const {visibilityFilter} = store.userInterface
   return {
-    active: ownProps.filter === visibilityFilter.$get(),
-    onClick: => visibilityFilter.$set(ownProps.filter),
+    active: ownProps.filter === store.visibilityFilter.$get(),
+    onClick: => store.visibilityFilter.$set(ownProps.filter),
   }
 }
 
