@@ -8,9 +8,9 @@ A way to manage state in JavaScript applications.
 
 ## Usage
 
-#### Create a slice
+#### Create a slice (a portion of the store)
 ```javascript
-// slices/session.js
+// store/slices/session.js
 import {createSlice} from 'nectarine'
 
 module.exports = createSlice({
@@ -31,27 +31,31 @@ module.exports = createSlice({
 })
 ```
 
-#### Combine slices
+#### Create a store by combining slices
 ```javascript
-// slices/root.js
-import {combineSlices} from 'nectarine'
-import sessionSlice from './session'
+// store/index.js
+import {createStore} from 'nectarine'
+import sessionSlice from './slices/session'
 
-module.exports = combineSlices({
+module.exports = createStore({
   session: sessionSlice
 })
 ```
 
-#### Inject the root slice into your react application
+#### Inject the store into your react application
 ```javascript
 // index.js
-import App from './components/app'
-import rootSlice from './slices/root'
 import {Provider} from 'nectarine'
+import App from './components/app'
+import ReactDOM from 'react-dom'
+import store from './store'
 
-AppProvider = Provider({component: App, slice: rootSlice})
-
-ReactDOM.render(<AppProvider/>, document.getElementById('app'))
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('app')
+)
 ```
 
 
@@ -67,7 +71,7 @@ class Navigation extends React.Component {
 
 module.exports = connect({
   component: Navigation,
-  mapProps: (rootSlice) => {
+  mapProps: (store) => {
     //...
   }
 })
