@@ -4,7 +4,7 @@ Here is how nectarine would implement the
 # Highlights
 
 * The store exposes reducers at a high level with `$set` and its related methods
-* Each `$set` call can be thought of as a `dispatch` as it triggers updates
+* Each `$set` call can be thought of as a `dispatch` as it triggers an update
 * Actions are plain functions and can be used for encapsulation or to group getters or setters
 * `mapStateToProps` and `mapDispatchToProps` are combined into a single `mapProps`
 
