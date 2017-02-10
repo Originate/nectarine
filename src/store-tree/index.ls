@@ -1,4 +1,5 @@
 require! {
+  'lodash.intersection': intersection
   './helpers': {build-child-node}
   './store-node': StoreNode
 }
@@ -6,15 +7,18 @@ require! {
 
 class StoreTree extends StoreNode
 
-  ({actions, children: @_children, get-action-context: @_get-action-context, path}) ->
+  ({actions, children: @_children}) ->
     super ...
     for own key, value of @_children
       @[key] = value
       value.$on-update @$emit-update
 
-    if actions?
-      for own actionName, action-fn of actions
-        @_bind-action action-name, action-fn
+    clashes = intersection Object.keys(@_children), Object.keys(actions or {})
+    if clashes.length > 0
+      throw new Error """
+        `#{@$get-path-string!}`: schema and action keys clash. The following keys would be ambiguous, please ensure each set is unique
+          #{clashes.join('\n  ')}
+        """
 
 
   $get-error: ->
@@ -65,15 +69,6 @@ class StoreTree extends StoreNode
     obj = {}
     @_for-each-subnode (subnode, key) -> obj[key] = subnode.$get!
     obj
-
-
-  _bind-action: (action-name, action-fn) ->
-    if @[action-name]
-      throw new Error "Failed to create slice: Action \"#{action-name}\" would override schema"
-
-    @[action-name] = (...args) ~>
-      context = {slice: this, ...@_get-action-context!}
-      action-fn.apply context, args
 
 
   _for-each-subnode: (fn) !->

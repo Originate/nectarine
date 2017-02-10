@@ -51,3 +51,24 @@ describe 'create-store' ->
       expect(@store.user.name.$get()).to.eql null
       @store.user.initialize()
       expect(@store.user.name.$get()).to.eql 'Alice'
+
+  specify 'a slice can define a leaf', ->
+    todos-slice = create-slice do
+      schema: (_) -> _ initial-value: []
+      actions: initialize: -> @slice.$set @slice.$get().concat('Say hi to Alice')
+    store = create-store todos: todos-slice
+    expect(store.todos.$get()).to.eql []
+    store.todos.initialize()
+    expect(store.todos.$get()).to.eql ['Say hi to Alice']
+
+  describe 'schema / action clash', ->
+    specify 'throws an error', ->
+      userSlice = create-slice do
+        schema: (_) -> name: _
+        actions: name: (value) -> @slice.name.$set value
+      expect(~>
+        create-store {user: userSlice}
+      ).to.throw '''
+        `user`: schema and action keys clash. The following keys would be ambiguous, please ensure each set is unique
+          name
+        '''
