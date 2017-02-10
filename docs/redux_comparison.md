@@ -38,7 +38,7 @@ let nextTodoId = 0
 
 const todosSlice = createSlice({
   schema: (_, map) => {
-    map({
+    return map({
       completed: _({initialValue: false})
       id: _({type: 'number', require: true})
       text: _({type: 'string', require: true})
@@ -65,7 +65,7 @@ import {createSlice} from 'nectarine'
 
 const visibilityFilterSlice = createSlice({
   schema: (_) => {
-    _({initialValue: 'SHOW_ALL'})
+    return _({initialValue: 'SHOW_ALL'})
   }
 })
 
