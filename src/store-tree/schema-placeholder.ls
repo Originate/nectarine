@@ -54,7 +54,7 @@ get-type = ->
 
 validate = (placeholder, value, get-error-string = -> it) ->
   unless value?
-    return unless placeholder.require is true
+    return unless placeholder.required is true
     throw new Error get-error-string "#{String value} fails non-null constraint"
 
   get-type(placeholder).validate value, get-error-string

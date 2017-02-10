@@ -92,7 +92,7 @@ describe 'schema-place-holder' ->
     describe 'require validation' ->
 
       specify 'throws an error if required is true and no initial value is provided' ->
-        expect(-> __(required: yes)).to.throw 'initialValue is required when setting require to true'
+        expect(-> __(required: yes)).to.throw 'initialValue is required when setting required to true'
 
       specify 'throws an error when attempting to set null or undefined and required is true' ->
         p = __ required: yes, initial-value: []
