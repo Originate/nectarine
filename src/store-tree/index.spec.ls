@@ -120,10 +120,10 @@ describe 'StoreTree' ->
         ).to.throw 'Error setting `path.to.tree.name`: "Not a number" (type String) does not match required type Number'
 
 
-    test-cases 'allow-null isnt false' [
+    test-cases 'require isnt true' [
       -> @tree = create-tree name: __
       -> @tree = create-tree name: __!
-      -> @tree = create-tree name: __ allow-null: yes
+      -> @tree = create-tree name: __ require: no
     ] ->
       before-each -> @tree.$set name: 'fizz'
 
@@ -136,10 +136,10 @@ describe 'StoreTree' ->
         expect(@tree.name.$get!).to.be.null
 
 
-    describe 'allow-null is false' ->
+    describe 'require is true' ->
 
       before-each ->
-        @tree = create-tree name: __ allow-null: no, initial-value: 'fizz'
+        @tree = create-tree name: __ require: yes, initial-value: 'fizz'
 
       specify 'throws an error with a deeply nested object to the leaf' ->
         @tree.$set name: 'buzz'

@@ -89,13 +89,13 @@ describe 'schema-place-holder' ->
 
   describe 'validation' ->
 
-    describe 'allow-null validation' ->
+    describe 'require validation' ->
 
-      specify 'throws an error if allow-null is false and no initial value is provided' ->
-        expect(-> __(allow-null: no)).to.throw 'initialValue is required when setting allowNull to false'
+      specify 'throws an error if require is true and no initial value is provided' ->
+        expect(-> __(require: yes)).to.throw 'initialValue is required when setting require to true'
 
-      specify 'throws an error when attempting to set null or undefined and allow-null is false' ->
-        p = __ allow-null: no, initial-value: []
+      specify 'throws an error when attempting to set null or undefined and require is true' ->
+        p = __ require: yes, initial-value: []
         expect(-> validate p, null).to.throw 'null fails non-null constraint'
         expect(-> validate p, undefined).to.throw 'undefined fails non-null constraint'
 
