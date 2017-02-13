@@ -103,15 +103,20 @@ describe 'StoreTree' ->
       specify 'setting a non-object on a parent throws an error' ->
         expect(~> @tree.$set 'Alice').to.throw 'calling $set on a tree must be called with an object'
 
-      specify 'batches updates until all have been performed', ->
-        values = []
-        update-spy = sinon.spy ~> values.push @tree.email.$get()
-        @tree.$on-update update-spy
+      specify 'batches updates', ->
+        @tree.$on-update update-spy = sinon.spy()
         @tree.$set name: 'Alice', email: 'alice@example.com'
-        expect(values).to.eql ['alice@example.com', 'alice@example.com']
-        expect(update-spy.args[0][3].batch-id).to.eql update-spy.args[1][3].batch-id
-        expect(update-spy.args[0][3].batch-path).to.eql <[path to tree]>
-        expect(update-spy.args[1][3].batch-path).to.eql <[path to tree]>
+        expect(update-spy).to.have.been.called-with do
+          path: <[path to tree]>
+          updates: [
+            new-values: {data: 'Alice', loading: false, error: null}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree name]>
+          ,
+            new-values: {data: 'alice@example.com', loading: false, error: null}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree email]>
+          ]
 
 
     test-cases 'setting values on parents of leaves with specified type' [
@@ -130,10 +135,10 @@ describe 'StoreTree' ->
         ).to.throw 'Error setting `path.to.tree.name`: "Not a number" (type String) does not match required type Number'
 
 
-    test-cases 'allow-null isnt false' [
+    test-cases 'required isnt true' [
       -> @tree = create-tree name: __
       -> @tree = create-tree name: __!
-      -> @tree = create-tree name: __ allow-null: yes
+      -> @tree = create-tree name: __ required: no
     ] ->
       before-each -> @tree.$set name: 'fizz'
 
@@ -146,10 +151,10 @@ describe 'StoreTree' ->
         expect(@tree.name.$get!).to.be.null
 
 
-    describe 'allow-null is false' ->
+    describe 'required is true' ->
 
       before-each ->
-        @tree = create-tree name: __ allow-null: no, initial-value: 'fizz'
+        @tree = create-tree name: __ required: yes, initial-value: 'fizz'
 
       specify 'throws an error with a deeply nested object to the leaf' ->
         @tree.$set name: 'buzz'
@@ -186,16 +191,21 @@ describe 'StoreTree' ->
         expect(@tree.name.$is-loading!).to.be.false
         expect(@tree.email.$is-loading!).to.be.false
 
-      specify 'batches updates until all have been performed', ->
+      specify 'batches updates', ->
         err = new Error 'Some error'
-        values = []
-        update-spy = sinon.spy ~> values.push @tree.email.$get-error()
-        @tree.$on-update update-spy
+        @tree.$on-update update-spy = sinon.spy()
         @tree.$set-error err
-        expect(values).to.eql [err, err]
-        expect(update-spy.args[0][3].batch-id).to.eql update-spy.args[1][3].batch-id
-        expect(update-spy.args[0][3].batch-path).to.eql <[path to tree]>
-        expect(update-spy.args[1][3].batch-path).to.eql <[path to tree]>
+        expect(update-spy).to.have.been.called-with do
+          path: <[path to tree]>
+          updates: [
+            new-values: {data: null, loading: false, error: err}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree name]>
+          ,
+            new-values: {data: null, loading: false, error: err}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree email]>
+          ]
 
 
   describe '$set-loading' ->
@@ -230,15 +240,20 @@ describe 'StoreTree' ->
         @tree.$set-loading!
         expect(@tree.name.$get-error!).to.be.null
 
-      specify 'batches updates until all have been performed', ->
-        values = []
-        update-spy = sinon.spy ~> values.push @tree.email.$is-loading!
-        @tree.$on-update update-spy
+      specify 'batches updates', ->
+        @tree.$on-update update-spy = sinon.spy()
         @tree.$set-loading!
-        expect(values).to.eql [true, true]
-        expect(update-spy.args[0][3].batch-id).to.eql update-spy.args[1][3].batch-id
-        expect(update-spy.args[0][3].batch-path).to.eql <[path to tree]>
-        expect(update-spy.args[1][3].batch-path).to.eql <[path to tree]>
+        expect(update-spy).to.have.been.called-with do
+          path: <[path to tree]>
+          updates: [
+            new-values: {data: null, loading: true, error: null}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree name]>
+          ,
+            new-values: {data: null, loading: true, error: null}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree email]>
+          ]
 
 
   describe '$reset' ->
@@ -263,16 +278,21 @@ describe 'StoreTree' ->
         @tree.$reset()
         expect(@tree.name.$get-error!).to.be.null
 
-      specify 'batches updates until all have been performed', ->
-        values = []
-        update-spy = sinon.spy ~> values.push @tree.email.$get!
+      specify 'batches updates', ->
         @tree.$set name: 'Bob', email: 'bob@example.com'
-        @tree.$on-update update-spy
-        @tree.$reset()
-        expect(values).to.eql [null, null]
-        expect(update-spy.args[0][3].batch-id).to.eql update-spy.args[1][3].batch-id
-        expect(update-spy.args[0][3].batch-path).to.eql <[path to tree]>
-        expect(update-spy.args[1][3].batch-path).to.eql <[path to tree]>
+        @tree.$on-update update-spy = sinon.spy()
+        @tree.$reset!
+        expect(update-spy).to.have.been.called-with do
+          path: <[path to tree]>
+          updates: [
+            new-values: {data: null, loading: false, error: null}
+            old-values: {data: 'Bob', loading: false, error: null}
+            path: <[path to tree name]>
+          ,
+            new-values: {data: null, loading: false, error: null}
+            old-values: {data: 'bob@example.com', loading: false, error: null}
+            path: <[path to tree email]>
+          ]
 
 
   describe '$from-promise' ->
@@ -378,6 +398,9 @@ describe 'StoreTree' ->
 
       specify 'calls with new-values, old-values, path' ->
         expect(@tree-update-spy).to.have.been.called-with do
-          * @new-values
-          * data: 'Alice', loading: no, error: null
-          * <[path to tree name]>
+          path: <[path to tree name]>
+          updates: [{
+            @new-values
+            old-values: {data: 'Alice', loading: false, error: null}
+            path: <[path to tree name]>
+          }]

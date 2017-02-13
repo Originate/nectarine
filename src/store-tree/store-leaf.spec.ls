@@ -49,7 +49,7 @@ describe 'StoreLeaf' ->
       -> @name = create-leaf __
       -> @name = create-leaf __!
       -> @name = create-leaf __ type: \any
-      -> @name = create-leaf __ allow-null: no, type: \any, initial-value: 'fizz'
+      -> @name = create-leaf __ required: yes, type: \any, initial-value: 'fizz'
     ] ->
 
       specify 'sets the value of the leaf' ->
@@ -85,10 +85,10 @@ describe 'StoreLeaf' ->
         ).to.throw 'Error setting `path.to.leaf`: "Not a number" (type String) does not match required type Number'
 
 
-    test-cases 'allow-null isnt false' [
+    test-cases 'required isnt true' [
       -> @leaf = create-leaf __
       -> @leaf = create-leaf __!
-      -> @leaf = create-leaf __ allow-null: yes
+      -> @leaf = create-leaf __ required: no
     ] ->
 
       specify 'allows setting null' ->
@@ -97,10 +97,10 @@ describe 'StoreLeaf' ->
         expect(@leaf.$get!).to.be.null
 
 
-    describe 'allow-null is false' ->
+    describe 'required is true' ->
 
       before-each ->
-        @leaf = create-leaf __ allow-null: no, initial-value: 'fizz'
+        @leaf = create-leaf __ required: yes, initial-value: 'fizz'
 
       specify 'throws an error' ->
         @leaf.$set 'buzz'
@@ -110,7 +110,7 @@ describe 'StoreLeaf' ->
 
     test-cases 'leaves with initial value' [
       -> @color = create-leaf __ initial-value: 'red'
-      -> @color = create-leaf __ allow-null: no, initial-value: 'red'
+      -> @color = create-leaf __ required: yes, initial-value: 'red'
     ] ->
 
       specify 'leaves are initially set to initial-value' ->
@@ -295,6 +295,9 @@ describe 'StoreLeaf' ->
 
         specify 'calls with new-values, old-values, path' ->
           expect(@update-spy).to.have.been.called-with do
-            * @new-values
-            * data: 'foo', loading: no, error: null
-            * <[path to leaf]>
+            path: <[path to leaf]>
+            updates: [{
+              old-values: {data: 'foo', loading: no, error: null}
+              @new-values
+              path: <[path to leaf]>
+            }]

@@ -12,7 +12,7 @@ class TestComponent extends react.Component
 describe 'Provider' ->
 
   beforeEach ->
-    @store = new StoreTree {}
+    @store = new StoreTree {children: {}}
 
   specify 'defines a child context type for store', ->
     expect(Provider.child-context-types.store).to.exist

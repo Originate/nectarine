@@ -3,14 +3,15 @@ require! {
 }
 
 
-globalBatchId = 0
-
-
 class StoreNode
 
-  ({path: @_path}) ->
+  ({actions, get-action-context: @_get-action-context, path: @_path}) ->
     @_update-callbacks = []
     @_queued-updates = []
+
+    if actions?
+      for own actionName, action-fn of actions
+        @_bind-action action-name, action-fn
 
 
   $off-update: (callback) ->
@@ -21,9 +22,9 @@ class StoreNode
     @_update-callbacks.push callback
 
 
-  $emit-update: (newValue, oldValue, pathArray) ~>
+  $emit-update: (arg) ~>
     if @_should-queue-updates
-      @_queued-updates.push [newValue, oldValue, pathArray]
+      @_queued-updates.push arg
     else
       for callback in @_update-callbacks
         callback ...
@@ -45,14 +46,20 @@ class StoreNode
 
 
   $batch-emit-updates: (fn) ->
-    globalBatchId += 1
-    batchId = globalBatchId
     @_should-queue-updates = yes
     fn()
     @_should-queue-updates = no
-    for args in @_queued-updates
-      @$emit-update ...args, {batchId, batchPath: @$get-path!}
+    updates = []
+    for arg in @_queued-updates
+      updates = updates.concat arg.updates
     @_queued-updates = []
+    @$emit-update {path: @$get-path!, updates}
+
+
+  _bind-action: (action-name, action-fn) ->
+    @[action-name] = (...args) ~>
+      context = {slice: this, ...@_get-action-context!}
+      action-fn.apply context, args
 
 
 module.exports = StoreNode
