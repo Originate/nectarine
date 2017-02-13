@@ -46,8 +46,6 @@ class StoreNode
 
 
   $batch-emit-updates: (fn) ->
-    globalBatchId += 1
-    batchId = globalBatchId
     @_should-queue-updates = yes
     fn()
     @_should-queue-updates = no
