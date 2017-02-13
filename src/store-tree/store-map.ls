@@ -13,24 +13,27 @@ class StoreMap extends StoreNode
     @_mapping = {}
 
 
+  $from-promise: ->
+    throw Error @_buildErrorMessage '$fromPromise()', '$key(k).$fromPromise(v)'
+
+
   $get-error: ->
-    for own key of @_mapping
-      err = @_mapping[key].$get-error!
-      return err if err?
-    null
+    throw Error @_buildErrorMessage '$getError()', "$getAll('error')"
 
 
   $get: ->
+    throw Error @_buildErrorMessage '$get()', '$getAll()'
+
+
+  $get-all: ->
     obj = {}
     for own key of @_mapping
-      obj[key] = @_mapping[key].$get!
+      try obj[key] = @_mapping[key].$get!
     obj
 
 
   $is-loading: ->
-    for own key of @_mapping when @_mapping[key].$is-loading!
-      return yes
-    no
+    throw Error @_buildErrorMessage '$isLoading()', "$getAll('loading')"
 
 
   $key: (key) ->
@@ -40,6 +43,25 @@ class StoreMap extends StoreNode
         schema: @_child-schema
       @_mapping[key].$on-update @$emit-update
     @_mapping[key]
+
+
+  $keys: -> Object.keys @_mapping
+
+
+  $set: ->
+    throw Error @_buildErrorMessage '$set()', "$key(k).$set(v)"
+
+
+  $set-error: ->
+    throw Error @_buildErrorMessage '$setError()', "$key(k).$setError(e)"
+
+
+  $set-loading: ->
+    throw Error @_buildErrorMessage '$setLoading()', "$key(k).$setLoading()"
+
+
+  _buildErrorMessage: (disallowed, suggestion) ->
+    "Error at `#{@$get-path-string!}`: #{disallowed} can not be used on a map. Use #{suggestion}"
 
 
 module.exports = StoreMap
