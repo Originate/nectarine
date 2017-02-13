@@ -3,9 +3,6 @@ require! {
 }
 
 
-globalBatchId = 0
-
-
 class StoreNode
 
   ({actions, get-action-context: @_get-action-context, path: @_path}) ->
