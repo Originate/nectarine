@@ -9,37 +9,22 @@ class Logger
     @_queue = []
 
 
-  onUpdate: (new-value, old-value, path-array, meta) ~>
-    @_queue.push {meta, new-value, old-value, path-array}
+  onUpdate: ({path, updates}) ~>
+    @_queue.push {path, updates}
     if @_queue.length is 1
       set-timeout @_drainQueue
 
 
   _drainQueue: ~>
-    last-batch-id = null
-    group = []
-    print-last-group = ~>
-      return if group.length is 0
-      @_print mergeUpdates(group)
-      group := []
-
-    for update in @_queue
-      batch-id = update.meta?.batch-id
-      if batch-id isnt last-batch-id then print-last-group()
-      if batch-id
-        last-batch-id = batch-id
-        group.push update
-      else
-        @_print update
-
-    print-last-group()
+    for {path, updates} in @_queue
+      @_print merge-updates {path, updates}
     @_queue = []
 
 
-  _print: ({new-value, old-value, path-array}) ->
-    @logger.group-collapsed "#{path-array.join('.')}: #{get-transition {new-value, old-value}}"
-    @logger.log '%c old:', 'color: red', get-value(old-value)
-    @logger.log '%c new:', 'color: green', get-value(new-value)
+  _print: ({new-values, old-values, path}) ->
+    @logger.group-collapsed "#{path.join('.')}: #{get-transition {new-values, old-values}}"
+    @logger.log '%c old:', 'color: red', get-value(old-values)
+    @logger.log '%c new:', 'color: green', get-value(new-values)
     @logger.group-end()
 
 

@@ -1,21 +1,22 @@
 require! {
+  'lodash.isequal': isEqual
   'lodash.set': set
 }
 
 
-get-merged-value = (updates, key) ->
+get-merged-value = ({key, path, updates}) ->
   if get-value-type(updates[0][key]) in ['error', 'loading']
     updates[0][key]
   else
-    batch-path-length = updates[0].meta.batch-path.length
+    path-length = path.length
     merged = {}
     for update in updates
-      set merged, update.path-array.slice(batch-path-length), update[key].data
+      set merged, update.path.slice(path-length), update[key].data
     data: merged
 
 
-get-transition = ({new-value, old-value}) ->
-  "#{get-value-type old-value} => #{get-value-type new-value}"
+get-transition = ({new-values, old-values}) ->
+  "#{get-value-type old-values} => #{get-value-type new-values}"
 
 
 get-value = ({data, loading, error}) ->
@@ -39,13 +40,13 @@ get-value-type = ({data, loading, error}) ->
     'data'
 
 
-merge-updates = (updates) ->
-  if updates.length is 1
+merge-updates = ({path, updates}) ->
+  if updates.length is 1 and isEqual(path, updates[0].path)
     updates[0]
   else
-    new-value: get-merged-value updates, 'newValue'
-    old-value: get-merged-value updates, 'oldValue'
-    path-array: updates[0].meta.batch-path
+    new-values: get-merged-value {key: 'newValues', path, updates}
+    old-values: get-merged-value {key: 'oldValues', path, updates}
+    path: path
 
 
 module.exports = {get-transition, get-value, merge-updates}
