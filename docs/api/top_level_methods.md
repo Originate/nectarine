@@ -30,10 +30,10 @@ See [here](../creating_a_slice.md) for a more detailed explanation about creatin
 * `options` - object with the following keys
   * `dependencies` - an object of dependencies to inject into actions. See [here](../creating_a_slice.md#actions)
 
-Returns a store. Can be passed as a prop to `Provider` or used directly as needed.
+Returns a store. Can be passed as a prop to `Provider` or used directly.
 
 ---
 
 #### `Provider`
 
-A `React.Component` which accepts a `store` as prop.
+A `React.Component` which accepts a `store` prop.
