@@ -16,6 +16,10 @@ describe 'StoreMap' ->
   ] ->
 
 
+    specify 'sets the path for children correctly' ->
+      expect(@map.$key('1').name.$get-path!).to.eql <[path to map 1 name]>
+
+
     describe '$from-promise' ->
 
       specify 'throws an error' ->
