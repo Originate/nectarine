@@ -1,6 +1,6 @@
 {
   "name": "nectarine",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "build": "webpack",
     "prepublish": "yarn run build",
