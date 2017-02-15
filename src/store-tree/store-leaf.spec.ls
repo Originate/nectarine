@@ -145,7 +145,6 @@ describe 'StoreLeaf' ->
           @leaf.$set value
         ).to.throw 'Error setting `path.to.leaf`: attempting to update to the same object. Always pass in a new object'
 
-
       specify 'works if passed a new object' ->
         @leaf.$set @leaf.$get().concat 2
         expect(@leaf.$get()).to.eql [1, 2]
