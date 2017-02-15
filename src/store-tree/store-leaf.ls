@@ -1,6 +1,7 @@
 require! {
   './schema-placeholder'
   './store-node': StoreNode
+  './schema-type': SchemaType
 }
 
 
@@ -47,6 +48,9 @@ class StoreLeaf extends StoreNode
   $set: (data) !->
     schema-placeholder.validate @_schema, data, (err) ~>
       "Error setting `#{@$get-path-string!}`: #{err}"
+
+    if data is @_data and schema-placeholder.get-type(@_schema) in [SchemaType.ARRAY, SchemaType.OBJECT]
+      throw new Error "Error setting `#{@$get-path-string!}`: attempting to update to the same object. Always pass in a new object"
 
     @_update {data, loading: no, error: null}
 
