@@ -1,9 +1,11 @@
-# Schema
+# Creating a slice
 
-When defining a schema with `create-slice`, `schema` should be an object or a function that returns an object.
-When schema is a function, it passed two arguments. A leaf placeholder and a map placeholder.
+## Schema
 
-# Leaf Placeholder
+`schema` should be an object or a function. When `schema` is a function it is passed two arguments,
+a leaf placeholder and a map placeholder. It should return an object or a placeholder.
+
+### Leaf Placeholder
 
 The first argument to schema is a leaf placeholder. This is used anywhere you would like to store data.
 A leaf placeholder by itself stands for `type: any`.
@@ -37,7 +39,7 @@ schema = _ => (
 )
 ```
 
-# Map Placeholder
+### Map Placeholder
 
 The second argument is a map placeholder function. Maps are used for nested objects that will be saved at dynamic keys.
 `map` must be passed a child schema.
@@ -53,7 +55,7 @@ schema = (_, map) => (
 )
 ```
 
-# Nested slices
+### Nested slices
 
 A slice can be used anywhere a placeholder can.
 
@@ -76,3 +78,15 @@ const userManagementSlice = createSlice({
   )
 })
 ```
+
+## Actions
+
+Actions are simply functions that can be used to encapsulate logic or group getters and setters.
+
+The `this` argument for actions of a slice will have the following exposed:
+
+* `this.slice` - the slice the actions were defined on.
+* `this.store` - the store. Use this to access other slices (ideally only for reading data)
+
+If you passed `dependencies` into the `createStore` method, they will also be mixed add to `this`.
+For example if `dependencies` is `{key: "value"}`, then `this.key` will equal `value`.

@@ -76,3 +76,13 @@ module.exports = connect({
   }
 })
 ```
+
+## Documentation
+
+* API
+  * [Top Level Methods](/docs/api/top_level_methods.md)
+  * Store Methods
+    * [Tree / Leaf](/docs/api/tree_leaf_methods.md)
+    * [Map Methods](/docs/api/map_methods.md)
+* [Creating a slice](/docs/creating_a_slice.md)
+* [Redux Comparison](/docs/redux_comparison.md)

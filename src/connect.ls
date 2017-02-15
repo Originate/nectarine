@@ -15,7 +15,7 @@ module.exports = ({component, map-props}) ->
 
     (props, context) ->
       super props, context
-      @state = map-props @context.store
+      @state = map-props(@context.store, @props)
       @context.store.$on-update @update
 
 
@@ -28,4 +28,4 @@ module.exports = ({component, map-props}) ->
 
 
     update: ~>
-      @setState map-props @context.store
+      @setState map-props(@context.store, @props)

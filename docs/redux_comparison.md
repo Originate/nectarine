@@ -3,9 +3,8 @@ Here is how nectarine would implement the
 
 # Highlights
 
-* The store exposes reducers with `$set` and the related methods
-* Each `$set` call is essentially a `dispatch` as it triggers an update
-* Actions are plain functions and can be used for encapsulation or to group getters / setters
+* The store exposes reducer like functions with `$set` and the related methods
+* Every `$set` call results in the store being updated and thus an update for connected components
 * `mapStateToProps` and `mapDispatchToProps` are combined into a single `mapProps`
 
 # Entry Point
@@ -76,7 +75,7 @@ export default visibilityFilterSlice
 // store/index.js
 import {createStore} from 'nectarine'
 import todos from './todos_slice'
-import visibilityFilterSlice from './visibility_filter_slice'
+import visibilityFilter from './visibility_filter_slice'
 
 const store = createStore({
   todos,
