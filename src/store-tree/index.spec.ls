@@ -103,6 +103,21 @@ describe 'StoreTree' ->
       specify 'setting a non-object on a parent throws an error' ->
         expect(~> @tree.$set 'Alice').to.throw 'calling $set on a tree must be called with an object'
 
+      specify 'batches updates', ->
+        @tree.$on-update update-spy = sinon.spy()
+        @tree.$set name: 'Alice', email: 'alice@example.com'
+        expect(update-spy).to.have.been.called-with do
+          path: <[path to tree]>
+          updates: [
+            new-values: {data: 'Alice', loading: false, error: null}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree name]>
+          ,
+            new-values: {data: 'alice@example.com', loading: false, error: null}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree email]>
+          ]
+
 
     test-cases 'setting values on parents of leaves with specified type' [
       -> @tree = create-tree name: __ initial-value: 123
@@ -176,12 +191,28 @@ describe 'StoreTree' ->
         expect(@tree.name.$is-loading!).to.be.false
         expect(@tree.email.$is-loading!).to.be.false
 
+      specify 'batches updates', ->
+        err = new Error 'Some error'
+        @tree.$on-update update-spy = sinon.spy()
+        @tree.$set-error err
+        expect(update-spy).to.have.been.called-with do
+          path: <[path to tree]>
+          updates: [
+            new-values: {data: null, loading: false, error: err}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree name]>
+          ,
+            new-values: {data: null, loading: false, error: err}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree email]>
+          ]
+
 
   describe '$set-loading' ->
 
     test-cases 'setting loading on leaves' [
-      -> @tree = create-tree name: __
-      -> @tree = create-tree name: __!
+      -> @tree = create-tree name: __, email: __
+      -> @tree = create-tree name: __!, email: __!
     ] ->
 
       specify 'trees are initially not loading' ->
@@ -209,12 +240,27 @@ describe 'StoreTree' ->
         @tree.$set-loading!
         expect(@tree.name.$get-error!).to.be.null
 
+      specify 'batches updates', ->
+        @tree.$on-update update-spy = sinon.spy()
+        @tree.$set-loading!
+        expect(update-spy).to.have.been.called-with do
+          path: <[path to tree]>
+          updates: [
+            new-values: {data: null, loading: true, error: null}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree name]>
+          ,
+            new-values: {data: null, loading: true, error: null}
+            old-values: {data: null, loading: false, error: null}
+            path: <[path to tree email]>
+          ]
+
 
   describe '$reset' ->
 
     test-cases 'resetting leaves' [
-      -> @tree = create-tree name: __
-      -> @tree = create-tree name: __!
+      -> @tree = create-tree name: __, email: __
+      -> @tree = create-tree name: __!, email: __!
     ] ->
 
       specify 'resets data to the initial value' ->
@@ -231,6 +277,22 @@ describe 'StoreTree' ->
         @tree.name.$set-error Error 'Some error'
         @tree.$reset()
         expect(@tree.name.$get-error!).to.be.null
+
+      specify 'batches updates', ->
+        @tree.$set name: 'Bob', email: 'bob@example.com'
+        @tree.$on-update update-spy = sinon.spy()
+        @tree.$reset!
+        expect(update-spy).to.have.been.called-with do
+          path: <[path to tree]>
+          updates: [
+            new-values: {data: null, loading: false, error: null}
+            old-values: {data: 'Bob', loading: false, error: null}
+            path: <[path to tree name]>
+          ,
+            new-values: {data: null, loading: false, error: null}
+            old-values: {data: 'bob@example.com', loading: false, error: null}
+            path: <[path to tree email]>
+          ]
 
 
   describe '$from-promise' ->
@@ -336,6 +398,9 @@ describe 'StoreTree' ->
 
       specify 'calls with new-values, old-values, path' ->
         expect(@tree-update-spy).to.have.been.called-with do
-          * @new-values
-          * data: 'Alice', loading: no, error: null
-          * <[path to tree name]>
+          path: <[path to tree name]>
+          updates: [{
+            @new-values
+            old-values: {data: 'Alice', loading: false, error: null}
+            path: <[path to tree name]>
+          }]

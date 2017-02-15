@@ -64,7 +64,7 @@ class StoreLeaf extends StoreNode
     @_data = new-values.data
     @_loading = new-values.loading
     @_error = new-values.error
-    @$emit-update new-values, old-values, @$get-path!
+    @$emit-update path: @$get-path!, updates: [{new-values, old-values, path: @$get-path!}]
 
 
 module.exports = StoreLeaf

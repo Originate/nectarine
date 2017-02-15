@@ -295,6 +295,9 @@ describe 'StoreLeaf' ->
 
         specify 'calls with new-values, old-values, path' ->
           expect(@update-spy).to.have.been.called-with do
-            * @new-values
-            * data: 'foo', loading: no, error: null
-            * <[path to leaf]>
+            path: <[path to leaf]>
+            updates: [{
+              old-values: {data: 'foo', loading: no, error: null}
+              @new-values
+              path: <[path to leaf]>
+            }]
