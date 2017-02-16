@@ -1,5 +1,5 @@
 require! {
-  'lodash/assign': assign
+  'lodash/assign'
   'react'
   './store-tree': StoreTree
 }
