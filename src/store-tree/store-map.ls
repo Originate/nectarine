@@ -3,6 +3,7 @@ require! {
   './store-leaf': StoreLeaf
   './store-node': StoreNode
   './helpers': {build-store-node}
+  'prelude-ls': {each, Obj, obj-to-pairs}
 }
 
 
@@ -14,10 +15,7 @@ class StoreMap extends StoreNode
 
 
   $debug: ->
-    obj = {}
-    for own key of @_mapping
-      obj[key] = @_mapping[key].$debug!
-    obj
+    @_mapping |> Obj.map (.$debug!)
 
 
   $from-promise: ->
@@ -34,8 +32,7 @@ class StoreMap extends StoreNode
 
   $get-all: ->
     obj = {}
-    for own key of @_mapping
-      try obj[key] = @_mapping[key].$get!
+    @_mapping |> obj-to-pairs |> each ([key, node]) -> try obj[key] = node.$get!
     obj
 
 

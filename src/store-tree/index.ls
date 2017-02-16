@@ -1,7 +1,7 @@
 require! {
-  'lodash/intersection'
   './helpers': {build-child-node}
   './store-node': StoreNode
+  'prelude-ls': {any, each, find, id, intersection, map, Obj, obj-to-pairs, values}
 }
 
 
@@ -22,10 +22,7 @@ class StoreTree extends StoreNode
 
 
   $get-error: ->
-    for own key of @_children
-      err = @[key].$get-error!
-      return err if err?
-    null
+    @_children |> values |> find (.$get-error!) |> -> it?.$get-error! or null
 
 
   $from-promise: (promise) ->
@@ -41,45 +38,34 @@ class StoreTree extends StoreNode
 
 
   $is-loading: ->
-    for own key of @_children when @[key].$is-loading!
-      return yes
-    no
+    @_children |> values |> any (.$is-loading!)
 
 
   $reset: -> @$batch-emit-updates ~>
-    @_for-each-subnode (subnode) -> subnode.$reset!
+    @_children |> Obj.each (.$reset!)
 
 
   $set: (data) !-> @$batch-emit-updates ~>
     switch typeof! data
-    | \Object   => @_for-each-subnode (subnode, key) -> subnode.$set data[key] if data[key] isnt undefined
-    | \Null     => @_for-each-subnode (subnode) -> subnode.$set null
+    | \Object   => @_children |> obj-to-pairs |> each ([key, subnode]) -> subnode.$set data[key] if data[key] isnt undefined
+    | \Null     => @_children |> Obj.each (.$set null)
     | otherwise => throw Error 'calling $set on a tree must be called with an object or null'
 
 
   $set-loading: (loading = yes) !-> @$batch-emit-updates ~>
-    @_for-each-subnode (subnode) -> subnode.$set-loading loading
+    @_children |> Obj.each (.$set-loading loading)
 
 
   $set-error: (err) !~> @$batch-emit-updates ~>
-    @_for-each-subnode (subnode) -> subnode.$set-error err
+    @_children |> Obj.each (.$set-error err)
 
 
   $get: ->
-    obj = {}
-    @_for-each-subnode (subnode, key) -> obj[key] = subnode.$get!
-    obj
+    @_children |> Obj.map (.$get!)
 
 
   $debug: ->
-    obj = {}
-    @_for-each-subnode (subnode, key) -> obj[key] = subnode.$debug!
-    obj
-
-
-  _for-each-subnode: (fn) !->
-    for own key of @_children
-      fn @[key], key
+    @_children |> Obj.map (.$debug!)
 
 
 module.exports = StoreTree

@@ -25,7 +25,8 @@
     "react": "15.4.2"
   },
   "dependencies": {
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "prelude-ls": "^1.1.2"
   },
   "files": [
     "index.js"

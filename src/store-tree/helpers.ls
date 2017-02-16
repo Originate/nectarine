@@ -1,7 +1,6 @@
 require! {
   './schema-placeholder': SchemaPlaceholder
   '../slice-data': SliceData
-  'lodash/isPlainObject'
 }
 
 
@@ -25,7 +24,7 @@ build-store-node = (options) ->
   switch
   | SchemaPlaceholder.is-placeholder(schema) => new (require './store-leaf') options
   | SchemaPlaceholder.is-map(schema)         => new (require './store-map') {child-schema: schema.child-schema, ...options}
-  | isPlainObject schema                     => build-store-tree options
+  | typeOf! schema is 'Object'               => build-store-tree options
   | otherwise                                => throw new Error "Invalid schema: `#{path.join('.')}` should be a placeholder or an object"
 
 
