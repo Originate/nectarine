@@ -1,5 +1,5 @@
 require! {
-  'lodash.pull': pull
+  'lodash/pull': pull
 }
 
 

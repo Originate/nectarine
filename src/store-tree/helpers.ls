@@ -1,7 +1,7 @@
 require! {
   './schema-placeholder': SchemaPlaceholder
   '../slice-data': SliceData
-  'lodash.isplainobject': isPlainObject
+  'lodash/isPlainObject'
 }
 
 
