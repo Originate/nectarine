@@ -63,8 +63,12 @@ class StoreLeaf extends StoreNode
     @_update {data: null, loading, error: null}
 
 
+  $debug: ->
+    data: @_data, loading: @_loading, error: @_error
+
+
   _update: (new-values) ->
-    old-values = data: @_data, loading: @_loading, error: @_error
+    old-values = @$debug!
     @_data = new-values.data
     @_loading = new-values.loading
     @_error = new-values.error

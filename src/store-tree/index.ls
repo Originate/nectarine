@@ -71,6 +71,12 @@ class StoreTree extends StoreNode
     obj
 
 
+  $debug: ->
+    obj = {}
+    @_for-each-subnode (subnode, key) -> obj[key] = subnode.$debug!
+    obj
+
+
   _for-each-subnode: (fn) !->
     for own key of @_children
       fn @[key], key

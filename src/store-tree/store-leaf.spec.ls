@@ -11,6 +11,25 @@ create-leaf = (schema) -> new StoreLeaf {path: <[path to leaf]>, schema}
 
 describe 'StoreLeaf' ->
 
+  describe '$debug' ->
+    test-cases '' [
+      -> @name = create-leaf __
+      -> @name = create-leaf __!
+    ] ->
+
+      specify 'with data' ->
+        @name.$set 'Alice'
+        expect(@name.$debug!).to.be.eql data: 'Alice', loading: false, error: null
+
+      specify 'with loading' ->
+        @name.$set-loading!
+        expect(@name.$debug!).to.be.eql data: null, loading: true, error: null
+
+      specify 'with error' ->
+        @name.$set-error Error 'Some error'
+        expect(@name.$debug!).to.be.eql data: null, loading: false, error: Error 'Some error'
+
+
   describe '$get-or-else' ->
     test-cases 'setting errors on leaves' [
       -> @name = create-leaf __
