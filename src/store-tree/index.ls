@@ -1,6 +1,5 @@
 require! {
   'lodash/intersection'
-  './helpers': {build-child-node}
   './store-node': StoreNode
 }
 
@@ -46,7 +45,7 @@ class StoreTree extends StoreNode
     no
 
 
-  $reset: -> @$batch-emit-updates ~>
+  $reset: !-> @$batch-emit-updates ~>
     @_for-each-subnode (subnode) -> subnode.$reset!
 
 
