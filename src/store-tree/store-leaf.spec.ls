@@ -2,6 +2,7 @@ require! {
   './schema-placeholder': {create-placeholder: __}
   './spec/test-cases'
   './store-leaf': StoreLeaf
+  'lodash/assign'
 }
 
 
@@ -115,6 +116,38 @@ describe 'StoreLeaf' ->
 
       specify 'leaves are initially set to initial-value' ->
         expect(@color.$get!).to.equal 'red'
+
+
+    test-cases 'leaves with type object' [
+      -> @leaf = create-leaf __ initialValue: {name: 'Alice'}
+    ] ->
+
+      specify 'throws if passed the same object', ->
+        value = @leaf.$get()
+        value.email = 'alice@example.com'
+        expect(~>
+          @leaf.$set value
+        ).to.throw 'Error setting `path.to.leaf`: attempting to update to the same object. Always pass in a new object'
+
+      specify 'works if passed a new object' ->
+        @leaf.$set assign {}, @leaf.$get(), email: 'alice@example.com'
+        expect(@leaf.$get()).to.eql name: 'Alice', email: 'alice@example.com'
+
+
+    test-cases 'leaves with type array' [
+      -> @leaf = create-leaf __ initialValue: [1]
+    ] ->
+
+      specify 'throws if passed the same object', ->
+        value = @leaf.$get()
+        value.push 2
+        expect(~>
+          @leaf.$set value
+        ).to.throw 'Error setting `path.to.leaf`: attempting to update to the same object. Always pass in a new object'
+
+      specify 'works if passed a new object' ->
+        @leaf.$set @leaf.$get().concat 2
+        expect(@leaf.$get()).to.eql [1, 2]
 
 
   describe '$set-error' ->
