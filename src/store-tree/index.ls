@@ -1,5 +1,4 @@
 require! {
-  './helpers': {build-child-node}
   './store-node': StoreNode
   'prelude-ls': {any, each, find, id, intersection, map, Obj, obj-to-pairs, values}
 }
@@ -41,7 +40,7 @@ class StoreTree extends StoreNode
     @_children |> values |> any (.$is-loading!)
 
 
-  $reset: -> @$batch-emit-updates ~>
+  $reset: !-> @$batch-emit-updates ~>
     @_children |> Obj.each (.$reset!)
 
 
