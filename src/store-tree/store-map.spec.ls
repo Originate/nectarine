@@ -20,6 +20,16 @@ describe 'StoreMap' ->
       expect(@map.$key('1').name.$get-path!).to.eql <[path to map 1 name]>
 
 
+    describe '$debug' ->
+
+      specify 'returns an empty object if no keys have been accessed' ->
+        expect(@map.$debug!).to.eql {}
+
+      specify 'returns the debugged objects of the accessed keys' ->
+        @map.$key('1').$set name: 'Alice'
+        expect(@map.$debug!).to.eql 1: name: {data: 'Alice', loading: false, error: null}
+
+
     describe '$from-promise' ->
 
       specify 'throws an error' ->

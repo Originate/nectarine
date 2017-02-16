@@ -39,6 +39,14 @@ describe 'create-store' ->
       @store.user.initialize()
       expect(@store-update-spy).to.have.been.called
 
+    specify 'can be inspected with $debug', ->
+      @store.user.initialize()
+      expect(@store.$debug!).to.eql do
+        todos:
+          list: {data: [], loading: false, error: null}
+        user:
+          name: {data: 'Alice', loading: false, error: null}
+
   describe 'action dependency injection', ->
     beforeEach ->
       userService = get: sinon.stub().withArgs(1).returns 'Alice'

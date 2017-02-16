@@ -13,6 +13,13 @@ class StoreMap extends StoreNode
     @_mapping = {}
 
 
+  $debug: ->
+    obj = {}
+    for own key of @_mapping
+      obj[key] = @_mapping[key].$debug!
+    obj
+
+
   $from-promise: ->
     throw Error @_buildErrorMessage '$fromPromise()', '$key(k).$fromPromise(v)'
 

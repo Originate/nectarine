@@ -16,6 +16,21 @@ create-tree = (child-mapping) ->
 
 describe 'StoreTree' ->
 
+  describe '$debug' ->
+
+    test-cases '' [
+      -> @tree = create-tree name: __, email: __
+      -> @tree = create-tree name: __!, email: __!
+    ] ->
+
+      specify 'returns the debugged mapping of its children' ->
+        @tree.name.$set 'Alice'
+        @tree.email.$set-error Error 'Failed to get email'
+        expect(@tree.$debug!).to.eql do
+          name: {data: 'Alice', loading: false, error: null}
+          email: {data: null, loading: false, error: Error 'Failed to get email'}
+
+
   describe '$get' ->
 
     test-cases '' [
