@@ -1,6 +1,6 @@
 require! {
-  'lodash.isequal': isEqual
-  'lodash.set': set
+  'lodash/isEqual'
+  'lodash/set'
 }
 
 
