@@ -1,5 +1,5 @@
 require! {
-  'lodash.intersection': intersection
+  'lodash/intersection': intersection
   './helpers': {build-child-node}
   './store-node': StoreNode
 }
