@@ -81,3 +81,15 @@ describe 'create-store' ->
         `user`: schema and action keys clash. The following keys are ambiguous. Update them to be unique
           name
         '''
+
+  describe 'invalid schemas', ->
+    specify 'throws an error', ->
+      userSlice = create-slice do
+        schema: (_) ->
+          name: _
+          email: 'invalid'
+      expect(~>
+        create-store {user: userSlice}
+      ).to.throw '''
+        Invalid schema: `user.email` should be a placeholder or an object
+        '''
