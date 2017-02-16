@@ -79,7 +79,7 @@ import visibilityFilter from './visibility_filter_slice'
 
 const store = createStore({
   todos,
-  visibilityFilterSlice
+  visibilityFilter
 })
 
 export default store

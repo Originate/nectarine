@@ -2,16 +2,8 @@
 
 The following methods are exposed on the object returned when nectarine is required / imported.
 
----
 
-#### `connect({component, mapProps})`
-
-* `component` - a `React.Component` to be wrapped
-* `mapProps(store, ownProps)` - a function used to expose the necessary parts of the store to the component
-
-Returns a wrapped `React.Component`.
-
----
+# Building a Store
 
 #### `createSlice({schema, actions})`
 
@@ -32,8 +24,27 @@ See [here](../creating_a_slice.md) for a more detailed explanation about creatin
 
 Returns a store. Can be passed as a prop to `Provider` or used directly.
 
----
+
+# Connecting React Components
 
 #### `Provider`
 
 A `React.Component` which accepts a `store` prop.
+
+---
+
+#### `connect({component, mapProps})`
+
+* `component` - a `React.Component` to be wrapped
+* `mapProps(store, ownProps)` - a function used to expose the necessary parts of the store to the component
+
+Returns a wrapped `React.Component`.
+
+
+# Debugging
+
+#### `createLogger({logger})`
+
+* `logger` - object with `groupCollapsed`, `groupEnd`, `log` methods. Defaults to `console`
+
+Returns a logger that when passed to `store.$onUpdate`, will log all updates.

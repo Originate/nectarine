@@ -88,5 +88,5 @@ The `this` argument for actions of a slice will have the following exposed:
 * `this.slice` - the slice the actions were defined on.
 * `this.store` - the store. Use this to access other slices (ideally only for reading data)
 
-If you passed `dependencies` into the `createStore` method, they will also be mixed add to `this`.
+If you passed `dependencies` into the `createStore` method, they will also be mixed into `this`.
 For example if `dependencies` is `{key: "value"}`, then `this.key` will equal `value`.
