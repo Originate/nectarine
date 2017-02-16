@@ -1,7 +1,7 @@
 require! {
   './schema-placeholder'
-  './store-node': StoreNode
   './schema-type': SchemaType
+  './store-node': StoreNode
 }
 
 
