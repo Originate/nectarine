@@ -1,6 +1,6 @@
 require! {
   './store-node': StoreNode
-  'prelude-ls': {any, each, find, id, intersection, map, Obj, obj-to-pairs, values}
+  'prelude-ls': {find, intersection, map, Obj: {each, find, map}}
 }
 
 
@@ -21,7 +21,8 @@ class StoreTree extends StoreNode
 
 
   $get-error: ->
-    @_children |> values |> find (.$get-error!) |> -> it?.$get-error! or null
+    @_children |> find (.$get-error!)
+               |> -> it?.$get-error! or null
 
 
   $from-promise: (promise) ->
@@ -37,34 +38,39 @@ class StoreTree extends StoreNode
 
 
   $is-loading: ->
-    @_children |> values |> any (.$is-loading!)
+    @_children |> find (.$is-loading!) |> Boolean
 
 
   $reset: !-> @$batch-emit-updates ~>
-    @_children |> Obj.each (.$reset!)
+    @_children |> each (.$reset!)
 
 
   $set: (data) !-> @$batch-emit-updates ~>
     switch typeof! data
-    | \Object   => @_children |> obj-to-pairs |> each ([key, subnode]) -> subnode.$set data[key] if data[key] isnt undefined
-    | \Null     => @_children |> Obj.each (.$set null)
+    | \Object   => @_updateChildren data
+    | \Null     => @_children |> each (.$set null)
     | otherwise => throw Error 'calling $set on a tree must be called with an object or null'
 
 
   $set-loading: (loading = yes) !-> @$batch-emit-updates ~>
-    @_children |> Obj.each (.$set-loading loading)
+    @_children |> each (.$set-loading loading)
 
 
   $set-error: (err) !~> @$batch-emit-updates ~>
-    @_children |> Obj.each (.$set-error err)
+    @_children |> each (.$set-error err)
 
 
   $get: ->
-    @_children |> Obj.map (.$get!)
+    @_children |> map (.$get!)
 
 
   $debug: ->
-    @_children |> Obj.map (.$debug!)
+    @_children |> map (.$debug!)
+
+
+  _updateChildren: (data) ->
+    for key, subnode of @_children
+      subnode.$set data[key] if data[key] isnt undefined
 
 
 module.exports = StoreTree
