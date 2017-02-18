@@ -1,6 +1,6 @@
 require! {
-  'lodash/intersection'
   './store-node': StoreNode
+  'prelude-ls': {intersection, Obj: {each, find, map}}
 }
 
 
@@ -21,10 +21,8 @@ class StoreTree extends StoreNode
 
 
   $get-error: ->
-    for own key of @_children
-      err = @[key].$get-error!
-      return err if err?
-    null
+    @_children |> find (.$get-error!)
+               |> -> it?.$get-error! or null
 
 
   $from-promise: (promise) ->
@@ -40,45 +38,39 @@ class StoreTree extends StoreNode
 
 
   $is-loading: ->
-    for own key of @_children when @[key].$is-loading!
-      return yes
-    no
+    @_children |> find (.$is-loading!) |> Boolean
 
 
   $reset: !-> @$batch-emit-updates ~>
-    @_for-each-subnode (subnode) -> subnode.$reset!
+    @_children |> each (.$reset!)
 
 
   $set: (data) !-> @$batch-emit-updates ~>
     switch typeof! data
-    | \Object   => @_for-each-subnode (subnode, key) -> subnode.$set data[key] if data[key] isnt undefined
-    | \Null     => @_for-each-subnode (subnode) -> subnode.$set null
+    | \Object   => @_updateChildren data
+    | \Null     => @_children |> each (.$set null)
     | otherwise => throw Error 'calling $set on a tree must be called with an object or null'
 
 
   $set-loading: (loading = yes) !-> @$batch-emit-updates ~>
-    @_for-each-subnode (subnode) -> subnode.$set-loading loading
+    @_children |> each (.$set-loading loading)
 
 
   $set-error: (err) !~> @$batch-emit-updates ~>
-    @_for-each-subnode (subnode) -> subnode.$set-error err
+    @_children |> each (.$set-error err)
 
 
   $get: ->
-    obj = {}
-    @_for-each-subnode (subnode, key) -> obj[key] = subnode.$get!
-    obj
+    @_children |> map (.$get!)
 
 
   $debug: ->
-    obj = {}
-    @_for-each-subnode (subnode, key) -> obj[key] = subnode.$debug!
-    obj
+    @_children |> map (.$debug!)
 
 
-  _for-each-subnode: (fn) !->
-    for own key of @_children
-      fn @[key], key
+  _updateChildren: (data) ->
+    for key, subnode of @_children
+      subnode.$set data[key] if data[key] isnt undefined
 
 
 module.exports = StoreTree

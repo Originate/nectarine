@@ -1,5 +1,5 @@
 require! {
-  'lodash/assign'
+  './utils': {merge-objects}
   'react'
   './store-tree': StoreTree
 }
@@ -24,7 +24,7 @@ module.exports = ({component, map-props}) ->
 
 
     render: ->
-      react.create-element(component, assign({}, @props, @state))
+      react.create-element(component, merge-objects(@props, @state))
 
 
     update: ~>
