@@ -5,7 +5,7 @@ require! {
 
 are-paths-equal = (path1, path2) ->
   path1.length is path2.length and
-    [0 to path1.length] |> all -> path1[it] is path2[it]
+    [to path1.length] |> all -> path1[it] is path2[it]
 
 
 get-merged-value = ({key, path, updates}) ->
