@@ -19,53 +19,54 @@ class StoreMap extends StoreNode
 
 
   $from-promise: ->
-    throw Error @_buildErrorMessage '$fromPromise()', '$key(k).$fromPromise(v)'
+    throw Error @_build-error-message '$fromPromise()', '$key(k).$fromPromise(v)'
 
 
   $get-error: ->
-    throw Error @_buildErrorMessage '$getError()', "$getAll('error')"
+    throw Error @_build-error-message '$getError()', "$getAll('error')"
 
 
   $get: ->
-    throw Error @_buildErrorMessage '$get()', '$getAll()'
+    throw Error @_build-error-message '$get()', '$getAll()'
 
 
   $get-all: ->
     obj = {}
-    for own key of @_mapping
-      try obj[key] = @_mapping[key].$get!
+    for own key, value of @_mapping
+      try obj[key] = value.$get!
     obj
 
 
   $is-loading: ->
-    throw Error @_buildErrorMessage '$isLoading()', "$getAll('loading')"
+    throw Error @_build-error-message '$isLoading()', "$getAll('loading')"
 
 
   $key: (key) ->
-    unless @_mapping[key]
-      @_mapping[key] = build-store-node do
-        path: @$get-path!.concat(key)
-        schema: @_child-schema
-      @_mapping[key].$on-update @$emit-update
-    @_mapping[key]
+    @_mapping[key] or= @_build-child key
 
 
-  $keys: -> Object.keys @_mapping
+  $keys: ->
+    Object.keys @_mapping
 
 
   $set: ->
-    throw Error @_buildErrorMessage '$set()', "$key(k).$set(v)"
+    throw Error @_build-error-message '$set()', "$key(k).$set(v)"
 
 
   $set-error: ->
-    throw Error @_buildErrorMessage '$setError()', "$key(k).$setError(e)"
+    throw Error @_build-error-message '$setError()', "$key(k).$setError(e)"
 
 
   $set-loading: ->
-    throw Error @_buildErrorMessage '$setLoading()', "$key(k).$setLoading()"
+    throw Error @_build-error-message '$setLoading()', "$key(k).$setLoading()"
 
 
-  _buildErrorMessage: (disallowed, suggestion) ->
+  _build-child: (key) ->
+    build-store-node path: @$get-path!.concat(key), schema: @_child-schema
+      ..$on-update @$emit-update
+
+
+  _build-error-message: (disallowed, suggestion) ->
     "Error at `#{@$get-path-string!}`: #{disallowed} can not be used on a map. Use #{suggestion}"
 
 
