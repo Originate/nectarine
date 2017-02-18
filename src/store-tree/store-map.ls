@@ -32,7 +32,8 @@ class StoreMap extends StoreNode
 
   $get-all: ->
     obj = {}
-    @_mapping |> obj-to-pairs |> each ([key, node]) -> try obj[key] = node.$get!
+    for own key of @_mapping
+      try obj[key] = @_mapping[key].$get!
     obj
 
 
