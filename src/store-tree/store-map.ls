@@ -3,7 +3,7 @@ require! {
   './store-leaf': StoreLeaf
   './store-node': StoreNode
   './helpers': {build-store-node}
-  'prelude-ls': {each, Obj, obj-to-pairs}
+  'prelude-ls': {Obj: {map}}
 }
 
 
@@ -15,7 +15,7 @@ class StoreMap extends StoreNode
 
 
   $debug: ->
-    @_mapping |> Obj.map (.$debug!)
+    @_mapping |> map (.$debug!)
 
 
   $from-promise: ->
