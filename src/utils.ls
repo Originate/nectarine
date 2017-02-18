@@ -5,7 +5,7 @@ require! {
 
 assign = (...objs) ->
   result = {}
-  objs |> each |> obj-to-pairs |> each ([key, value]) -> result[key] = value
+  objs |> each -> it |> obj-to-pairs |> each ([key, value]) -> result[key] = value
   result
 
 
