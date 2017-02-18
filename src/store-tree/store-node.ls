@@ -1,5 +1,5 @@
 require! {
-  'lodash/pull'
+  'prelude-ls': {reject}
 }
 
 
@@ -15,7 +15,7 @@ class StoreNode
 
 
   $off-update: (callback) ->
-    pull @_update-callbacks, callback
+    @_update-callbacks = @_update-callbacks |> reject -> it is callback
 
 
   $on-update: (callback) ->

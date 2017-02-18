@@ -1,5 +1,5 @@
 require! {
-  'lodash/assign'
+  '../utils': {assign}
   './create': create-logger
 }
 

@@ -2,7 +2,7 @@ require! {
   './schema-placeholder': {create-placeholder: __}
   './spec/test-cases'
   './store-leaf': StoreLeaf
-  'lodash/assign'
+  '../utils': {assign}
 }
 
 
