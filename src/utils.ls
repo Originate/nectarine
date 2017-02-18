@@ -3,7 +3,7 @@ require! {
 }
 
 
-unionObjects = (...objs) ->
+merge-objects = (...objs) ->
   result = {}
   for obj in objs
     for own key, value of obj
@@ -11,4 +11,4 @@ unionObjects = (...objs) ->
   result
 
 
-module.exports = {unionObjects}
+module.exports = {merge-objects}

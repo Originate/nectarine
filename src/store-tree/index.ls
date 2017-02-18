@@ -1,6 +1,6 @@
 require! {
   './store-node': StoreNode
-  'prelude-ls': {find, intersection, map, Obj: {each, find, map}}
+  'prelude-ls': {intersection, Obj: {each, find, map}}
 }
 
 
