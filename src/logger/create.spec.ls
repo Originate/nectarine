@@ -1,5 +1,4 @@
 require! {
-  '../utils': {assign}
   './create': create-logger
 }
 

@@ -2,7 +2,7 @@ require! {
   './schema-placeholder': {create-placeholder: __}
   './spec/test-cases'
   './store-leaf': StoreLeaf
-  '../utils': {assign}
+  '../utils': {merge-objects}
 }
 
 
@@ -149,7 +149,7 @@ describe 'StoreLeaf' ->
         ).to.throw 'Error setting `path.to.leaf`: attempting to update to the same object. Always pass in a new object'
 
       specify 'works if passed a new object' ->
-        @leaf.$set assign {}, @leaf.$get(), email: 'alice@example.com'
+        @leaf.$set merge-objects(@leaf.$get(), email: 'alice@example.com')
         expect(@leaf.$get()).to.eql name: 'Alice', email: 'alice@example.com'
 
 

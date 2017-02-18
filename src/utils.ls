@@ -3,7 +3,7 @@ require! {
 }
 
 
-assign = (...objs) ->
+unionObjects = (...objs) ->
   result = {}
   for obj in objs
     for key, value of obj
@@ -11,4 +11,4 @@ assign = (...objs) ->
   result
 
 
-module.exports = {assign}
+module.exports = {unionObjects}
