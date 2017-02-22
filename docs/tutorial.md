@@ -66,7 +66,7 @@ store.userSession.profile.name.$set('John Doe')
 ```
 
 Each location in the store has three states: data, loading, and error (mirroring a promise).
-Data can also be loaded with promises
+Data can be set via promises.
 
 ```js
 store.userSession.$fromPromise(api.login({username: 'johnDoe123', password: 'secret'}))
