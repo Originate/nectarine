@@ -167,6 +167,7 @@ store.userSession.projects.$getAll() // {'project1': {summary: <...>, title: 'Ne
 You can add your own methods to slices by also supplying an `actions` object.
 The slice will be exposed to actions with `this.slice`.
 The store will also be exposed with `this.store` if other actions need to be accessed.
+See [here](./creating_a_slice.md#actions) for more information.
 
 ```js
 // store/user_session_slice.js
