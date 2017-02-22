@@ -43,7 +43,7 @@ store.userSession.profile.$get() // => {email: 'john.doe@example.com', name: 'Jo
 store.userSession.profile.email.$get() // => 'john.doe@example.com'
 ```
 
-You can set an object all at once which equivalent to calling set on each child.
+You can set an object all at once, which is equivalent to calling `$set` on each child.
 
 ```js
 store.userSession.$set({
@@ -85,4 +85,39 @@ store.userSession.$getError() // => null
 store.userSession.$get() // => throws because the data errored
 store.userSession.$isLoading() // => false
 store.userSession.$getError() // => Error('Invalid Credentials')
+```
+
+# Usage with React
+
+```js
+// index.js
+import React from 'react'
+import {render} from 'react-dom'
+import {Provider} from 'nectarine'
+import store from './store'
+import App from './components/App'
+
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+)
+```
+
+```js
+// containers/user_navigation.js
+import {connect} from 'nectarine'
+import UserNavigation from '../components/user_navigation'
+
+const mapProps = (store) => {
+  return {
+    profile: store.userSession.profile.$get()
+  }
+}
+
+export default connect({
+  component: UserNavigation,
+  mapProps
+})
 ```
