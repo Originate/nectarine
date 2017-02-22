@@ -149,12 +149,42 @@ export default userSessionSlice
 
 ```js
 // Values can be accessed with $key(). New elements are created on the fly.
-store.userSession.projects.$key('1').$get() // => {summary: null, title: null}
-store.userSession.projects.$key('1').$set({
+store.userSession.projects.$key('project1').$get() // => {summary: null, title: null}
+store.userSession.projects.$key('project1').$set({
   summary: 'A way to manage state in JavaScript applications.',
   title: 'Nectarine'
 })
 
-// Returns all accessed keys with data
-store.userSession.projects.$getAll() // {'1': {summary: 'A way to manage state in JavaScript applications.', title: 'Nectarine'}}
+// Returns all accessed keys
+store.userSession.projects.$keys() // ['project1']
+
+// Returns a mapping for all accessed keys with data
+store.userSession.projects.$getAll() // {'project1': {summary: <...>, title: 'Nectarine'}}
+```
+
+# Schema Validation
+
+Another benefit of the schema is built in validation.
+When creating the schema you can give more information about the type.
+See [here](./creating_a_slice.md) for more
+
+```js
+// store/user_session_slice.js
+import {createSlice} from 'nectarine'
+
+const userSessionSlice = createSlice({
+  schema: (_) => {
+    id: _,
+    profile: {
+      email: _(type: 'string'),
+      name: _(type: 'string')
+    }
+  }
+})
+
+export default userSessionSlice
+```
+
+```js
+store.userSession.profile.email.$set(['email1', 'email2']) // throws as email must be a string
 ```
