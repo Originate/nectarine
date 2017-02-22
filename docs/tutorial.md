@@ -1,4 +1,6 @@
-# Example
+# Tutorial
+
+# Creating and using a store
 
 ```js
 // store/user_session_slice.js
@@ -26,8 +28,6 @@ const store = createStore({userSession})
 
 export default store
 ```
-
-# Using a store
 
 The store object looks very similar to the schema.
 However, all data is encapsulated and can only be retrieved and updated with special methods.
@@ -69,7 +69,7 @@ Each location in the store has three states: data, loading, and error (mirroring
 Data can also be loaded with promises
 
 ```js
-store.userSession.$fromPromise(api.login({username: 'johnd', password: '123456'}))
+store.userSession.$fromPromise(api.login({username: 'johnDoe123', password: 'secret'}))
 
 // Promise is pending
 store.userSession.$get() // => throws because the data is loading
