@@ -29,7 +29,7 @@ export default store
 
 # Using a store
 
-The store object looks very similar to the schema.
+The store object looks very similar to the schema. However, all data is encapsulated
 At any point you can use `$get()` to retrieve the stored data
 
 ```js
@@ -41,10 +41,19 @@ store.userSession.profile.$get() // => {email: null, name: null}
 You can set an object all at once or set the leaves as you would like
 
 ```js
-store.userSession.$set({id: 'user1', profile: {email: 'john.doe@example.com', name: 'John Doe'}})
+store.userSession.$set({
+  id: 'user1',
+  profile: {
+    email: 'john.doe@example.com',
+    name: 'John Doe'
+  }
+})
 // is equivalent to
 store.userSession.id.$set('user1')
-store.userSession.profile.$set({email: 'john.doe@example.com', name: 'John Doe'})
+store.userSession.profile.$set({
+  email: 'john.doe@example.com',
+  name: 'John Doe'
+})
 // is equivalent to
 store.userSession.id.$set('user1')
 store.userSession.profile.email.$set('john.doe@example.com')
