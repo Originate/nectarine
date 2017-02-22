@@ -8,10 +8,10 @@ import {createSlice} from 'nectarine'
 
 const userSessionSlice = createSlice({
   schema: (_) => {
-    id: _,
+    id: _(type: 'string'),
     profile: {
-      email: _,
-      name: _
+      email: _(type: 'string'),
+      name: _(type: 'string')
     }
   }
 })
@@ -160,31 +160,4 @@ store.userSession.projects.$keys() // ['project1']
 
 // Returns a mapping for all accessed keys with data
 store.userSession.projects.$getAll() // {'project1': {summary: <...>, title: 'Nectarine'}}
-```
-
-# Schema Validation
-
-Another benefit of the schema is built in validation.
-When creating the schema you can give more information about the type.
-See [here](./creating_a_slice.md) for more
-
-```js
-// store/user_session_slice.js
-import {createSlice} from 'nectarine'
-
-const userSessionSlice = createSlice({
-  schema: (_) => {
-    id: _,
-    profile: {
-      email: _(type: 'string'),
-      name: _(type: 'string')
-    }
-  }
-})
-
-export default userSessionSlice
-```
-
-```js
-store.userSession.profile.email.$set(['email1', 'email2']) // throws as email must be a string
 ```
