@@ -121,3 +121,40 @@ export default connect({
   mapProps
 })
 ```
+
+# Object with dynamic keys and values that follow a schema
+
+This can be achieved with the the second argument to schema. We call it `map`.
+
+```js
+// store/user_session_slice.js
+import {createSlice} from 'nectarine'
+
+const userSessionSlice = createSlice({
+  schema: (_) => {
+    id: _,
+    profile: {
+      email: _,
+      name: _
+    }
+    projects: map({
+      summary: _,
+      title: _
+    })
+  }
+})
+
+export default userSessionSlice
+```
+
+```js
+// Values can be accessed with $key(). New elements are created on the fly.
+store.userSession.projects.$key('1').$get() // => {summary: null, title: null}
+store.userSession.projects.$key('1').$set({
+  summary: 'A way to manage state in JavaScript applications.',
+  title: 'Nectarine'
+})
+
+// Returns all accessed keys with data
+store.userSession.projects.$getAll() // {'1': {summary: 'A way to manage state in JavaScript applications.', title: 'Nectarine'}}
+```
