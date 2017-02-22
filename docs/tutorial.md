@@ -161,3 +161,46 @@ store.userSession.projects.$keys() // ['project1']
 // Returns a mapping for all accessed keys with data
 store.userSession.projects.$getAll() // {'project1': {summary: <...>, title: 'Nectarine'}}
 ```
+
+# Actions
+
+You can add your own methods to slices by also supplying an `actions` object.
+The slice will be exposed to actions with `this.slice`.
+The store will also be exposed with `this.store` if other actions need to be accessed.
+
+```js
+// store/user_session_slice.js
+import {createSlice} from 'nectarine'
+
+let nextProjectId = 0
+
+const userSessionSlice = createSlice({
+  schema: (_) => {
+    id: _,
+    profile: {
+      email: _,
+      name: _
+    }
+    projects: map({
+      summary: _,
+      title: _
+    })
+  },
+  actions: {
+    addProject: ({summary, title}) => {
+      const projectId = nextProjectId++
+      this.slice.projects.$key(projectId).$set({summary, title})
+    }
+  }
+})
+
+export default userSessionSlice
+```
+
+```js
+// Values can be accessed with $key(). New elements are created on the fly.
+store.userSession.addProject({
+  summary: 'A way to manage state in JavaScript applications.',
+  title: 'Nectarine'
+})
+```
