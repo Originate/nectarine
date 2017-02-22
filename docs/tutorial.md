@@ -8,7 +8,7 @@ import {createSlice} from 'nectarine'
 
 const userSessionSlice = createSlice({
   schema: (_) => {
-    id: _(type: 'string'),
+    id: _,
     profile: {
       email: _(type: 'string'),
       name: _(type: 'string')
