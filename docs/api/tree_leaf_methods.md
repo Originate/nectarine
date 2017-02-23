@@ -18,6 +18,13 @@ If this node is a tree, returns any child's error or null.
 
 ---
 
+#### `$getOrElse(defaultValue)`
+
+Returns the value for this node.
+If the node is loading or has an error, it returns the `defaultValue` or null if omitted.
+
+---
+
 #### `$getPath()`
 
 Returns an array of strings which is the path from the root of the store to this node.
@@ -66,5 +73,5 @@ If this node is a tree, it sets the error for all children.
 
 #### `$setLoading(isLoading)`
 
-Sets whether or not this node is loading. If called with no arguments, it sets loading to true.
+Sets whether or not this node is loading. `isLoading` defaults to true if omitted.
 If this node is a tree, it sets loading for all children.

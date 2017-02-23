@@ -31,6 +31,7 @@ export default store
 
 The store object looks very similar to the schema.
 However, all data is encapsulated and can only be retrieved and updated with special methods.
+All special `nectarine` methods begin with a `$`
 
 ```js
 store.userSession.id.$set('user1')
@@ -66,7 +67,7 @@ store.userSession.profile.name.$set('John Doe')
 ```
 
 Each location in the store has three states: data, loading, and error (mirroring a promise).
-Data can be set via promises.
+Data can also be set with promises.
 
 ```js
 store.userSession.$fromPromise(api.login({username: 'johnDoe123', password: 'secret'}))
@@ -86,6 +87,9 @@ store.userSession.$get() // => throws because the data errored
 store.userSession.$isLoading() // => false
 store.userSession.$getError() // => Error('Invalid Credentials')
 ```
+
+You can use `$getOrElse()` to get the data if its available and otherwise return null.
+You can also pass in the default value. See [here](./api/tree_leaf_methods.md#getorelsedefaultvalue)
 
 ## Usage with React
 
