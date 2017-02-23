@@ -7,7 +7,7 @@ require! {
 }
 
 
-module.exports = ({component, bind-props}) ->
+module.exports = ({bind-props, component}) ->
 
   class Connector extends react.Component
 

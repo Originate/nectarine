@@ -7,7 +7,7 @@ require! {
 }
 
 
-module.exports = ({component, bind-props, map-props}) ->
+module.exports = ({bind-props, component, map-props}) ->
   switch
   | bind-props => connectBindProps {component, bind-props}
   | map-props  => connectMapProps {component, map-props}
