@@ -1,6 +1,6 @@
 # Tutorial
 
-# Creating and using a store
+## Creating and using a store
 
 ```js
 // store/user_session_slice.js
@@ -87,7 +87,7 @@ store.userSession.$isLoading() // => false
 store.userSession.$getError() // => Error('Invalid Credentials')
 ```
 
-# Usage with React
+## Usage with React
 
 ```js
 // index.js
@@ -122,7 +122,7 @@ export default connect({
 })
 ```
 
-# Object with dynamic keys and values that follow a schema
+## Object with dynamic keys and values that follow a schema
 
 This can be achieved with the the second argument to schema. We call it `map`.
 
@@ -131,12 +131,12 @@ This can be achieved with the the second argument to schema. We call it `map`.
 import {createSlice} from 'nectarine'
 
 const userSessionSlice = createSlice({
-  schema: (_) => {
+  schema: (_, map) => {
     id: _,
     profile: {
       email: _,
       name: _
-    }
+    },
     projects: map({
       summary: _,
       title: _
@@ -162,7 +162,7 @@ store.userSession.projects.$keys() // ['project1']
 store.userSession.projects.$getAll() // {'project1': {summary: <...>, title: 'Nectarine'}}
 ```
 
-# Actions
+## Actions
 
 You can add your own methods to slices by also supplying an `actions` object.
 The slice will be exposed to actions with `this.slice`.
@@ -176,19 +176,19 @@ import {createSlice} from 'nectarine'
 let nextProjectId = 0
 
 const userSessionSlice = createSlice({
-  schema: (_) => {
+  schema: (_, map) => {
     id: _,
     profile: {
       email: _,
       name: _
-    }
+    },
     projects: map({
       summary: _,
       title: _
     })
   },
   actions: {
-    addProject: ({summary, title}) => {
+    addProject: function ({summary, title}) {
       const projectId = nextProjectId++
       this.slice.projects.$key(projectId).$set({summary, title})
     }
