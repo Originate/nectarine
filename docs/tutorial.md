@@ -198,8 +198,9 @@ const userSessionSlice = createSlice({
 export default userSessionSlice
 ```
 
+The actions are added as methods on the slice.
+
 ```js
-// Values can be accessed with $key(). New elements are created on the fly.
 store.userSession.addProject({
   summary: 'A way to manage state in JavaScript applications.',
   title: 'Nectarine'
