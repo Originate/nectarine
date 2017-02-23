@@ -18,6 +18,10 @@ class StoreMap extends StoreNode
     @_mapping |> map (.$debug!)
 
 
+  $delete: (key) ->
+    delete @_mapping[key] 
+
+
   $from-promise: ->
     throw Error @_build-error-message '$fromPromise()', '$key(k).$fromPromise(v)'
 

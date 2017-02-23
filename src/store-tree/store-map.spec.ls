@@ -20,6 +20,14 @@ describe 'StoreMap' ->
       expect(@map.$key('1').name.$get-path!).to.eql <[path to map 1 name]>
 
 
+    describe '$delete' ->
+
+      specify 'removes the keys from the map' ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$delete('1')
+        expect(@map.$get-all!).to.eql {}
+
+
     describe '$debug' ->
 
       specify 'returns an empty object if no keys have been accessed' ->
