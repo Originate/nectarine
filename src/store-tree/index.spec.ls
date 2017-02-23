@@ -31,6 +31,71 @@ describe 'StoreTree' ->
           email: {data: null, loading: false, error: Error 'Failed to get email'}
 
 
+  describe '$from-promise' ->
+
+    before-each ->
+      @tree = create-tree name: __, email: __
+      @promise = @tree.$from-promise new Promise (@resolve, @reject) ~>
+      null
+
+    specify 'initially sets loading on itself and all sub-nodes' ->
+      expect(@tree.$is-loading!).to.be.true
+      expect(@tree.name.$is-loading!).to.be.true
+      expect(@tree.email.$is-loading!).to.be.true
+
+    specify 'it returns a promise' ->
+      expect(@promise.then).to.be.a \function
+
+    context 'resolved' ->
+
+      before-each ->
+        set-timeout ~> @resolve name: 'Alice', email: 'alice@example.com'
+        @promise
+
+      specify 'it removes loading' ->
+        expect(@tree.$is-loading!).to.be.false
+        expect(@tree.name.$is-loading!).to.be.false
+        expect(@tree.email.$is-loading!).to.be.false
+
+      specify 'it sets data' ->
+        expect(@tree.name.$get!).to.equal 'Alice'
+        expect(@tree.email.$get!).to.equal 'alice@example.com'
+
+    context 'resolved with bad type' ->
+
+      before-each ->
+        set-timeout ~> @resolve 'some string'
+        @promise.catch(@catch-spy = sinon.spy!)
+
+      specify 'it returns a failing promise' ->
+        expect(@catch-spy).to.have.been.called-once
+        expect(@catch-spy.first-call.args[0]).to.eql Error '$from-promise: called on a tree but promise resolved to a String'
+
+      specify 'it removes loading' ->
+        expect(@tree.$is-loading!).to.be.false
+        expect(@tree.name.$is-loading!).to.be.false
+        expect(@tree.email.$is-loading!).to.be.false
+
+    context 'rejected' ->
+
+      before-each ->
+        set-timeout ~> @reject @err = Error 'Failed to get user'
+        @promise.catch(@catch-spy = sinon.spy!)
+
+      specify 'it passes the error' ->
+        expect(@catch-spy).to.have.been.called-once
+        expect(@catch-spy.first-call.args[0]).to.equal @err
+
+      specify 'it removes loading' ->
+        expect(@tree.$is-loading!).to.be.false
+        expect(@tree.name.$is-loading!).to.be.false
+        expect(@tree.email.$is-loading!).to.be.false
+
+      specify 'it sets error' ->
+        expect(@tree.name.$get-error!).to.equal @err
+        expect(@tree.email.$get-error!).to.equal @err
+
+
   describe '$get' ->
 
     test-cases '' [
@@ -82,6 +147,91 @@ describe 'StoreTree' ->
         specify 'returns the default if has error', ->
           @tree.name.$set-error Error 'Failed to get name'
           expect(@tree.$get-or-else @defaultValue).to.eql name: 'Bob', email: 'bob@example.com'
+
+
+  describe '$on-update' ->
+
+    before-each ->
+      @tree = create-tree do
+        name: __ initial-value: 'Alice'
+        email: __
+      @tree.$on-update @tree-update-spy = sinon.spy!
+
+    specify 'does not call callbacks if nothing updates' ->
+      expect(@tree-update-spy).to.not.have.been.called
+
+    specify 'supports multiple callbacks' ->
+      @tree.$on-update tree-update-spy2 = sinon.spy!
+      @tree.name.$set 'Bob'
+      expect(@tree-update-spy).to.have.been.called-once
+      expect(tree-update-spy2).to.have.been.called-once
+
+    specify 'supports removing callbacks' ->
+      @tree.$off-update @tree-update-spy
+      @tree.name.$set 'Bob'
+      expect(@tree-update-spy).to.not.have.been.called
+
+    test-cases 'triggers when set* methods are called' {
+      $set: ->
+        @tree.name.$set('Bob')
+        @new-values = data: 'Bob', loading: no, error: null
+      $set-loading: ->
+        @tree.name.$set-loading!
+        @new-values = data: null, loading: yes, error: null
+      $set-error: ->
+        @tree.name.$set-error err = Error 'some error'
+        @new-values = data: null, loading: no, error: err
+    } ->
+      specify 'calls callbacks' ->
+        expect(@tree-update-spy).to.have.been.called-once
+
+      specify 'calls with new-values, old-values, path' ->
+        expect(@tree-update-spy).to.have.been.called-with do
+          path: <[path to tree name]>
+          updates: [{
+            @new-values
+            old-values: {data: 'Alice', loading: false, error: null}
+            path: <[path to tree name]>
+          }]
+
+
+  describe '$reset' ->
+
+    test-cases 'resetting leaves' [
+      -> @tree = create-tree name: __, email: __
+      -> @tree = create-tree name: __!, email: __!
+    ] ->
+
+      specify 'resets data to the initial value' ->
+        @tree.name.$set 'Alice'
+        @tree.$reset()
+        expect(@tree.name.$get!).to.be.null
+
+      specify 'sets loading to false on each leaf' ->
+        @tree.name.$set-loading yes
+        @tree.$reset()
+        expect(@tree.name.$is-loading!).to.be.false
+
+      specify 'called with false sets loading to false on all leaves' ->
+        @tree.name.$set-error Error 'Some error'
+        @tree.$reset()
+        expect(@tree.name.$get-error!).to.be.null
+
+      specify 'batches updates', ->
+        @tree.$set name: 'Bob', email: 'bob@example.com'
+        @tree.$on-update update-spy = sinon.spy()
+        @tree.$reset!
+        expect(update-spy).to.have.been.called-with do
+          path: <[path to tree]>
+          updates: [
+            new-values: {data: null, loading: false, error: null}
+            old-values: {data: 'Bob', loading: false, error: null}
+            path: <[path to tree name]>
+          ,
+            new-values: {data: null, loading: false, error: null}
+            old-values: {data: 'bob@example.com', loading: false, error: null}
+            path: <[path to tree email]>
+          ]
 
 
   describe '$set' ->
@@ -269,153 +419,3 @@ describe 'StoreTree' ->
             old-values: {data: null, loading: false, error: null}
             path: <[path to tree email]>
           ]
-
-
-  describe '$reset' ->
-
-    test-cases 'resetting leaves' [
-      -> @tree = create-tree name: __, email: __
-      -> @tree = create-tree name: __!, email: __!
-    ] ->
-
-      specify 'resets data to the initial value' ->
-        @tree.name.$set 'Alice'
-        @tree.$reset()
-        expect(@tree.name.$get!).to.be.null
-
-      specify 'sets loading to false on each leaf' ->
-        @tree.name.$set-loading yes
-        @tree.$reset()
-        expect(@tree.name.$is-loading!).to.be.false
-
-      specify 'called with false sets loading to false on all leaves' ->
-        @tree.name.$set-error Error 'Some error'
-        @tree.$reset()
-        expect(@tree.name.$get-error!).to.be.null
-
-      specify 'batches updates', ->
-        @tree.$set name: 'Bob', email: 'bob@example.com'
-        @tree.$on-update update-spy = sinon.spy()
-        @tree.$reset!
-        expect(update-spy).to.have.been.called-with do
-          path: <[path to tree]>
-          updates: [
-            new-values: {data: null, loading: false, error: null}
-            old-values: {data: 'Bob', loading: false, error: null}
-            path: <[path to tree name]>
-          ,
-            new-values: {data: null, loading: false, error: null}
-            old-values: {data: 'bob@example.com', loading: false, error: null}
-            path: <[path to tree email]>
-          ]
-
-
-  describe '$from-promise' ->
-
-    before-each ->
-      @tree = create-tree name: __, email: __
-      @promise = @tree.$from-promise new Promise (@resolve, @reject) ~>
-      null
-
-    specify 'initially sets loading on itself and all sub-nodes' ->
-      expect(@tree.$is-loading!).to.be.true
-      expect(@tree.name.$is-loading!).to.be.true
-      expect(@tree.email.$is-loading!).to.be.true
-
-    specify 'it returns a promise' ->
-      expect(@promise.then).to.be.a \function
-
-    context 'resolved' ->
-
-      before-each ->
-        set-timeout ~> @resolve name: 'Alice', email: 'alice@example.com'
-        @promise
-
-      specify 'it removes loading' ->
-        expect(@tree.$is-loading!).to.be.false
-        expect(@tree.name.$is-loading!).to.be.false
-        expect(@tree.email.$is-loading!).to.be.false
-
-      specify 'it sets data' ->
-        expect(@tree.name.$get!).to.equal 'Alice'
-        expect(@tree.email.$get!).to.equal 'alice@example.com'
-
-    context 'resolved with bad type' ->
-
-      before-each ->
-        set-timeout ~> @resolve 'some string'
-        @promise.catch(@catch-spy = sinon.spy!)
-
-      specify 'it returns a failing promise' ->
-        expect(@catch-spy).to.have.been.called-once
-        expect(@catch-spy.first-call.args[0]).to.eql Error '$from-promise: called on a tree but promise resolved to a String'
-
-      specify 'it removes loading' ->
-        expect(@tree.$is-loading!).to.be.false
-        expect(@tree.name.$is-loading!).to.be.false
-        expect(@tree.email.$is-loading!).to.be.false
-
-    context 'rejected' ->
-
-      before-each ->
-        set-timeout ~> @reject @err = Error 'Failed to get user'
-        @promise.catch(@catch-spy = sinon.spy!)
-
-      specify 'it passes the error' ->
-        expect(@catch-spy).to.have.been.called-once
-        expect(@catch-spy.first-call.args[0]).to.equal @err
-
-      specify 'it removes loading' ->
-        expect(@tree.$is-loading!).to.be.false
-        expect(@tree.name.$is-loading!).to.be.false
-        expect(@tree.email.$is-loading!).to.be.false
-
-      specify 'it sets error' ->
-        expect(@tree.name.$get-error!).to.equal @err
-        expect(@tree.email.$get-error!).to.equal @err
-
-
-  describe '$on-update' ->
-
-    before-each ->
-      @tree = create-tree do
-        name: __ initial-value: 'Alice'
-        email: __
-      @tree.$on-update @tree-update-spy = sinon.spy!
-
-    specify 'does not call callbacks if nothing updates' ->
-      expect(@tree-update-spy).to.not.have.been.called
-
-    specify 'supports multiple callbacks' ->
-      @tree.$on-update tree-update-spy2 = sinon.spy!
-      @tree.name.$set 'Bob'
-      expect(@tree-update-spy).to.have.been.called-once
-      expect(tree-update-spy2).to.have.been.called-once
-
-    specify 'supports removing callbacks' ->
-      @tree.$off-update @tree-update-spy
-      @tree.name.$set 'Bob'
-      expect(@tree-update-spy).to.not.have.been.called
-
-    test-cases 'triggers when set* methods are called' {
-      $set: ->
-        @tree.name.$set('Bob')
-        @new-values = data: 'Bob', loading: no, error: null
-      $set-loading: ->
-        @tree.name.$set-loading!
-        @new-values = data: null, loading: yes, error: null
-      $set-error: ->
-        @tree.name.$set-error err = Error 'some error'
-        @new-values = data: null, loading: no, error: err
-    } ->
-      specify 'calls callbacks' ->
-        expect(@tree-update-spy).to.have.been.called-once
-
-      specify 'calls with new-values, old-values, path' ->
-        expect(@tree-update-spy).to.have.been.called-with do
-          path: <[path to tree name]>
-          updates: [{
-            @new-values
-            old-values: {data: 'Alice', loading: false, error: null}
-            path: <[path to tree name]>
-          }]

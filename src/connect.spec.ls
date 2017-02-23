@@ -14,7 +14,7 @@ describe 'connect' ->
 
   specify 'defines a component with a required context type for store', ->
     @connectedHoc = connect component: TestComponent, map-props: ->
-    expect(@connectedHoc.context-types.store).to.exist
+    expect(@connectedHoc.context-types.nectarine-store).to.exist
 
   describe 'rendering', ->
     before-each ->
@@ -24,7 +24,7 @@ describe 'connect' ->
         component: TestComponent
         map-props: (store, ownProps) -> {name: store.users.$key(ownProps.id).name.$get!}
       component = react.create-element connectedHoc, {id: '1'}
-      @wrapper = shallow component, context: {@store}
+      @wrapper = shallow component, context: {nectarine-store: @store}
 
     specify 'renders the component with the passed in props and the result of map-props', ->
       expect(@wrapper.is('TestComponent')).to.be.true

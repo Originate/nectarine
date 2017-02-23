@@ -10,17 +10,17 @@ module.exports = ({component, map-props}) ->
   class Connector extends react.Component
 
     @context-types =
-      store: react.PropTypes.instance-of(StoreTree)
+      nectarine-store: react.PropTypes.instance-of(StoreTree)
 
 
     (props, context) ->
       super props, context
-      @state = map-props(@context.store, @props)
-      @context.store.$on-update @update
+      @state = map-props(@context.nectarine-store, @props)
+      @context.nectarine-store.$on-update @update
 
 
     componentWillUnmount: ->
-      @context.store.$off-update @update
+      @context.nectarine-store.$off-update @update
 
 
     render: ->
@@ -28,4 +28,4 @@ module.exports = ({component, map-props}) ->
 
 
     update: ~>
-      @setState map-props(@context.store, @props)
+      @setState map-props(@context.nectarine-store, @props)

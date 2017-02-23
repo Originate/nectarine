@@ -15,10 +15,10 @@ describe 'Provider' ->
     @store = new StoreTree {children: {}}
 
   specify 'defines a child context type for store', ->
-    expect(Provider.child-context-types.store).to.exist
+    expect(Provider.child-context-types.nectarine-store).to.exist
 
   specify 'defines a prop type for slice / children', ->
-    expect(Provider.prop-types.store).to.exist
+    expect(Provider.prop-types.nectarine-store).to.exist
     expect(Provider.prop-types.children).to.exist
 
   describe 'rendering', ->
@@ -27,7 +27,7 @@ describe 'Provider' ->
       @wrapper = shallow component
 
     specify 'defines a child context with the store', ->
-      expect(@wrapper.instance().get-child-context()).to.eql {@store}
+      expect(@wrapper.instance().get-child-context()).to.eql {nectarine-store: @store}
 
     specify 'renders the component', ->
       expect(@wrapper.is('TestComponent')).to.be.true
