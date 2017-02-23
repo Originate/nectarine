@@ -31,6 +31,14 @@ Returns an array of strings which is the path from the root of the store to this
 
 ---
 
+#### `$hasData()`
+
+Returns whether or not the node's value is non-null.
+If this node is a tree, returns whether or not any child is non-null.
+Returns false if the node is loading or has an error.
+
+---
+
 #### `$isLoading()`
 
 Returns a boolean for whether or not this node is loading.

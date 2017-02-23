@@ -149,6 +149,30 @@ describe 'StoreTree' ->
           expect(@tree.$get-or-else @defaultValue).to.eql name: 'Bob', email: 'bob@example.com'
 
 
+  describe '$has-data' ->
+    test-cases '' [
+      -> @tree = create-tree name: __, email: __
+      -> @tree = create-tree name: __!, email: __!
+    ] ->
+
+      specify 'returns false if data is null' ->
+        expect(@tree.$has-data!).to.be.false
+
+      specify 'returns true if any child has data' ->
+        @tree.name.$set 'Alice'
+        expect(@tree.$has-data!).to.be.true
+
+      specify 'returns false if is loading' ->
+        @tree.name.$set-loading!
+        @tree.email.$set 'alice@example.com'
+        expect(@tree.$has-data!).to.be.false
+
+      specify 'returns false if has error', ->
+        @tree.name.$set-error Error 'Failed to get name'
+        @tree.email.$set 'alice@example.com'
+        expect(@tree.$has-data!).to.be.false
+
+
   describe '$on-update' ->
 
     before-each ->

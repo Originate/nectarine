@@ -44,6 +44,11 @@ class StoreTree extends StoreNode
                |> -> it?.$get-error! or null
 
 
+  $has-data: ->
+    return false if @$is-loading! or @$get-error! 
+    @_children |> find (.$has-data!) |> Boolean
+
+
   $is-loading: ->
     @_children |> find (.$is-loading!) |> Boolean
 
