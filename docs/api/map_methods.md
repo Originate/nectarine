@@ -4,6 +4,12 @@ Map placeholders will create objects which have the following methods:
 
 ---
 
+#### `$delete(key)`
+
+Removes the node for that particular key. `$getAll()` and `$keys()` will no longer include the node.
+
+---
+
 #### `$getAll()`
 
 Returns a mapping from `key` to `$key(key).$get()` for all keys with data.
