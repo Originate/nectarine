@@ -20,9 +20,8 @@ class StoreTree extends StoreNode
         """
 
 
-  $get-error: ->
-    @_children |> find (.$get-error!)
-               |> -> it?.$get-error! or null
+  $debug: ->
+    @_children |> map (.$debug!)
 
 
   $from-promise: (promise) ->
@@ -35,6 +34,14 @@ class StoreTree extends StoreNode
       .catch (err) ~>
         @$set-error err
         Promise.reject err
+
+  $get: ->
+    @_children |> map (.$get!)
+
+
+  $get-error: ->
+    @_children |> find (.$get-error!)
+               |> -> it?.$get-error! or null
 
 
   $is-loading: ->
@@ -52,20 +59,12 @@ class StoreTree extends StoreNode
     | otherwise => throw Error 'calling $set on a tree must be called with an object or null'
 
 
-  $set-loading: (loading = yes) !-> @$batch-emit-updates ~>
-    @_children |> each (.$set-loading loading)
-
-
   $set-error: (err) !~> @$batch-emit-updates ~>
     @_children |> each (.$set-error err)
 
 
-  $get: ->
-    @_children |> map (.$get!)
-
-
-  $debug: ->
-    @_children |> map (.$debug!)
+  $set-loading: (loading = yes) !-> @$batch-emit-updates ~>
+    @_children |> each (.$set-loading loading)
 
 
   _updateChildren: (data) ->

@@ -30,6 +30,51 @@ describe 'StoreLeaf' ->
         expect(@name.$debug!).to.be.eql data: null, loading: false, error: Error 'Some error'
 
 
+  describe '$from-promise' ->
+
+    test-cases 'from promise on leaves' [
+      -> @name = create-leaf __
+      -> @name = create-leaf __!
+    ] ->
+      before-each ->
+        @promise = @name.$from-promise new Promise (@resolve, @reject) ~>
+        null
+
+      specify 'initially sets loading' ->
+        expect(@name.$is-loading!).to.be.true
+
+      specify 'it returns a promise' ->
+        expect(@promise.then).to.be.a \function
+
+      context 'resolved' ->
+
+        before-each ->
+          set-timeout ~> @resolve 'Alice'
+          @promise
+
+        specify 'it removes loading' ->
+          expect(@name.$is-loading!).to.be.false
+
+        specify 'it sets data' ->
+          expect(@name.$get!).to.equal 'Alice'
+
+      context 'rejected' ->
+
+        before-each ->
+          set-timeout ~> @reject @err = Error 'Failed to get name'
+          @promise.catch(@catch-spy = sinon.spy!)
+
+        specify 'it passes the error' ->
+          expect(@catch-spy).to.have.been.called-once
+          expect(@catch-spy.first-call.args[0]).to.equal @err
+
+        specify 'it removes loading' ->
+          expect(@name.$is-loading!).to.be.false
+
+        specify 'it sets error' ->
+          expect(@name.$get-error!).to.equal @err
+
+
   describe '$get-or-else' ->
     test-cases 'setting errors on leaves' [
       -> @name = create-leaf __
@@ -61,6 +106,87 @@ describe 'StoreLeaf' ->
         specify 'returns the default if has error', ->
           @name.$set-error Error 'Failed to get name'
           expect(@name.$get-or-else 'Bob').to.eql 'Bob'
+
+
+  describe '$on-update' ->
+
+    test-cases [
+      -> @leaf = create-leaf __
+      -> @leaf = create-leaf __!
+    ] ->
+
+      before-each ->
+        @leaf.$set 'foo'
+        @leaf.$on-update @update-spy = sinon.spy!
+
+      specify 'does not call callbacks if nothing updates' ->
+        expect(@update-spy).to.not.have.been.called
+
+      specify 'supports multiple callbacks' ->
+        @leaf.$on-update update-spy2 = sinon.spy!
+        @leaf.$set 'bar'
+        expect(@update-spy).to.have.been.called-once
+        expect(update-spy2).to.have.been.called-once
+
+      specify 'supports removing callbacks' ->
+        @leaf.$off-update @update-spy
+        @leaf.$set 'bar'
+        expect(@update-spy).to.not.have.been.called-once
+
+      test-cases 'triggers when set* methods are called' {
+        $set: ->
+          @leaf.$set('bar')
+          @new-values = data: 'bar', loading: no, error: null
+        $set-loading: ->
+          @leaf.$set-loading!
+          @new-values = data: null, loading: yes, error: null
+        $set-error: ->
+          @leaf.$set-error err = Error 'some error'
+          @new-values = data: null, loading: no, error: err
+      } ->
+        specify 'calls callbacks' ->
+          expect(@update-spy).to.have.been.called-once
+
+        specify 'calls with new-values, old-values, path' ->
+          expect(@update-spy).to.have.been.called-with do
+            path: <[path to leaf]>
+            updates: [{
+              old-values: {data: 'foo', loading: no, error: null}
+              @new-values
+              path: <[path to leaf]>
+            }]
+
+
+  describe '$reset' ->
+
+    test-cases 'without initial-value' [
+      -> @name = create-leaf __
+      -> @name = create-leaf __!
+    ] ->
+
+      specify 'sets the data to null' ->
+        @name.$set 'Alice'
+        @name.$reset!
+        expect(@name.$get!).to.be.null
+
+      specify 'sets loading to false' ->
+        @name.$set-error Error 'Some error'
+        @name.$reset!
+        expect(@name.$is-loading!).to.be.false
+
+      specify 'sets error to null' ->
+        @name.$set-error Error 'Some error'
+        @name.$reset!
+        expect(@name.$get-error!).to.be.null
+
+    describe 'with initial-value' ->
+      before-each ->
+        @name = create-leaf __ initial-value: 'Alice'
+
+      specify 'sets the data to null' ->
+        @name.$set 'Bob'
+        @name.$reset!
+        expect(@name.$get!).to.eql 'Alice'
 
 
   describe '$set' ->
@@ -227,129 +353,3 @@ describe 'StoreLeaf' ->
         @name.$set 'Alice'
         @name.$set-loading!
         expect(~> @name.$get!).to.throw 'Error getting `path.to.leaf`: is loading'
-
-
-  describe '$reset' ->
-
-    test-cases 'without initial-value' [
-      -> @name = create-leaf __
-      -> @name = create-leaf __!
-    ] ->
-
-      specify 'sets the data to null' ->
-        @name.$set 'Alice'
-        @name.$reset!
-        expect(@name.$get!).to.be.null
-
-      specify 'sets loading to false' ->
-        @name.$set-error Error 'Some error'
-        @name.$reset!
-        expect(@name.$is-loading!).to.be.false
-
-      specify 'sets error to null' ->
-        @name.$set-error Error 'Some error'
-        @name.$reset!
-        expect(@name.$get-error!).to.be.null
-
-    describe 'with initial-value' ->
-      before-each ->
-        @name = create-leaf __ initial-value: 'Alice'
-
-      specify 'sets the data to null' ->
-        @name.$set 'Bob'
-        @name.$reset!
-        expect(@name.$get!).to.eql 'Alice'
-
-
-  describe '$from-promise' ->
-
-    test-cases 'from promise on leaves' [
-      -> @name = create-leaf __
-      -> @name = create-leaf __!
-    ] ->
-      before-each ->
-        @promise = @name.$from-promise new Promise (@resolve, @reject) ~>
-        null
-
-      specify 'initially sets loading' ->
-        expect(@name.$is-loading!).to.be.true
-
-      specify 'it returns a promise' ->
-        expect(@promise.then).to.be.a \function
-
-      context 'resolved' ->
-
-        before-each ->
-          set-timeout ~> @resolve 'Alice'
-          @promise
-
-        specify 'it removes loading' ->
-          expect(@name.$is-loading!).to.be.false
-
-        specify 'it sets data' ->
-          expect(@name.$get!).to.equal 'Alice'
-
-      context 'rejected' ->
-
-        before-each ->
-          set-timeout ~> @reject @err = Error 'Failed to get name'
-          @promise.catch(@catch-spy = sinon.spy!)
-
-        specify 'it passes the error' ->
-          expect(@catch-spy).to.have.been.called-once
-          expect(@catch-spy.first-call.args[0]).to.equal @err
-
-        specify 'it removes loading' ->
-          expect(@name.$is-loading!).to.be.false
-
-        specify 'it sets error' ->
-          expect(@name.$get-error!).to.equal @err
-
-
-  describe '$on-update' ->
-
-    test-cases [
-      -> @leaf = create-leaf __
-      -> @leaf = create-leaf __!
-    ] ->
-
-      before-each ->
-        @leaf.$set 'foo'
-        @leaf.$on-update @update-spy = sinon.spy!
-
-      specify 'does not call callbacks if nothing updates' ->
-        expect(@update-spy).to.not.have.been.called
-
-      specify 'supports multiple callbacks' ->
-        @leaf.$on-update update-spy2 = sinon.spy!
-        @leaf.$set 'bar'
-        expect(@update-spy).to.have.been.called-once
-        expect(update-spy2).to.have.been.called-once
-
-      specify 'supports removing callbacks' ->
-        @leaf.$off-update @update-spy
-        @leaf.$set 'bar'
-        expect(@update-spy).to.not.have.been.called-once
-
-      test-cases 'triggers when set* methods are called' {
-        $set: ->
-          @leaf.$set('bar')
-          @new-values = data: 'bar', loading: no, error: null
-        $set-loading: ->
-          @leaf.$set-loading!
-          @new-values = data: null, loading: yes, error: null
-        $set-error: ->
-          @leaf.$set-error err = Error 'some error'
-          @new-values = data: null, loading: no, error: err
-      } ->
-        specify 'calls callbacks' ->
-          expect(@update-spy).to.have.been.called-once
-
-        specify 'calls with new-values, old-values, path' ->
-          expect(@update-spy).to.have.been.called-with do
-            path: <[path to leaf]>
-            updates: [{
-              old-values: {data: 'foo', loading: no, error: null}
-              @new-values
-              path: <[path to leaf]>
-            }]
