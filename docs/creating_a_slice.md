@@ -11,14 +11,16 @@ The first argument to schema is a leaf placeholder. This is used anywhere you wo
 A leaf placeholder by itself stands for `type: any`.
 
 ```js
-schema = _ => (
-  {
-    currentUser: {
-      name: _,
-      email: _
+const sessionSlice = createSlice({
+  schema = _ => (
+    {
+      currentUser: {
+        name: _,
+        email: _
+      }
     }
-  }
-)
+  )
+})
 ```
 
 Placeholders can also be called as functions and passed in any of the following options:
@@ -29,14 +31,16 @@ Placeholders can also be called as functions and passed in any of the following 
 * `validate` - function for extra validation. Called with a value and should return a boolean
 
 ```js
-schema = _ => (
-  {
-    currentUser: {
-      name: _({type: 'string'}),
-      email: _({type: 'string', required: true})
+const sessionSlice = createSlice({
+  schema = _ => (
+    {
+      currentUser: {
+        name: _({type: 'string'}),
+        email: _({type: 'string', required: true})
+      }
     }
-  }
-)
+  )
+})
 ```
 
 ### Map Placeholder
@@ -45,14 +49,16 @@ The second argument is a map placeholder function. Maps are used for nested obje
 `map` must be passed a child schema.
 
 ```js
-schema = (_, map) => (
-  {
-    users: map({
-      name: _({type: 'string'}),
-      email: _({type: 'string', required: true})
-    })
-  }
-)
+const userManagementSlice = createSlice({
+  schema = (_, map) => (
+    {
+      users: map({
+        name: _({type: 'string'}),
+        email: _({type: 'string', required: true})
+      })
+    }
+  )
+})
 ```
 
 ### Nested slices
