@@ -6,7 +6,7 @@ Map placeholders will create objects which have the following methods:
 
 #### `$delete(key)`
 
-Remove a node. `$getAll()` and `$keys()` will no longer include the node.
+Removes the node for that particular key. `$getAll()` and `$keys()` will no longer include the node.
 
 ---
 
