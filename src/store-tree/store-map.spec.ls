@@ -22,10 +22,20 @@ describe 'StoreMap' ->
 
     describe '$delete' ->
 
-      specify 'removes the keys from the map' ->
+      specify 'removes an data' ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$delete('1')
+        expect(@map.$key('1').$get!).to.eql name: null
+
+      specify 'removes the node from future $getAll calls' ->
         @map.$key('1').$set name: 'Alice'
         @map.$delete('1')
         expect(@map.$get-all!).to.eql {}
+
+      specify 'removes the key from future $keys calls' ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$delete('1')
+        expect(@map.$keys!).to.eql []
 
 
     describe '$debug' ->
