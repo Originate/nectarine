@@ -1,7 +1,7 @@
 require! {
-  './utils': {merge-objects}
+  '../store-tree': StoreTree
+  '../utils': {merge-objects}
   'react'
-  './store-tree': StoreTree
 }
 
 
