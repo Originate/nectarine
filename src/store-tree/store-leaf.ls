@@ -12,6 +12,20 @@ class StoreLeaf extends StoreNode
     @$reset!
 
 
+  $debug: ->
+    data: @_data, loading: @_loading, error: @_error
+
+
+  $from-promise: (promise)->
+    @$set-loading!
+    promise
+      .then (data) ~>
+        @$set data
+      .catch (err) ~>
+        @$set-error err
+        Promise.reject err
+
+
   $get: ->
     if @_error?
       error-string = if @_error instanceof Error then @_error.message else @_error
@@ -35,16 +49,6 @@ class StoreLeaf extends StoreNode
     @_loading
 
 
-  $from-promise: (promise)->
-    @$set-loading!
-    promise
-      .then (data) ~>
-        @$set data
-      .catch (err) ~>
-        @$set-error err
-        Promise.reject err
-
-
   $reset: ->
     @$set @_schema.initial-value ? null
 
@@ -65,10 +69,6 @@ class StoreLeaf extends StoreNode
 
   $set-loading: (loading = yes) !->
     @_update {data: null, loading, error: null}
-
-
-  $debug: ->
-    data: @_data, loading: @_loading, error: @_error
 
 
   _update: (new-values) ->

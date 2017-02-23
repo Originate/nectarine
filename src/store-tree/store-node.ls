@@ -14,12 +14,15 @@ class StoreNode
         @_bind-action action-name, action-fn
 
 
-  $off-update: (callback) ->
-    @_update-callbacks = @_update-callbacks |> reject -> it is callback
-
-
-  $on-update: (callback) ->
-    @_update-callbacks.push callback
+  $batch-emit-updates: (fn) ->
+    @_should-queue-updates = yes
+    fn()
+    @_should-queue-updates = no
+    updates = []
+    for arg in @_queued-updates
+      updates = updates.concat arg.updates
+    @_queued-updates = []
+    @$emit-update {path: @$get-path!, updates}
 
 
   $emit-update: (arg) ~>
@@ -30,6 +33,13 @@ class StoreNode
         callback ...
 
 
+  $get-or-else: (defaultValue = null) ->
+    try
+      @$get!
+    catch
+      defaultValue
+
+
   $get-path: ->
     @_path
 
@@ -38,22 +48,12 @@ class StoreNode
     @$get-path!.join '.'
 
 
-  $get-or-else: (defaultValue = null) ->
-    try
-      @$get!
-    catch
-      defaultValue
+  $off-update: (callback) ->
+    @_update-callbacks = @_update-callbacks |> reject -> it is callback
 
 
-  $batch-emit-updates: (fn) ->
-    @_should-queue-updates = yes
-    fn()
-    @_should-queue-updates = no
-    updates = []
-    for arg in @_queued-updates
-      updates = updates.concat arg.updates
-    @_queued-updates = []
-    @$emit-update {path: @$get-path!, updates}
+  $on-update: (callback) ->
+    @_update-callbacks.push callback
 
 
   _bind-action: (action-name, action-fn) ->
