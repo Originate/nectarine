@@ -37,6 +37,11 @@ class StoreTree extends StoreNode
         Promise.reject err
 
 
+  $has-data: ->
+    return false if @$is-loading! or @$get-error! 
+    @_children |> find (.$has-data!) |> Boolean
+
+
   $is-loading: ->
     @_children |> find (.$is-loading!) |> Boolean
 

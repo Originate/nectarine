@@ -108,6 +108,28 @@ describe 'StoreLeaf' ->
           expect(@name.$get-or-else 'Bob').to.eql 'Bob'
 
 
+  describe '$has-data' ->
+    test-cases '' [
+      -> @name = create-leaf __
+      -> @name = create-leaf __!
+    ] ->
+
+      specify 'returns false if data is null' ->
+        expect(@name.$has-data!).to.be.false
+
+      specify 'returns true if data is non-null data' ->
+        @name.$set 'Alice'
+        expect(@name.$has-data!).to.be.true
+
+      specify 'returns false if is loading' ->
+        @name.$set-loading!
+        expect(@name.$has-data!).to.be.false
+
+      specify 'returns false if has error', ->
+        @name.$set-error Error 'Failed to get name'
+        expect(@name.$has-data!).to.be.false
+
+
   describe '$on-update' ->
 
     test-cases [

@@ -27,6 +27,10 @@ class StoreLeaf extends StoreNode
     @_error
 
 
+  $has-data: ->
+    @_data isnt null
+
+
   $is-loading: ->
     @_loading
 
