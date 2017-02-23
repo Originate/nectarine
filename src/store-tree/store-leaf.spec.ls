@@ -117,7 +117,7 @@ describe 'StoreLeaf' ->
       specify 'returns false if data is null' ->
         expect(@name.$has-data!).to.be.false
 
-      specify 'returns true if data is non-null data' ->
+      specify 'returns true if data is non-null' ->
         @name.$set 'Alice'
         expect(@name.$has-data!).to.be.true
 
