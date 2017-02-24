@@ -64,6 +64,9 @@ class StoreLeaf extends StoreNode
 
 
   $set-error: (error) !->
+    unless error?
+      throw Error "Error setting `#{@$get-path-string!}`: attempting to set error to undefined. Always pass in an error"
+
     @_update {data: null, loading: no, error}
 
 

@@ -45,7 +45,7 @@ class StoreTree extends StoreNode
 
 
   $has-data: ->
-    return false if @$is-loading! or @$get-error! 
+    return false if @$is-loading! or @$get-error!
     @_children |> find (.$has-data!) |> Boolean
 
 
@@ -65,6 +65,9 @@ class StoreTree extends StoreNode
 
 
   $set-error: (err) !~> @$batch-emit-updates ~>
+    unless err?
+      throw Error "Error setting `#{@$get-path-string!}`: attempting to set error to undefined. Always pass in an error"
+
     @_children |> each (.$set-error err)
 
 
