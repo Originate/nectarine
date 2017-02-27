@@ -1,16 +1,16 @@
 require! {
   'react'
   'enzyme': {shallow}
-  './connect': connect
-  './create-slice'
-  './create-store'
+  './': connect
+  '../create-slice'
+  '../create-store'
 }
 
 
 class TestComponent extends react.Component
 
 
-describe 'connect' ->
+describe 'connect - map props' ->
 
   specify 'defines a component with a required context type for store', ->
     @connectedHoc = connect component: TestComponent, map-props: ->
