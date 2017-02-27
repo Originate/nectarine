@@ -380,6 +380,9 @@ describe 'StoreTree' ->
         expect(@tree.name.$is-loading!).to.be.false
         expect(@tree.email.$is-loading!).to.be.false
 
+      specify 'throws when attempting to set to undefined' ->
+        expect(~> @tree.$set-error!).to.throw 'Error setting `path.to.tree`: attempting to set error to undefined. Always pass in an error'
+
       specify 'batches updates', ->
         err = new Error 'Some error'
         @tree.$on-update update-spy = sinon.spy()

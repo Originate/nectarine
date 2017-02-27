@@ -342,6 +342,9 @@ describe 'StoreLeaf' ->
         @name.$set-error Error 'Some error'
         expect(~> @name.$get!).to.throw 'Error getting `path.to.leaf`: has error "Some error"'
 
+      specify 'throws when attempting to set to undefined' ->
+        expect(~> @name.$set-error!).to.throw 'Error setting `path.to.leaf`: attempting to set error to undefined. Always pass in an error'
+
 
   describe '$set-loading' ->
 
