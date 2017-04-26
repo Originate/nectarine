@@ -1,18 +1,19 @@
 require! {
-  'react'
   './store-tree': StoreTree
+  'prop-types': PropTypes
+  'react'
 }
 
 
 class Provider extends react.Component
 
   @child-context-types =
-    nectarine-store: react.PropTypes.instance-of(StoreTree)
+    nectarine-store: PropTypes.instance-of(StoreTree)
 
 
   @prop-types =
-    nectarine-store: react.PropTypes.instance-of(StoreTree)
-    children: react.PropTypes.element.isRequired
+    nectarine-store: PropTypes.instance-of(StoreTree)
+    children: PropTypes.element.isRequired
 
 
   get-child-context: ->

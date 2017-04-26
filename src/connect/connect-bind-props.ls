@@ -3,6 +3,7 @@ require! {
   '../store-tree': StoreTree
   '../utils': {merge-objects}
   'prelude-ls': {Obj: {each}}
+  'prop-types': PropTypes
   'react'
 }
 
@@ -12,7 +13,7 @@ module.exports = ({bind-props, component}) ->
   class Connector extends react.Component
 
     @context-types =
-      nectarine-store: react.PropTypes.instance-of(StoreTree)
+      nectarine-store: PropTypes.instance-of(StoreTree)
 
 
     (props, context) ->

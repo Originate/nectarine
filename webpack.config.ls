@@ -11,7 +11,7 @@ module.exports =
   output:
     filename: 'index.js'
     library-target: 'commonjs2'
-    path: '.'
+    path: __dirname
     pathinfo: yes
 
 
