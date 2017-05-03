@@ -13,7 +13,6 @@ describe 'StoreLeaf' ->
 
   describe '$debug' ->
     test-cases '' [
-      -> @name = create-leaf __
       -> @name = create-leaf __!
     ] ->
 
@@ -33,7 +32,6 @@ describe 'StoreLeaf' ->
   describe '$from-promise' ->
 
     test-cases 'from promise on leaves' [
-      -> @name = create-leaf __
       -> @name = create-leaf __!
     ] ->
       before-each ->
@@ -77,7 +75,6 @@ describe 'StoreLeaf' ->
 
   describe '$get-or-else' ->
     test-cases 'setting errors on leaves' [
-      -> @name = create-leaf __
       -> @name = create-leaf __!
     ] ->
 
@@ -110,7 +107,6 @@ describe 'StoreLeaf' ->
 
   describe '$has-data' ->
     test-cases '' [
-      -> @name = create-leaf __
       -> @name = create-leaf __!
     ] ->
 
@@ -133,7 +129,6 @@ describe 'StoreLeaf' ->
   describe '$on-update' ->
 
     test-cases [
-      -> @leaf = create-leaf __
       -> @leaf = create-leaf __!
     ] ->
 
@@ -182,7 +177,6 @@ describe 'StoreLeaf' ->
   describe '$reset' ->
 
     test-cases 'without initial-value' [
-      -> @name = create-leaf __
       -> @name = create-leaf __!
     ] ->
 
@@ -214,7 +208,6 @@ describe 'StoreLeaf' ->
   describe '$set' ->
 
     test-cases 'setting values' [
-      -> @name = create-leaf __
       -> @name = create-leaf __!
       -> @name = create-leaf __ type: \any
       -> @name = create-leaf __ required: yes, type: \any, initial-value: 'fizz'
@@ -254,7 +247,6 @@ describe 'StoreLeaf' ->
 
 
     test-cases 'required isnt true' [
-      -> @leaf = create-leaf __
       -> @leaf = create-leaf __!
       -> @leaf = create-leaf __ required: no
     ] ->
@@ -320,7 +312,6 @@ describe 'StoreLeaf' ->
   describe '$set-error' ->
 
     test-cases 'setting errors on leaves' [
-      -> @name = create-leaf __
       -> @name = create-leaf __!
     ] ->
 
@@ -349,7 +340,6 @@ describe 'StoreLeaf' ->
   describe '$set-loading' ->
 
     test-cases 'setting loading on leaves' [
-      -> @name = create-leaf __
       -> @name = create-leaf __!
     ] ->
 

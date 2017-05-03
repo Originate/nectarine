@@ -1,5 +1,6 @@
 require! {
   './schema-type': SchemaType
+  'prelude-ls': {Obj}
 }
 
 
@@ -39,7 +40,7 @@ create-map = (child-schema) ->
 
 
 is-placeholder = ->
-  it is create-placeholder or it instanceof SchemaPlaceholder
+  it instanceof SchemaPlaceholder
 
 
 is-map = ->
@@ -48,8 +49,21 @@ is-map = ->
 
 get-type = ->
   | not is-placeholder it    => throw new Error "#{it} is not a placeholder"
-  | it is create-placeholder => SchemaType.ANY
   | otherwise                => it.type
+
+
+normalize = (input) ->
+  if input is create-placeholder
+    input!
+  else if input instanceof SchemaPlaceholder
+    input
+  else if input instanceof SchemaMap
+    input.child-schema = normalize input.child-schema
+    input
+  else if typeof! input is 'Object'
+    input |> Obj.map normalize
+  else
+    input
 
 
 validate = (placeholder, value, get-error-string = -> it) ->
@@ -76,5 +90,6 @@ module.exports = {
   get-type
   is-map
   is-placeholder
+  normalize
   validate
 }

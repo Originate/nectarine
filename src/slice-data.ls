@@ -7,7 +7,7 @@ class SliceData
 
   ({@actions, @schema}) ->
     if typeof! @schema is \Function
-      @schema = @schema SchemaPlaceholder.create-placeholder, SchemaPlaceholder.create-map
+      @schema = @schema SchemaPlaceholder.create-placeholder, SchemaPlaceholder.create-map |> SchemaPlaceholder.normalize
 
 
 module.exports = SliceData
