@@ -88,7 +88,7 @@ describe 'schema-place-holder' ->
     specify 'converts create-placeholders nested in objects' ->
       expect(normalize(a: b: __)).to.eql a: b: __(type: \any)
 
-    specify 'converts create-placeholder nested in create-map' ->
+    specify 'converts create-placeholders nested in maps' ->
       expect(normalize(a: map b: __)).to.eql a: map b: __(type: \any)
 
     specify 'passes placeholders through' ->
