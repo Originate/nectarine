@@ -11,7 +11,6 @@ create-map = (child-schema) -> new StoreMap {child-schema, path: <[path to map]>
 describe 'StoreMap' ->
 
   test-cases '' [
-    -> @map = create-map name: __
     -> @map = create-map name: __!
   ] ->
 

@@ -5,6 +5,7 @@ require! {
     get-type
     is-map
     is-placeholder
+    normalize
     validate
   }
   './schema-type': SchemaType
@@ -13,9 +14,6 @@ require! {
 describe 'schema-place-holder' ->
 
   describe 'is-placeholder' ->
-
-    specify 'returns true if it is a default placeholder' ->
-      expect(is-placeholder __).to.be.true
 
     specify 'returns true if it is a non-default placeholder' ->
       expect(is-placeholder __(type: 'string')).to.be.true
@@ -51,9 +49,6 @@ describe 'schema-place-holder' ->
         get-type {}
       .to.throw /is not a placeholder/
 
-    specify 'returns "any" if it is a default placeholder' ->
-      expect(get-type __).to.equal SchemaType.ANY
-
     specify 'returns "any" if type or initial value is not defined' ->
       expect(get-type __!).to.equal SchemaType.ANY
 
@@ -86,6 +81,18 @@ describe 'schema-place-holder' ->
       expect(get-type __(type: \any, initial-value: {})).to.equal SchemaType.ANY
       expect(get-type __(type: \any, initial-value: "foo")).to.equal SchemaType.ANY
 
+  describe 'normalize' ->
+    specify 'converts create-placeholder to the default placeholder' ->
+      expect(normalize(a: __)).to.eql a: __(type: \any)
+
+    specify 'converts create-placeholders nested in objects' ->
+      expect(normalize(a: b: __)).to.eql a: b: __(type: \any)
+
+    specify 'converts create-placeholder nested in create-map' ->
+      expect(normalize(a: map b: __)).to.eql a: map b: __(type: \any)
+
+    specify 'passes placeholders through' ->
+      expect(normalize(a: __(type: \boolean))).to.eql a: __(type: \boolean)
 
   describe 'validation' ->
 

@@ -19,7 +19,6 @@ describe 'StoreTree' ->
   describe '$debug' ->
 
     test-cases '' [
-      -> @tree = create-tree name: __, email: __
       -> @tree = create-tree name: __!, email: __!
     ] ->
 
@@ -34,7 +33,7 @@ describe 'StoreTree' ->
   describe '$from-promise' ->
 
     before-each ->
-      @tree = create-tree name: __, email: __
+      @tree = create-tree name: __!, email: __!
       @promise = @tree.$from-promise new Promise (@resolve, @reject) ~>
       null
 
@@ -99,7 +98,6 @@ describe 'StoreTree' ->
   describe '$get' ->
 
     test-cases '' [
-      -> @tree = create-tree name: __, email: __
       -> @tree = create-tree name: __!, email: __!
     ] ->
 
@@ -116,7 +114,6 @@ describe 'StoreTree' ->
 
   describe '$get-or-else' ->
     test-cases '' [
-      -> @tree = create-tree name: __, email: __
       -> @tree = create-tree name: __!, email: __!
     ] ->
       describe 'without default' ->
@@ -151,7 +148,6 @@ describe 'StoreTree' ->
 
   describe '$has-data' ->
     test-cases '' [
-      -> @tree = create-tree name: __, email: __
       -> @tree = create-tree name: __!, email: __!
     ] ->
 
@@ -178,7 +174,7 @@ describe 'StoreTree' ->
     before-each ->
       @tree = create-tree do
         name: __ initial-value: 'Alice'
-        email: __
+        email: __!
       @tree.$on-update @tree-update-spy = sinon.spy!
 
     specify 'does not call callbacks if nothing updates' ->
@@ -222,7 +218,6 @@ describe 'StoreTree' ->
   describe '$reset' ->
 
     test-cases 'resetting leaves' [
-      -> @tree = create-tree name: __, email: __
       -> @tree = create-tree name: __!, email: __!
     ] ->
 
@@ -261,7 +256,6 @@ describe 'StoreTree' ->
   describe '$set' ->
 
     test-cases 'setting values' [
-      -> @tree = create-tree name: __, email: __
       -> @tree = create-tree name: __!, email: __!
     ] ->
 
@@ -325,7 +319,6 @@ describe 'StoreTree' ->
 
 
     test-cases 'required isnt true' [
-      -> @tree = create-tree name: __
       -> @tree = create-tree name: __!
       -> @tree = create-tree name: __ required: no
     ] ->
@@ -359,7 +352,6 @@ describe 'StoreTree' ->
   describe '$set-error' ->
 
     test-cases 'setting errors on trees' [
-      -> @tree = create-tree name: __, email: __
       -> @tree = create-tree name: __!, email: __!
     ] ->
 
@@ -403,7 +395,6 @@ describe 'StoreTree' ->
   describe '$set-loading' ->
 
     test-cases 'setting loading on leaves' [
-      -> @tree = create-tree name: __, email: __
       -> @tree = create-tree name: __!, email: __!
     ] ->
 
