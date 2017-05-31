@@ -163,7 +163,7 @@ store.userSession.projects.$key('project1').$set({
 store.userSession.projects.$keys() // ['project1']
 
 // Returns a mapping for all accessed keys with data
-store.userSession.projects.$getAll() // {'project1': {summary: <...>, title: 'Nectarine'}}
+store.userSession.projects.$get() // {'project1': {summary: <...>, title: 'Nectarine'}}
 ```
 
 ## Actions

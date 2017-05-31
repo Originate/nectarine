@@ -26,7 +26,7 @@ describe 'StoreMap' ->
         @map.$delete('1')
         expect(@map.$key('1').$get!).to.eql name: null
 
-      specify 'removes the node from future $getAll calls' ->
+      specify 'removes the node from future $get calls' ->
         @map.$key('1').$set name: 'Alice'
         @map.$delete('1')
         expect(@map.$get!).to.eql {}
