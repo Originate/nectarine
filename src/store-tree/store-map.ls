@@ -19,7 +19,7 @@ class StoreMap extends StoreNode
 
 
   $delete: (key) ->
-    delete @_mapping[key] 
+    delete @_mapping[key]
 
 
   $from-promise: ->
