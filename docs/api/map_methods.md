@@ -1,18 +1,15 @@
 # Map Methods
 
-Map placeholders will create objects which have the following methods:
+Map placeholders will create objects which are very similar to [Trees / Leafs](./tree_leaf_methods.md).
+The `$fromPromise`, `$set`, `$setError`, and `$setLoading` methods throw errors
+as the map should not be set at once but instead all have its individual keys set.
+The following methods are map specific:
 
 ---
 
 #### `$delete(key)`
 
-Removes the node for that particular key. `$getAll()` and `$keys()` will no longer include the node.
-
----
-
-#### `$get()`
-
-Returns a mapping from `key` to `$key(key).$get()` for all keys with data.
+Removes the node for that particular key. `$get()` and `$keys()` will no longer include the node.
 
 ---
 
