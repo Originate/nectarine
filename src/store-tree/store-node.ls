@@ -25,7 +25,7 @@ class StoreNode
     @$emit-update {path: @$get-path!, updates}
 
 
-  $emit-update: (arg) ~>
+  $emit-update: (arg) ->
     if @_should-queue-updates
       @_queued-updates.push arg
     else
