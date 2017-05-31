@@ -10,7 +10,7 @@ class StoreTree extends StoreNode
     super ...
     for own key, value of @_children
       @[key] = value
-      value.$on-update @$emit-update
+      value.$on-update @$emit-update.bind(@)
 
     clashes = intersection Object.keys(@_children), Object.keys(actions or {})
     if clashes.length > 0
@@ -64,7 +64,7 @@ class StoreTree extends StoreNode
     | otherwise => throw Error 'calling $set on a tree must be called with an object or null'
 
 
-  $set-error: (err) !~> @$batch-emit-updates ~>
+  $set-error: (err) !-> @$batch-emit-updates ~>
     unless err?
       throw Error "Error setting `#{@$get-path-string!}`: attempting to set error to undefined. Always pass in an error"
 

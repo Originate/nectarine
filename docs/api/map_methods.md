@@ -10,7 +10,7 @@ Removes the node for that particular key. `$getAll()` and `$keys()` will no long
 
 ---
 
-#### `$getAll()`
+#### `$get()`
 
 Returns a mapping from `key` to `$key(key).$get()` for all keys with data.
 
