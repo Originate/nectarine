@@ -83,7 +83,7 @@ class StoreLeaf extends StoreNode
 
 
   _isSameDataObjectError: (data) ->
-    data not in [null, undefined] and
+    data? and
       data is @_data and
       schema-placeholder.get-type(@_schema) in [SchemaType.ARRAY, SchemaType.OBJECT]
 
