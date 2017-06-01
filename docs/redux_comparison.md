@@ -105,7 +105,7 @@ const getVisibleTodos = (todos, filter) => {
 
 const mapProps = (store) => {
   return {
-    todos: getVisibleTodos(store.todos.$getAll(), store.visibilityFilter.$get()),
+    todos: getVisibleTodos(store.todos.$get(), store.visibilityFilter.$get()),
     onTodoClick: (id) => store.todos.toggle(id)
   }
 }

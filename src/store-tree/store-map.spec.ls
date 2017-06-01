@@ -26,10 +26,10 @@ describe 'StoreMap' ->
         @map.$delete('1')
         expect(@map.$key('1').$get!).to.eql name: null
 
-      specify 'removes the node from future $getAll calls' ->
+      specify 'removes the node from future $get calls' ->
         @map.$key('1').$set name: 'Alice'
         @map.$delete('1')
-        expect(@map.$get-all!).to.eql {}
+        expect(@map.$get!).to.eql {}
 
       specify 'removes the key from future $keys calls' ->
         @map.$key('1').$set name: 'Alice'
@@ -58,43 +58,60 @@ describe 'StoreMap' ->
 
     describe '$get' ->
 
-      specify 'throws an error' ->
-        expect(~>
-          @map.$get!
-        ).to.throw 'Error at `path.to.map`: $get() can not be used on a map. Use $getAll()'
+      specify 'returns a mapping of all the keys' ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$key('2').$set name: 'Bob'
+        expect(@map.$get!).to.eql do
+          1: {name: 'Alice'}
+          2: {name: 'Bob'}
 
-
-    describe '$get-all' ->
-
-      before-each ->
+      specify 'throws an error when attempting to access data with error' ->
         @map.$key('1').$set name: 'Alice'
         @map.$key('2').$set-error new Error 'error1'
-        @map.$key('3').$set-loading!
-        @map.$key('4').$set name: 'Bob'
-        @map.$key('5').$set-error new Error 'error2'
-        @map.$key('6').$set-loading!
+        expect(~> @map.$get!).to.throw 'Error getting `path.to.map.2.name`: has error "error1"'
 
-      specify 'returns a mapping of all the keys with data' ->
-        expect(@map.$get-all!).to.eql do
-          1: {name: 'Alice'}
-          4: {name: 'Bob'}
+      specify 'throws an error when attempting to access loading data' ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$key('2').$set-loading!
+        expect(~> @map.$get!).to.throw 'Error getting `path.to.map.2.name`: is loading'
 
 
     describe '$get-error' ->
 
-      specify 'throws an error' ->
-        expect(~>
-          @map.$get-error!
-        ).to.throw "Error at `path.to.map`: $getError() can not be used on a map. Use $getAll('error')"
+      specify 'returns null for an empty map' ->
+        expect(@map.$get-error!).to.eql null
 
+      specify 'returns null if all keys have data' ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$key('2').$set name: 'Bob'
+        expect(@map.$get!).to.eql do
+          1: {name: 'Alice'}
+          2: {name: 'Bob'}
+
+      specify 'returns the first error if any keys have errors' ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$key('2').$set-error new Error 'error1'
+        expect(@map.$get-error!).to.eql new Error 'error1'
+
+      specify 'returns the first error if multiple keys have errors' ->
+        @map.$key('1').$set-error new Error 'error1'
+        @map.$key('2').$set-error new Error 'error2'
+        expect(@map.$get-error!).to.eql new Error 'error2'
 
     describe '$is-loading' ->
 
-      specify 'throws an error' ->
-        expect(~>
-          @map.$is-loading!
-        ).to.throw "Error at `path.to.map`: $isLoading() can not be used on a map. Use $getAll('loading')"
+      specify 'returns false for an empty map' ->
+        expect(@map.$is-loading!).to.eql false
 
+      specify 'returns false if all keys have data' ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$key('2').$set name: 'Bob'
+        expect(@map.$is-loading!).to.eql false
+
+      specify 'returns true if any keys have errors' ->
+        @map.$key('1').$set name: 'Alice'
+        @map.$key('2').$set-loading!
+        expect(@map.$is-loading!).to.eql true
 
     describe '$key', ->
 

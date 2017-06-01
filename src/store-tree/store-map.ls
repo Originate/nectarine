@@ -1,56 +1,34 @@
 require! {
   './schema-placeholder': SchemaPlaceholder
   './store-leaf': StoreLeaf
-  './store-node': StoreNode
+  './': StoreTree
   './helpers': {build-store-node}
   'prelude-ls': {Obj: {map}}
+  '../utils': {merge-objects}
 }
 
 
-class StoreMap extends StoreNode
+class StoreMap extends StoreTree
 
-  ({child-schema: @_child-schema}) ->
-    super ...
-    @_mapping = {}
-
-
-  $debug: ->
-    @_mapping |> map (.$debug!)
+  (options) ->
+    {child-schema: @_child-schema} = options
+    super merge-objects(options, children: {})
 
 
   $delete: (key) ->
-    delete @_mapping[key]
+    delete @_children[key]
 
 
   $from-promise: ->
     throw Error @_build-error-message '$fromPromise()', '$key(k).$fromPromise(v)'
 
 
-  $get-error: ->
-    throw Error @_build-error-message '$getError()', "$getAll('error')"
-
-
-  $get: ->
-    throw Error @_build-error-message '$get()', '$getAll()'
-
-
-  $get-all: ->
-    obj = {}
-    for own key, value of @_mapping
-      try obj[key] = value.$get!
-    obj
-
-
-  $is-loading: ->
-    throw Error @_build-error-message '$isLoading()', "$getAll('loading')"
-
-
   $key: (key) ->
-    @_mapping[key] or= @_build-child key
+    @_children[key] or= @_build-child key
 
 
   $keys: ->
-    Object.keys @_mapping
+    Object.keys @_children
 
 
   $set: ->
