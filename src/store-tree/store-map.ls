@@ -45,7 +45,7 @@ class StoreMap extends StoreTree
 
   _build-child: (key) ->
     build-store-node path: @$get-path!.concat(key), schema: @_child-schema
-      ..$on-update @$emit-update
+      ..$on-update @$emit-update.bind(@)
 
 
   _build-error-message: (disallowed, suggestion) ->

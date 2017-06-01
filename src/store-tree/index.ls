@@ -10,7 +10,7 @@ class StoreTree extends StoreNode
     super ...
     for own key, value of @_children
       @[key] = value
-      value.$on-update @$emit-update
+      value.$on-update @$emit-update.bind(@)
 
     clashes = intersection Object.keys(@_children), Object.keys(actions or {})
     if clashes.length > 0
