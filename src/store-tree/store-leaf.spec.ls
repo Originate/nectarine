@@ -296,13 +296,13 @@ describe 'StoreLeaf' ->
         expect(~>
           @leaf.$set null
           @leaf.$set null
-        ).to.not.throw
+        ).to.not.throw!
 
       specify 'works if set to undefind multiple times', ->
         expect(~>
           @leaf.$set undefined
           @leaf.$set undefined
-        ).to.not.throw
+        ).to.not.throw!
 
 
     test-cases 'leaves with type array' [
