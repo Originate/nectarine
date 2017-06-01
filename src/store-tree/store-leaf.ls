@@ -57,7 +57,7 @@ class StoreLeaf extends StoreNode
     schema-placeholder.validate @_schema, data, (err) ~>
       "Error setting `#{@$get-path-string!}`: #{err}"
 
-    if data is @_data and schema-placeholder.get-type(@_schema) in [SchemaType.ARRAY, SchemaType.OBJECT]
+    if @_isSameDataObjectError data
       throw new Error "Error setting `#{@$get-path-string!}`: attempting to update to the same object. Always pass in a new object"
 
     @_update {data, loading: no, error: null}
@@ -80,6 +80,12 @@ class StoreLeaf extends StoreNode
     @_loading = new-values.loading
     @_error = new-values.error
     @$emit-update path: @$get-path!, updates: [{new-values, old-values, path: @$get-path!}]
+
+
+  _isSameDataObjectError: (data) ->
+    data not in [null, undefined] and
+      data is @_data and
+      schema-placeholder.get-type(@_schema) in [SchemaType.ARRAY, SchemaType.OBJECT]
 
 
 module.exports = StoreLeaf
