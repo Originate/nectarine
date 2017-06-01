@@ -292,6 +292,18 @@ describe 'StoreLeaf' ->
         @leaf.$set merge-objects(@leaf.$get(), email: 'alice@example.com')
         expect(@leaf.$get()).to.eql name: 'Alice', email: 'alice@example.com'
 
+      specify 'works if set to null multiple times', ->
+        expect(~>
+          @leaf.$set null
+          @leaf.$set null
+        ).to.not.throw!
+
+      specify 'works if set to undefind multiple times', ->
+        expect(~>
+          @leaf.$set undefined
+          @leaf.$set undefined
+        ).to.not.throw!
+
 
     test-cases 'leaves with type array' [
       -> @leaf = create-leaf __ initialValue: [1]
@@ -307,6 +319,18 @@ describe 'StoreLeaf' ->
       specify 'works if passed a new object' ->
         @leaf.$set @leaf.$get().concat 2
         expect(@leaf.$get()).to.eql [1, 2]
+
+      specify 'works if set to null multiple times', ->
+        expect(~>
+          @leaf.$set null
+          @leaf.$set null
+        ).to.not.throw!
+
+      specify 'works if set to undefind multiple times', ->
+        expect(~>
+          @leaf.$set undefined
+          @leaf.$set undefined
+        ).to.not.throw!
 
 
   describe '$set-error' ->
